@@ -1,0 +1,126 @@
+.quick-actions-menu {
+  position: relative;
+}
+
+.quick-actions-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: var(--color-foreground);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.quick-actions-trigger:hover {
+  background: var(--color-muted);
+}
+
+.quick-actions-trigger:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.quick-actions-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  background: var(--color-popover);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 8px;
+  z-index: 200;
+  animation: slideDown var(--transition-fast);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  color: var(--color-foreground);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.action-item:hover {
+  background: var(--color-muted);
+}
+
+.action-item.primary {
+  color: var(--color-primary);
+}
+
+.action-item.primary:hover {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+.action-item.warning {
+  color: var(--color-warning);
+}
+
+.action-item.warning:hover {
+  background: var(--color-warning);
+  color: var(--color-warning-foreground);
+}
+
+@media (max-width: 767px) {
+  .quick-actions-menu {
+    position: fixed;
+    bottom: 80px;
+    right: 16px;
+    z-index: 50;
+  }
+
+  .quick-actions-trigger {
+    width: 56px;
+    height: 56px;
+    background: var(--color-primary);
+    color: var(--color-primary-foreground);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .quick-actions-trigger:hover {
+    background: var(--color-primary);
+    transform: scale(1.05);
+  }
+
+  .quick-actions-dropdown {
+    bottom: calc(100% + 8px);
+    top: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-actions-dropdown,
+  .quick-actions-trigger {
+    animation: none;
+    transition: none;
+  }
+}

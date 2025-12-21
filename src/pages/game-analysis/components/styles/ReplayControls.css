@@ -1,0 +1,88 @@
+.replay-controls-container {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progress-bar {
+  height: 6px;
+  background: var(--color-muted);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  transition: width var(--transition-base);
+}
+
+.progress-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-data);
+  font-size: 0.75rem;
+}
+
+.current-move {
+  color: var(--color-foreground);
+  font-weight: 600;
+}
+
+.total-moves {
+  color: var(--color-muted-foreground);
+}
+
+.controls-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.play-button {
+  min-width: 120px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@media (max-width: 767px) {
+  .replay-controls-container {
+    padding: 16px;
+  }
+
+  .controls-section {
+    gap: 6px;
+  }
+
+  .play-button {
+    min-width: 100px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill {
+    transition: none;
+  }
+}

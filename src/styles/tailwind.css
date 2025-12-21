@@ -1,0 +1,194 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary Colors - Teal Theme */
+    --color-primary: #14b8a6; /* Teal - Main brand color for best moves, highlights */
+    --color-primary-foreground: #ffffff; /* white - High contrast */
+
+    /* Secondary Colors - Darker Teal */
+    --color-secondary: #0d9488; /* teal-600 - Complementary darker teal */
+    --color-secondary-foreground: #ffffff; /* white - High contrast */
+
+    /* Accent Colors - Electric Blue */
+    --color-accent: #38bdf8; /* Electric Blue - AI hints, suggestions, analytical elements */
+    --color-accent-foreground: #020617; /* Dark background for contrast */
+
+    /* Background Colors - Deep Dark */
+    --color-background: #020617; /* Very dark blue-gray - Main background */
+    --color-foreground: #e2e8f0; /* Light slate - Primary text color */
+
+    /* Surface Colors - Elevated Dark Surfaces */
+    --color-card: #0f172a; /* slate-900 - Card backgrounds, elevated surfaces */
+    --color-card-foreground: #e2e8f0; /* Light text on cards */
+
+    --color-popover: #1e293b; /* slate-800 - Popover backgrounds */
+    --color-popover-foreground: #e2e8f0; /* Light text */
+
+    /* Muted Colors - Subtle Backgrounds */
+    --color-muted: #1e293b; /* slate-800 - Muted backgrounds */
+    --color-muted-foreground: #94a3b8; /* slate-400 - Secondary text */
+
+    /* State Colors */
+    --color-success: #22c55e; /* Green - Success states */
+    --color-success-foreground: #ffffff; /* white - High contrast */
+
+    --color-warning: #f59e0b; /* amber-500 - Warning states */
+    --color-warning-foreground: #020617; /* Dark text */
+
+    --color-error: #ef4444; /* Soft Red - Error states, wrong moves with pulse */
+    --color-error-foreground: #ffffff; /* white - High contrast */
+
+    --color-destructive: #ef4444; /* Soft Red - Destructive actions */
+    --color-destructive-foreground: #ffffff; /* white - High contrast */
+
+    /* UI Element Colors */
+    --color-border: #334155; /* slate-700 - Borders between elements */
+    --color-input: #1e293b; /* slate-800 - Input backgrounds */
+    --color-ring: #38bdf8; /* Electric Blue - Focus rings */
+
+    /* Typography */
+    --font-heading: "Inter", sans-serif;
+    --font-body: "Inter", sans-serif;
+    --font-caption: "Inter", sans-serif;
+    --font-data: "JetBrains Mono", monospace;
+
+    /* Border Radius - Slightly sharper for analytical feel */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+
+    /* Shadows - Subtle glows for premium feel */
+    --shadow-sm: 0 1px 3px rgba(20, 184, 166, 0.1), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(20, 184, 166, 0.15),
+      0 2px 4px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 25px rgba(20, 184, 166, 0.2),
+      0 4px 6px rgba(0, 0, 0, 0.5);
+
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0, 0, 0.2, 1);
+    --transition-base: 200ms cubic-bezier(0, 0, 0.2, 1);
+    --transition-slow: 300ms cubic-bezier(0, 0, 0.2, 1);
+    --transition-spring: 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .dark {
+    /* Keep same theme in dark mode since we're already dark */
+    --color-primary: #14b8a6;
+    --color-primary-foreground: #ffffff;
+
+    --color-secondary: #0d9488;
+    --color-secondary-foreground: #ffffff;
+
+    --color-accent: #38bdf8;
+    --color-accent-foreground: #020617;
+
+    --color-background: #020617;
+    --color-foreground: #e2e8f0;
+
+    --color-card: #0f172a;
+    --color-card-foreground: #e2e8f0;
+
+    --color-popover: #1e293b;
+    --color-popover-foreground: #e2e8f0;
+
+    --color-muted: #1e293b;
+    --color-muted-foreground: #94a3b8;
+
+    --color-success: #22c55e;
+    --color-success-foreground: #ffffff;
+
+    --color-warning: #f59e0b;
+    --color-warning-foreground: #020617;
+
+    --color-error: #ef4444;
+    --color-error-foreground: #ffffff;
+
+    --color-destructive: #ef4444;
+    --color-destructive-foreground: #ffffff;
+
+    --color-border: #334155;
+    --color-input: #1e293b;
+    --color-ring: #38bdf8;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
+
+  code,
+  pre {
+    font-family: var(--font-data);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animation-spring {
+    animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .transition-spring {
+    transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  /* Premium Theme Utilities */
+  .border-teal-glow {
+    border-color: #14b8a6;
+    box-shadow: 0 0 10px rgba(20, 184, 166, 0.3);
+  }
+
+  .border-blue-glow {
+    border-color: #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  }
+
+  .pulse-error {
+    animation: pulse-error 0.5s ease-in-out;
+  }
+
+  @keyframes pulse-error {
+    0%,
+    100% {
+      opacity: 1;
+      box-shadow: 0 0 0 rgba(239, 68, 68, 0);
+    }
+    50% {
+      opacity: 0.8;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+    }
+  }
+
+  .text-accent-glow {
+    color: #38bdf8;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+  }
+
+  .bg-card-premium {
+    background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+  }
+}

@@ -1,0 +1,127 @@
+.breadcrumb-context {
+  background: var(--color-card);
+  border-bottom: 1px solid var(--color-border);
+  padding: 12px 0;
+}
+
+.breadcrumb-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--color-foreground);
+  text-decoration: none;
+  transition: background var(--transition-fast);
+}
+
+.back-button:hover {
+  background: var(--color-muted);
+}
+
+.breadcrumb-nav {
+  flex: 1;
+  min-width: 0;
+}
+
+.breadcrumb-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+}
+
+.breadcrumb-link {
+  color: var(--color-muted-foreground);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.breadcrumb-link:hover {
+  color: var(--color-foreground);
+}
+
+.breadcrumb-separator {
+  display: flex;
+  align-items: center;
+  color: var(--color-muted-foreground);
+}
+
+.breadcrumb-current {
+  display: flex;
+  align-items: center;
+  color: var(--color-foreground);
+  font-weight: 500;
+}
+
+.game-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
+
+.game-meta {
+  color: var(--color-muted-foreground);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.game-id {
+  font-family: var(--font-data);
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+  padding: 4px 8px;
+  background: var(--color-muted);
+  border-radius: var(--radius-sm);
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .desktop-only {
+    display: inline;
+  }
+
+  .game-title {
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 767px) {
+  .breadcrumb-container {
+    padding: 0 16px;
+  }
+
+  .game-title {
+    max-width: 200px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-button,
+  .breadcrumb-link {
+    transition: none;
+  }
+}

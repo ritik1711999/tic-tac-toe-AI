@@ -1,0 +1,173 @@
+.performance-metrics-container {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.metrics-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.metrics-title {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin: 0;
+}
+
+.overall-score {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-data);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.metric-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.metric-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--color-muted);
+  border-radius: var(--radius-md);
+}
+
+.metric-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-value {
+  font-family: var(--font-data);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+  line-height: 1;
+}
+
+.metric-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+  text-transform: capitalize;
+}
+
+.key-moments {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-foreground);
+}
+
+.section-title {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.moments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.moment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: var(--color-muted);
+  border-radius: var(--radius-md);
+}
+
+.moment-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--color-warning);
+  color: var(--color-warning-foreground);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.moment-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.moment-move {
+  font-family: var(--font-data);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.moment-description {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-foreground);
+}
+
+@media (max-width: 767px) {
+  .performance-metrics-container {
+    padding: 16px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .metric-card {
+    padding: 12px;
+  }
+
+  .metric-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .metric-value {
+    font-size: 1.25rem;
+  }
+}

@@ -1,0 +1,76 @@
+.game-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--color-muted);
+  border-radius: var(--radius-md);
+  font-family: var(--font-data);
+  font-size: 0.875rem;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-foreground);
+}
+
+.status-label {
+  color: var(--color-muted-foreground);
+  font-weight: 400;
+}
+
+.status-value {
+  font-weight: 500;
+  color: var(--color-foreground);
+}
+
+.turn-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.status-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border);
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .desktop-only {
+    display: flex;
+  }
+
+  .status-label {
+    display: inline;
+  }
+}
+
+@media (max-width: 767px) {
+  .game-status-indicator {
+    padding: 6px 12px;
+    gap: 8px;
+  }
+
+  .status-item {
+    gap: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-status-indicator {
+    transition: none;
+  }
+}
