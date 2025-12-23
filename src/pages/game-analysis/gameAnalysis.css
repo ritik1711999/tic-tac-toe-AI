@@ -107,9 +107,18 @@
   color: var(--color-primary-foreground);
 }
 
+.board-section {
+  grid-column: span 2;
+}
+
+.analysis-section {
+  grid-column: span 2;
+}
+
 .analysis-content {
   display: grid;
-  grid-template-columns: 1fr 400px 1fr;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 24px;
 }
 
@@ -166,6 +175,23 @@
   }
 
   .content-section.active {
+    display: flex;
+  }
+
+  .analysis-section {
+    display: none;
+  }
+
+  .analysis-section.active {
+    display: flex;
+    margin-bottom: 24px;
+  }
+
+  .metrics-section {
+    display: none;
+  }
+
+  .metrics-section.active {
     display: flex;
   }
 }

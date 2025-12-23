@@ -62,7 +62,7 @@
 
 .timeline-item.active {
   background-color: var(--color-primary);
-  opacity: 0.1;
+  /* opacity: 0.1; */
   border-color: var(--color-primary);
 }
 
@@ -115,7 +115,7 @@
 .move-time {
   font-family: var(--font-data);
   font-size: 0.75rem;
-  color: var(--color-muted-foreground);
+  color: #facc15;
 }
 
 .move-details {
@@ -128,7 +128,7 @@
 .move-position {
   font-family: var(--font-data);
   font-size: 0.75rem;
-  color: var(--color-muted-foreground);
+  color: #facc15;
 }
 
 .quality-badge {
@@ -138,6 +138,9 @@
   font-family: var(--font-body);
   font-size: 0.75rem;
   font-weight: 500;
+  background: var(--color-muted);
+  padding: 2px 6px;
+  border-radius: 5px;
 }
 
 .active-indicator {
