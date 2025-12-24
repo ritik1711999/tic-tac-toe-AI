@@ -57,9 +57,6 @@
 }
 
 .info-item.result.win {
-  /* background: var(--color-success); */
-  background: var(--color-foreground);
-  opacity: 0.1;
   color: var(--color-success);
 }
 

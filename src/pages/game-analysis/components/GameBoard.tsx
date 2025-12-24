@@ -13,22 +13,22 @@ const GameBoard = ({
   currentMoveIndex,
   winningLine,
 }: GameBoardProps) => {
-  const getCellContent = (value: "X" | "O" | "") => {
+  const getCellContent = (value: "X" | "O" | "", isWinningCell: boolean) => {
     if (!value) return null;
 
     return (
       <div className={`cell-content ${value?.toLowerCase()}`}>
         {value === "X" ? (
-          <Icon name="X" size={48} strokeWidth={3} />
+          <Icon name="X" size={48} strokeWidth={3} color={isWinningCell ? "white" : undefined} />
         ) : (
-          <Icon name="Circle" size={48} strokeWidth={3} />
+          <Icon name="Circle" size={48} strokeWidth={3} color={isWinningCell ? "white" : undefined} />
         )}
       </div>
     );
   };
 
   const isWinningCell = (index: number) => {
-    return winningLine && winningLine?.includes(index);
+    return winningLine ? winningLine.includes(index) : false;
   };
 
   return (
@@ -47,7 +47,7 @@ const GameBoard = ({
                 isWinningCell(index) ? "winning" : ""
               }`}
             >
-              {getCellContent(cell)}
+              {getCellContent(cell, isWinningCell(index))}
             </div>
           ))}
         </div>
