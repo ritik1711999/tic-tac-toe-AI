@@ -59,6 +59,16 @@ const MoveTimeline = ({
                 className={`timeline-item ${isActive ? "active" : ""}`}
                 onClick={() => onMoveSelect(index)}
               >
+                {isActive && (
+                  <div className="active-indicator">
+                    <Icon
+                      name="ChevronLeft"
+                      size={20}
+                      strokeWidth={2.5}
+                      color="white"
+                    />
+                  </div>
+                )}
                 <div className="move-number">{index + 1}</div>
                 <div className="move-content">
                   <div className="move-header">
@@ -88,11 +98,6 @@ const MoveTimeline = ({
                     </div>
                   </div>
                 </div>
-                {isActive && (
-                  <div className="active-indicator">
-                    <Icon name="ChevronRight" size={20} strokeWidth={2.5} />
-                  </div>
-                )}
               </div>
             );
           })}

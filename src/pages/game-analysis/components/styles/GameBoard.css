@@ -58,9 +58,8 @@
 }
 
 .board-cell.winning {
-  background: var(--color-success);
-  opacity: 0.1;
-  border-color: var(--color-success);
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
   animation: pulse 1s ease-in-out infinite;
 }
 

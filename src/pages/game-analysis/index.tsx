@@ -356,11 +356,18 @@ const GameAnalysis = () => {
               </div>
 
               <div
-                className={`content-section analysis-section ${
+                className={`analysis-section ${
                   activeTab === "analysis" ? "active" : ""
                 }`}
               >
                 <AnalysisPanel currentMove={currentMove} />
+              </div>
+
+              <div
+                className={`metrics-section ${
+                  activeTab === "analysis" ? "active" : ""
+                }`}
+              >
                 <PerformanceMetrics metrics={gameData?.performanceMetrics} />
               </div>
             </div>
