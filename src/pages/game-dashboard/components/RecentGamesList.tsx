@@ -1,12 +1,13 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
+import type { RecentGame } from "../types";
+import "./styles/RecentGamesList.css";
 
 const RecentGamesList = () => {
   const navigate = useNavigate();
 
-  const recentGames = [
+  const recentGames: RecentGame[] = [
     {
       id: "G2025127",
       opponent: "AI - Hard",
@@ -54,7 +55,7 @@ const RecentGamesList = () => {
     },
   ];
 
-  const getResultIcon = (result) => {
+  const getResultIcon = (result: string) => {
     switch (result) {
       case "win":
         return { name: "Trophy", color: "var(--color-success)" };
@@ -67,13 +68,14 @@ const RecentGamesList = () => {
     }
   };
 
-  const getResultLabel = (result) => {
+  const getResultLabel = (result: string) => {
     return result?.charAt(0)?.toUpperCase() + result?.slice(1);
   };
 
-  const formatTimestamp = (date) => {
-    const now = new Date();
-    const diffMs = now - date;
+  const formatTimestamp = (date: Date) => {
+    const now = new Date().getTime();
+    const dateObj = date.getTime();
+    const diffMs = now - dateObj;
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffHours / 24);
 
@@ -92,7 +94,7 @@ const RecentGamesList = () => {
     }
   };
 
-  const handleViewAnalysis = (gameId) => {
+  const handleViewAnalysis = (gameId: string) => {
     navigate("/game-analysis", { state: { gameId } });
   };
 
@@ -182,207 +184,6 @@ const RecentGamesList = () => {
           })}
         </div>
       </div>
-      <style jsx>{`
-        .recent-games-list {
-          background: var(--color-card);
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-xl);
-          padding: 24px;
-          box-shadow: var(--shadow-sm);
-        }
-
-        .list-header {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          gap: 16px;
-          margin-bottom: 24px;
-        }
-
-        .header-content {
-          flex: 1;
-          min-width: 0;
-        }
-
-        .list-title {
-          font-family: var(--font-heading);
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: var(--color-foreground);
-          margin: 0 0 4px 0;
-        }
-
-        .list-subtitle {
-          font-family: var(--font-body);
-          font-size: 0.875rem;
-          color: var(--color-muted-foreground);
-          margin: 0;
-        }
-
-        .games-container {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .game-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 16px;
-          padding: 16px;
-          background: var(--color-muted);
-          border-radius: var(--radius-lg);
-          transition: transform var(--transition-fast),
-            box-shadow var(--transition-fast);
-        }
-
-        .game-item:hover {
-          transform: translateX(4px);
-          box-shadow: var(--shadow-sm);
-        }
-
-        .game-result-badge {
-          width: 44px;
-          height: 44px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: var(--radius-md);
-          flex-shrink: 0;
-        }
-
-        .game-details {
-          flex: 1;
-          min-width: 0;
-        }
-
-        .game-header-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px;
-          margin-bottom: 8px;
-        }
-
-        .game-id {
-          font-family: var(--font-data);
-          font-size: 0.875rem;
-          font-weight: 600;
-          color: var(--color-foreground);
-          margin: 0;
-        }
-
-        .result-label {
-          font-family: var(--font-body);
-          font-size: 0.75rem;
-          font-weight: 600;
-          padding: 4px 8px;
-          border-radius: var(--radius-sm);
-          text-transform: uppercase;
-        }
-
-        .result-label.win {
-          background: var(--color-success);
-          background-opacity: 0.1;
-          color: var(--color-success);
-        }
-
-        .result-label.loss {
-          background: var(--color-error);
-          background-opacity: 0.1;
-          color: var(--color-error);
-        }
-
-        .result-label.draw {
-          background: var(--color-muted);
-          color: var(--color-muted-foreground);
-        }
-
-        .game-info-row {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          margin-bottom: 8px;
-          flex-wrap: wrap;
-        }
-
-        .info-item {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          font-family: var(--font-body);
-          font-size: 0.75rem;
-          color: var(--color-muted-foreground);
-        }
-
-        .game-meta-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px;
-        }
-
-        .timestamp {
-          font-family: var(--font-body);
-          font-size: 0.75rem;
-          color: var(--color-muted-foreground);
-        }
-
-        .pattern-badge {
-          font-family: var(--font-body);
-          font-size: 0.75rem;
-          font-weight: 500;
-          color: var(--color-primary);
-          padding: 2px 8px;
-          background: var(--color-primary);
-          background-opacity: 0.1;
-          border-radius: var(--radius-sm);
-        }
-
-        .game-actions {
-          display: flex;
-          align-items: center;
-          flex-shrink: 0;
-        }
-
-        @media (max-width: 767px) {
-          .recent-games-list {
-            padding: 20px;
-          }
-
-          .list-header {
-            flex-direction: column;
-            align-items: stretch;
-          }
-
-          .game-item {
-            flex-direction: column;
-            gap: 12px;
-          }
-
-          .game-result-badge {
-            align-self: flex-start;
-          }
-
-          .game-actions {
-            align-self: stretch;
-          }
-
-          .game-info-row {
-            gap: 12px;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .game-item {
-            transition: none;
-          }
-
-          .game-item:hover {
-            transform: none;
-          }
-        }
-      `}</style>
     </>
   );
 };

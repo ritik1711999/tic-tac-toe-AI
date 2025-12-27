@@ -115,7 +115,7 @@
 .move-time {
   font-family: var(--font-data);
   font-size: 0.75rem;
-  color: #facc15;
+  color: var(--color-font-secondary);
 }
 
 .move-details {
@@ -128,7 +128,7 @@
 .move-position {
   font-family: var(--font-data);
   font-size: 0.75rem;
-  color: #facc15;
+  color: var(--color-font-secondary);
 }
 
 .quality-badge {

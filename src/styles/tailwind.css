@@ -58,6 +58,9 @@
     --font-caption: "Inter", sans-serif;
     --font-data: "JetBrains Mono", monospace;
 
+    /* Font Color */
+    --color-font-secondary: #facc15;
+
     /* Border Radius - Slightly sharper for analytical feel */
     --radius-sm: 0.25rem;
     --radius-md: 0.375rem;
@@ -85,6 +88,8 @@
 
     --color-secondary: #0d9488;
     --color-secondary-foreground: #ffffff;
+
+    --color-font-secondary: #facc15;
 
     --color-accent: #38bdf8;
     --color-accent-foreground: #020617;

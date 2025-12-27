@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
 import Select from "../../../components/ui/Select";
+import "./styles/NewGameCard.css";
 
 const NewGameCard = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ const NewGameCard = () => {
               description="Choose how you want to play"
               options={gameModeOptions}
               value={gameMode}
-              onChange={setGameMode}
+              onChange={(value) => setGameMode(value as string)}
             />
           </div>
 
@@ -70,7 +71,7 @@ const NewGameCard = () => {
               description="Select challenge level for AI opponent"
               options={difficultyOptions}
               value={difficulty}
-              onChange={setDifficulty}
+              onChange={(value) => setDifficulty(value as string)}
               disabled={gameMode === "local"}
             />
           </div>
@@ -89,107 +90,6 @@ const NewGameCard = () => {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .new-game-card {
-          background: var(--color-card);
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-xl);
-          overflow: hidden;
-          box-shadow: var(--shadow-sm);
-          transition: box-shadow var(--transition-fast);
-        }
-
-        .new-game-card:hover {
-          box-shadow: var(--shadow-md);
-        }
-
-        .card-header {
-          display: flex;
-          align-items: flex-start;
-          gap: 16px;
-          padding: 24px;
-          background: linear-gradient(
-            135deg,
-            var(--color-primary) 0%,
-            var(--color-secondary) 100%
-          );
-          background-opacity: 0.05;
-        }
-
-        .header-icon {
-          width: 56px;
-          height: 56px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: var(--color-card);
-          border-radius: var(--radius-lg);
-          flex-shrink: 0;
-        }
-
-        .header-content {
-          flex: 1;
-          min-width: 0;
-        }
-
-        .card-title {
-          font-family: var(--font-heading);
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: var(--color-foreground);
-          margin: 0 0 4px 0;
-        }
-
-        .card-description {
-          font-family: var(--font-body);
-          font-size: 0.875rem;
-          color: var(--color-muted-foreground);
-          margin: 0;
-        }
-
-        .card-body {
-          padding: 24px;
-        }
-
-        .form-group {
-          margin-bottom: 20px;
-        }
-
-        .form-group:last-of-type {
-          margin-bottom: 24px;
-        }
-
-        .action-buttons {
-          display: flex;
-          gap: 12px;
-        }
-
-        @media (max-width: 767px) {
-          .card-header {
-            padding: 20px;
-          }
-
-          .header-icon {
-            width: 48px;
-            height: 48px;
-          }
-
-          .card-title {
-            font-size: 1.25rem;
-          }
-
-          .card-body {
-            padding: 20px;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .new-game-card {
-            transition: none;
-          }
-        }
-      `}</style>
     </>
   );
 };
