@@ -24,7 +24,7 @@ const Header = () => {
               <Icon
                 name="Grid3x3"
                 size={28}
-                color="var(--color-primary)"
+                color="var(--color-popover-foreground)"
                 strokeWidth={2.5}
               />
             </div>

@@ -1,9 +1,10 @@
-import React from "react";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
+import type { Recommendation } from "../types";
+import "./styles/AiRecommendations.css";
 
 const AIRecommendations = () => {
-  const recommendations = [
+  const recommendations: Recommendation[] = [
     {
       id: 1,
       type: "difficulty",
@@ -11,7 +12,7 @@ const AIRecommendations = () => {
       description:
         "Based on your recent performance, you might be ready to try Hard difficulty. Your win rate against Medium AI is 78%.",
       icon: "TrendingUp",
-      color: "var(--color-primary)",
+      color: "var(--color-primary-foreground)",
       action: "Try Hard Mode",
       priority: "high",
     },
@@ -22,7 +23,7 @@ const AIRecommendations = () => {
       description:
         "Analysis shows you win 65% more games when starting with center position. Consider this strategy more often.",
       icon: "Target",
-      color: "var(--color-secondary)",
+      color: "var(--color-primary-foreground)",
       action: "View Analysis",
       priority: "medium",
     },
@@ -33,17 +34,23 @@ const AIRecommendations = () => {
       description:
         "Your defensive blocking could be stronger. Try focusing on opponent threat detection in your next 5 games.",
       icon: "Shield",
-      color: "var(--color-warning)",
+      color: "var(--color-primary-foreground)",
       action: "Start Practice",
       priority: "medium",
     },
   ];
 
-  const getPriorityBadge = (priority) => {
+  const getPriorityBadge = (priority: "high" | "medium" | "low") => {
     const badges = {
-      high: { label: "High Priority", color: "var(--color-error)" },
-      medium: { label: "Recommended", color: "var(--color-primary)" },
-      low: { label: "Optional", color: "var(--color-muted-foreground)" },
+      high: {
+        label: "High Priority",
+        color: "var(--color-primary-foreground)",
+      },
+      medium: {
+        label: "Recommended",
+        color: "var(--color-primary-foreground)",
+      },
+      low: { label: "Optional", color: "var(--color-primary-foreground)" },
     };
     return badges?.[priority] || badges?.medium;
   };
@@ -125,163 +132,6 @@ const AIRecommendations = () => {
           </div>
         </div>
       </div>
-      <style jsx>{`
-        .ai-recommendations {
-          background: var(--color-card);
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-xl);
-          padding: 24px;
-          box-shadow: var(--shadow-sm);
-        }
-
-        .recommendations-header {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          margin-bottom: 24px;
-        }
-
-        .header-icon {
-          width: 48px;
-          height: 48px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: var(--color-primary);
-          background-opacity: 0.1;
-          border-radius: var(--radius-md);
-        }
-
-        .header-content {
-          flex: 1;
-          min-width: 0;
-        }
-
-        .recommendations-title {
-          font-family: var(--font-heading);
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: var(--color-foreground);
-          margin: 0 0 4px 0;
-        }
-
-        .recommendations-subtitle {
-          font-family: var(--font-body);
-          font-size: 0.875rem;
-          color: var(--color-muted-foreground);
-          margin: 0;
-        }
-
-        .recommendations-list {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-          margin-bottom: 20px;
-        }
-
-        .recommendation-card {
-          padding: 20px;
-          background: var(--color-muted);
-          border-radius: var(--radius-lg);
-          transition: transform var(--transition-fast),
-            box-shadow var(--transition-fast);
-        }
-
-        .recommendation-card:hover {
-          transform: translateY(-2px);
-          box-shadow: var(--shadow-md);
-        }
-
-        .card-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px;
-          margin-bottom: 16px;
-        }
-
-        .recommendation-icon {
-          width: 48px;
-          height: 48px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: var(--radius-md);
-        }
-
-        .priority-badge {
-          font-family: var(--font-body);
-          font-size: 0.75rem;
-          font-weight: 600;
-          padding: 4px 12px;
-          border-radius: var(--radius-sm);
-          text-transform: uppercase;
-        }
-
-        .card-content {
-          margin-bottom: 16px;
-        }
-
-        .recommendation-title {
-          font-family: var(--font-heading);
-          font-size: 1.125rem;
-          font-weight: 600;
-          color: var(--color-foreground);
-          margin: 0 0 8px 0;
-        }
-
-        .recommendation-description {
-          font-family: var(--font-body);
-          font-size: 0.875rem;
-          color: var(--color-muted-foreground);
-          line-height: 1.6;
-          margin: 0;
-        }
-
-        .card-footer {
-          display: flex;
-          justify-content: flex-end;
-        }
-
-        .recommendations-footer {
-          padding-top: 20px;
-          border-top: 1px solid var(--color-border);
-        }
-
-        .footer-info {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-family: var(--font-body);
-          font-size: 0.75rem;
-          color: var(--color-muted-foreground);
-        }
-
-        @media (max-width: 767px) {
-          .ai-recommendations {
-            padding: 20px;
-          }
-
-          .card-header {
-            flex-direction: column;
-            align-items: flex-start;
-          }
-
-          .recommendation-card {
-            padding: 16px;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .recommendation-card {
-            transition: none;
-          }
-
-          .recommendation-card:hover {
-            transform: none;
-          }
-        }
-      `}</style>
     </>
   );
 };

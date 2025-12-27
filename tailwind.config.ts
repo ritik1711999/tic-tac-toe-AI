@@ -15,6 +15,7 @@ module.exports = {
         border: "var(--color-border)", // gray-200
         input: "var(--color-input)", // white
         ring: "var(--color-ring)", // blue-800
+        gold: "var(--color-font-secondary)",
         background: "var(--color-background)", // slate-50
         foreground: "var(--color-foreground)", // gray-800
         primary: {
