@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/ui/Header";
 import GameStatusIndicator from "../../components/ui/GameStatusIndicator";
@@ -8,26 +8,35 @@ import AiSuggestionPanel from "./components/AiSuggestionPanel";
 import MoveHistory from "./components/MoveHistory";
 import GameControls from "./components/GameControls";
 import GameResultModal from "./components/GameResultModal";
+import type {
+  Player,
+  GameResult,
+  Move,
+  Suggestion,
+  GameStats,
+  CheckWinnerResult,
+} from "./types";
+import "./GameBoard.css";
 
 const GameBoard = () => {
   const navigate = useNavigate();
 
-  const [board, setBoard] = useState(Array(9)?.fill(null));
-  const [currentPlayer, setCurrentPlayer] = useState("X");
+  const [board, setBoard] = useState<(Player | null)[]>(Array(9).fill(null));
+  const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
   const [isGameActive, setIsGameActive] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [isAiThinking, setIsAiThinking] = useState(false);
   const [moveCount, setMoveCount] = useState(0);
   const [gameTime, setGameTime] = useState(0);
   const [hintsRemaining, setHintsRemaining] = useState(3);
-  const [winningLine, setWinningLine] = useState(null);
-  const [gameResult, setGameResult] = useState(null);
+  const [winningLine, setWinningLine] = useState<number[] | null>(null);
+  const [gameResult, setGameResult] = useState<GameResult>(null);
   const [showResultModal, setShowResultModal] = useState(false);
   const [currentMoveIndex, setCurrentMoveIndex] = useState(-1);
   const [showSuggestions, setShowSuggestions] = useState(true);
 
-  const [moves, setMoves] = useState([]);
-  const [suggestions, setSuggestions] = useState([
+  const [moves, setMoves] = useState<Move[]>([]);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([
     {
       position: 4,
       confidence: 85,
@@ -52,7 +61,7 @@ const GameBoard = () => {
   ]);
 
   useEffect(() => {
-    let timer;
+    let timer: number;
     if (isGameActive && !isPaused) {
       timer = setInterval(() => {
         setGameTime((prev) => prev + 1);
@@ -61,15 +70,15 @@ const GameBoard = () => {
     return () => clearInterval(timer);
   }, [isGameActive, isPaused]);
 
-  const formatGameTime = (seconds) => {
+  const formatGameTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins?.toString()?.padStart(2, "0")}:${secs
-      ?.toString()
-      ?.padStart(2, "0")}`;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
   };
 
-  const checkWinner = (boardState) => {
+  const checkWinner = (boardState: (Player | null)[]): CheckWinnerResult => {
     const lines = [
       [0, 1, 2],
       [3, 4, 5],
@@ -84,29 +93,31 @@ const GameBoard = () => {
     for (let line of lines) {
       const [a, b, c] = line;
       if (
-        boardState?.[a] &&
-        boardState?.[a] === boardState?.[b] &&
-        boardState?.[a] === boardState?.[c]
+        boardState[a] &&
+        boardState[a] === boardState[b] &&
+        boardState[a] === boardState[c]
       ) {
-        return { winner: boardState?.[a], line };
+        return { winner: boardState[a] as Player, line };
       }
     }
 
-    if (boardState?.every((cell) => cell !== null)) {
+    if (boardState.every((cell) => cell !== null)) {
       return { winner: "draw", line: null };
     }
 
-    return null;
+    return { winner: null, line: null };
   };
 
-  const generateAiSuggestions = (boardState) => {
+  const generateAiSuggestions = (
+    boardState: (Player | null)[]
+  ): Suggestion[] => {
     const emptyCells = boardState
-      ?.map((cell, index) => (cell === null ? index : null))
-      ?.filter((i) => i !== null);
+      .map((cell, index) => (cell === null ? index : null))
+      .filter((i) => i !== null) as number[];
 
-    if (emptyCells?.length === 0) return [];
+    if (emptyCells.length === 0) return [];
 
-    const newSuggestions = emptyCells?.slice(0, 3)?.map((position) => {
+    const newSuggestions = emptyCells.slice(0, 3).map((position) => {
       const confidence = Math.floor(Math.random() * 30) + 60;
       const strategies = [
         "This move blocks opponent's winning path while creating your own opportunity.",
@@ -124,32 +135,32 @@ const GameBoard = () => {
       return {
         position,
         confidence,
-        strategy: strategies?.[Math.floor(Math.random() * strategies?.length)],
-        moveType: moveTypes?.[Math.floor(Math.random() * moveTypes?.length)],
+        strategy: strategies[Math.floor(Math.random() * strategies.length)],
+        moveType: moveTypes[Math.floor(Math.random() * moveTypes.length)],
       };
     });
 
-    return newSuggestions?.sort((a, b) => b?.confidence - a?.confidence);
+    return newSuggestions.sort((a, b) => b.confidence - a.confidence);
   };
 
-  const makeAiMove = useCallback((boardState) => {
+  const makeAiMove = useCallback((boardState: (Player | null)[]) => {
     setIsAiThinking(true);
 
     setTimeout(() => {
       const emptyCells = boardState
-        ?.map((cell, index) => (cell === null ? index : null))
-        ?.filter((i) => i !== null);
+        .map((cell, index) => (cell === null ? index : null))
+        .filter((i) => i !== null) as number[];
 
-      if (emptyCells?.length > 0) {
+      if (emptyCells.length > 0) {
         const randomIndex =
-          emptyCells?.[Math.floor(Math.random() * emptyCells?.length)];
+          emptyCells[Math.floor(Math.random() * emptyCells.length)];
         const newBoard = [...boardState];
         newBoard[randomIndex] = "O";
 
-        const newMove = {
+        const newMove: Move = {
           player: "O",
           position: randomIndex,
-          timestamp: new Date()?.toISOString(),
+          timestamp: new Date().toISOString(),
           isAiMove: true,
         };
 
@@ -160,7 +171,7 @@ const GameBoard = () => {
         setIsAiThinking(false);
 
         const result = checkWinner(newBoard);
-        if (result) {
+        if (result.winner) {
           handleGameEnd(result);
         } else {
           setSuggestions(generateAiSuggestions(newBoard));
@@ -169,9 +180,9 @@ const GameBoard = () => {
     }, 1000);
   }, []);
 
-  const handleCellClick = (index) => {
+  const handleCellClick = (index: number) => {
     if (
-      board?.[index] ||
+      board[index] ||
       !isGameActive ||
       isPaused ||
       isAiThinking ||
@@ -182,10 +193,10 @@ const GameBoard = () => {
     const newBoard = [...board];
     newBoard[index] = "X";
 
-    const newMove = {
+    const newMove: Move = {
       player: "X",
       position: index,
-      timestamp: new Date()?.toISOString(),
+      timestamp: new Date().toISOString(),
       isAiMove: false,
     };
 
@@ -195,22 +206,22 @@ const GameBoard = () => {
     setCurrentPlayer("O");
 
     const result = checkWinner(newBoard);
-    if (result) {
+    if (result.winner) {
       handleGameEnd(result);
     } else {
       makeAiMove(newBoard);
     }
   };
 
-  const handleGameEnd = (result) => {
+  const handleGameEnd = (result: CheckWinnerResult) => {
     setIsGameActive(false);
-    setWinningLine(result?.line);
+    setWinningLine(result.line);
 
-    if (result?.winner === "X") {
+    if (result.winner === "X") {
       setGameResult("win");
-    } else if (result?.winner === "O") {
+    } else if (result.winner === "O") {
       setGameResult("lose");
-    } else {
+    } else if (result.winner === "draw") {
       setGameResult("draw");
     }
 
@@ -228,7 +239,7 @@ const GameBoard = () => {
   };
 
   const handleRestart = () => {
-    setBoard(Array(9)?.fill(null));
+    setBoard(Array(9).fill(null));
     setCurrentPlayer("X");
     setIsGameActive(true);
     setIsPaused(false);
@@ -241,7 +252,7 @@ const GameBoard = () => {
     setShowResultModal(false);
     setMoves([]);
     setCurrentMoveIndex(-1);
-    setSuggestions(generateAiSuggestions(Array(9)?.fill(null)));
+    setSuggestions(generateAiSuggestions(Array(9).fill(null)));
   };
 
   const handleNewGame = () => {
@@ -249,13 +260,13 @@ const GameBoard = () => {
   };
 
   const handleHint = () => {
-    if (hintsRemaining > 0 && suggestions?.length > 0) {
+    if (hintsRemaining > 0 && suggestions.length > 0) {
       setHintsRemaining((prev) => prev - 1);
       setShowSuggestions(true);
     }
   };
 
-  const handleMoveClick = (index) => {
+  const handleMoveClick = (index: number) => {
     setCurrentMoveIndex(index);
   };
 
@@ -263,7 +274,7 @@ const GameBoard = () => {
     navigate("/game-analysis");
   };
 
-  const gameStats = {
+  const gameStats: GameStats = {
     totalMoves: moveCount,
     gameTime: formatGameTime(gameTime),
     accuracy: Math.floor(Math.random() * 20) + 75,
@@ -300,7 +311,6 @@ const GameBoard = () => {
               onCellClick={handleCellClick}
               winningLine={winningLine}
               isGameOver={!isGameActive}
-              currentPlayer={currentPlayer}
               isAiThinking={isAiThinking}
             />
 
@@ -341,75 +351,6 @@ const GameBoard = () => {
           gameStats={gameStats}
         />
       </div>
-
-      <style jsx>{`
-        .game-board-page {
-          min-height: 100vh;
-          background: var(--color-background);
-          padding-top: 64px;
-        }
-
-        .page-header {
-          position: sticky;
-          top: 64px;
-          background: var(--color-card);
-          border-bottom: 1px solid var(--color-border);
-          z-index: 30;
-        }
-
-        .header-content {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 12px 24px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-        }
-
-        .game-content {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 24px;
-          display: grid;
-          grid-template-columns: 1fr 320px;
-          gap: 24px;
-          min-height: calc(100vh - 140px);
-        }
-
-        .game-main {
-          display: flex;
-          flex-direction: column;
-          gap: 24px;
-        }
-
-        .game-sidebar {
-          display: flex;
-          flex-direction: column;
-        }
-
-        @media (max-width: 1023px) {
-          .game-content {
-            grid-template-columns: 1fr;
-            padding: 16px;
-            padding-bottom: calc(50vh + 16px);
-          }
-
-          .game-sidebar {
-            display: none;
-          }
-        }
-
-        @media (max-width: 767px) {
-          .header-content {
-            padding: 12px 16px;
-          }
-
-          .game-content {
-            padding: 12px;
-          }
-        }
-      `}</style>
     </>
   );
 };

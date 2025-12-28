@@ -48,6 +48,11 @@
   display: none;
 }
 
+.status-item.game-timer.desktop-only {
+  display: flex;
+  flex-direction: row;
+}
+
 @media (min-width: 768px) {
   .desktop-only {
     display: flex;
