@@ -1,0 +1,45 @@
+.game-controls-container {
+  padding: 16px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.active-game-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.active-game-controls > :global(button) {
+  flex: 1;
+  min-width: 120px;
+}
+
+.game-over-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.game-over-controls > :global(button) {
+  flex: 1;
+}
+
+@media (max-width: 767px) {
+  .game-controls-container {
+    padding: 12px;
+  }
+
+  .active-game-controls {
+    gap: 8px;
+  }
+
+  .active-game-controls > :global(button) {
+    min-width: 100px;
+  }
+
+  .game-over-controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

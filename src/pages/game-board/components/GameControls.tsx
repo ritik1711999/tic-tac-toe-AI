@@ -1,5 +1,16 @@
-import React from "react";
 import Button from "../../../components/ui/Button";
+import "./styles/GameControls.css";
+
+interface GameControlsProps {
+  onPause: () => void;
+  onResume: () => void;
+  onRestart: () => void;
+  onHint: () => void;
+  onNewGame: () => void;
+  isPaused: boolean;
+  isGameOver: boolean;
+  hintsRemaining: number;
+}
 
 const GameControls = ({
   onPause,
@@ -10,14 +21,14 @@ const GameControls = ({
   isPaused,
   isGameOver,
   hintsRemaining,
-}) => {
+}: GameControlsProps) => {
   return (
     <>
       <div className="game-controls-container">
         {!isGameOver ? (
           <div className="active-game-controls">
             <Button
-              variant={isPaused ? "default" : "outline"}
+              variant={isPaused ? "secondary" : "outline"}
               iconName={isPaused ? "Play" : "Pause"}
               iconPosition="left"
               onClick={isPaused ? onResume : onPause}
@@ -68,54 +79,6 @@ const GameControls = ({
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        .game-controls-container {
-          padding: 16px;
-          background: var(--color-card);
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-lg);
-        }
-
-        .active-game-controls {
-          display: flex;
-          gap: 12px;
-          flex-wrap: wrap;
-        }
-
-        .active-game-controls > :global(button) {
-          flex: 1;
-          min-width: 120px;
-        }
-
-        .game-over-controls {
-          display: flex;
-          gap: 12px;
-        }
-
-        .game-over-controls > :global(button) {
-          flex: 1;
-        }
-
-        @media (max-width: 767px) {
-          .game-controls-container {
-            padding: 12px;
-          }
-
-          .active-game-controls {
-            gap: 8px;
-          }
-
-          .active-game-controls > :global(button) {
-            min-width: 100px;
-          }
-
-          .game-over-controls {
-            flex-direction: column;
-            gap: 8px;
-          }
-        }
-      `}</style>
     </>
   );
 };
