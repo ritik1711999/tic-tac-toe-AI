@@ -95,12 +95,12 @@
   border-radius: var(--radius-sm);
 }
 
-.desktop-only {
+.breadcrumb-desktop-only {
   display: none;
 }
 
 @media (min-width: 768px) {
-  .desktop-only {
+  .breadcrumb-desktop-only {
     display: inline;
   }
 

@@ -285,8 +285,8 @@ const GameBoard = () => {
       <div className="game-board-page">
         <Header />
 
-        <div className="page-header">
-          <div className="header-content">
+        <div className="game-board-page-header">
+          <div className="page-header-content">
             <GameStatusIndicator
               currentTurn={currentPlayer}
               moveCount={moveCount}

@@ -1,0 +1,103 @@
+.game-history-page {
+  min-height: 100vh;
+  background: var(--color-background);
+  padding-top: 64px;
+}
+
+.main-content {
+  padding: 32px 0;
+}
+
+.content-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.page-header {
+  margin-bottom: 32px;
+}
+
+.game-history-header-content {
+  max-width: 800px;
+}
+
+.page-title {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+  margin: 0 0 8px 0;
+}
+
+.page-description {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-muted-foreground);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.content-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+.primary-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mobile-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sidebar-content {
+  position: sticky;
+  top: 96px;
+}
+
+@media (max-width: 1024px) {
+  .content-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-content {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-history-page {
+    padding-top: 64px;
+  }
+
+  .main-content {
+    padding: 24px 0;
+  }
+
+  .content-container {
+    padding: 0 16px;
+  }
+
+  .page-header {
+    margin-bottom: 24px;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .page-description {
+    font-size: 0.875rem;
+  }
+
+  .primary-content {
+    gap: 16px;
+  }
+}

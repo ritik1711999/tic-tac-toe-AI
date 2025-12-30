@@ -14,14 +14,14 @@
   gap: 8px;
 }
 
-.progress-bar {
+.replay-progress-bar {
   height: 6px;
   background: var(--color-muted);
   border-radius: var(--radius-md);
   overflow: hidden;
 }
 
-.progress-fill {
+.replay-progress-fill {
   height: 100%;
   background: var(--color-primary);
   transition: width var(--transition-base);
@@ -82,7 +82,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .progress-fill {
+  .replay-progress-fill {
     transition: none;
   }
 }

@@ -23,15 +23,15 @@ const GameDashboard = () => {
         />
       </Helmet>
 
-      <div className="dashboard-layout">
+      <div className="page-dashboard-layout">
         <Header />
 
-        <main className="dashboard-main">
-          <div className="dashboard-container">
-            <div className="dashboard-header">
-              <div className="header-content">
-                <h1 className="page-title">Game Dashboard</h1>
-                <p className="page-description">
+        <main className="page-dashboard-main">
+          <div className="page-dashboard-container">
+            <div className="page-dashboard-header">
+              <div className="page-dashboard-header-content">
+                <h1 className="page-dashboard-title">Game Dashboard</h1>
+                <p className="page-dashboard-description">
                   Welcome back! Track your progress and start new games
                 </p>
               </div>
@@ -43,21 +43,21 @@ const GameDashboard = () => {
               />
             </div>
 
-            <div className="dashboard-grid">
-              <div className="grid-section primary-section">
+            <div className="page-dashboard-grid">
+              <div className="page-dashboard-grid-section page-dashboard-primary-section">
                 <NewGameCard />
                 <StatisticsPanel />
               </div>
 
-              <div className="grid-section secondary-section">
+              <div className="page-dashboard-grid-section page-dashboard-secondary-section">
                 <RecentGamesList />
               </div>
 
-              <div className="grid-section tertiary-section">
+              <div className="page-dashboard-grid-section page-dashboard-tertiary-section">
                 <AchievementsBadges />
               </div>
 
-              <div className="grid-section quaternary-section">
+              <div className="page-dashboard-grid-section page-dashboard-quaternary-section">
                 <AIRecommendations />
               </div>
             </div>

@@ -48,7 +48,7 @@ interface ButtonProps
   fullWidth?: boolean;
 }
 
-const Button = React.forwardRef<any, ButtonProps>(
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,

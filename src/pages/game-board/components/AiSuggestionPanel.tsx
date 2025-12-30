@@ -37,10 +37,10 @@ const AiSuggestionPanel = ({
       <div
         className={`ai-suggestion-panel ${isVisible ? "visible" : "collapsed"}`}
       >
-        <div className="panel-header">
-          <div className="header-content">
+        <div className="ai-panel-header">
+          <div className="ai-panel-header-content">
             <Icon name="Lightbulb" size={20} strokeWidth={2} />
-            <h3 className="panel-title">AI Suggestions</h3>
+            <h3 className="ai-panel-title">AI Suggestions</h3>
             {isAiThinking && (
               <div className="thinking-indicator">
                 <Icon
@@ -68,9 +68,11 @@ const AiSuggestionPanel = ({
         {isVisible && (
           <div className="panel-content">
             {suggestions?.length === 0 ? (
-              <div className="empty-state">
+              <div className="suggestion-empty-state">
                 <Icon name="Info" size={32} strokeWidth={1.5} />
-                <p className="empty-text">No suggestions available yet</p>
+                <p className="suggestion-empty-text">
+                  No suggestions available yet
+                </p>
               </div>
             ) : (
               <div className="suggestions-list">

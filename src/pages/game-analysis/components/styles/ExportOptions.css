@@ -41,7 +41,7 @@
   color: var(--color-foreground);
 }
 
-.close-button {
+.export-close-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,7 +55,7 @@
   transition: all var(--transition-fast);
 }
 
-.close-button:hover {
+.export-close-button:hover {
   background: var(--color-muted);
   color: var(--color-foreground);
 }
@@ -136,7 +136,7 @@
     animation: none;
   }
 
-  .close-button,
+  .export-close-button,
   .export-item {
     transition: none;
   }

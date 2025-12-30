@@ -36,9 +36,9 @@ const NewGameCard = () => {
 
   return (
     <>
-      <div className="new-game-card">
-        <div className="card-header">
-          <div className="header-icon">
+      <div className="page-dashboard-new-game-card">
+        <div className="page-dashboard-new-game-card-header">
+          <div className="page-dashboard-card-header-icon">
             <Icon
               name="Gamepad2"
               size={28}
@@ -46,16 +46,16 @@ const NewGameCard = () => {
               strokeWidth={2.5}
             />
           </div>
-          <div className="header-content">
-            <h2 className="card-title">Start New Game</h2>
-            <p className="card-description">
+          <div className="page-dashboard-card-header-content">
+            <h2 className="page-dashboard-card-title">Start New Game</h2>
+            <p className="page-dashboard-card-description">
               Configure your game settings and begin playing
             </p>
           </div>
         </div>
 
-        <div className="card-body">
-          <div className="form-group">
+        <div className="page-dashboard-card-body">
+          <div className="page-dashboard-form-group">
             <Select
               label="Game Mode"
               description="Choose how you want to play"
@@ -65,7 +65,7 @@ const NewGameCard = () => {
             />
           </div>
 
-          <div className="form-group">
+          <div className="page-dashboard-form-group">
             <Select
               label="AI Difficulty"
               description="Select challenge level for AI opponent"
@@ -76,7 +76,7 @@ const NewGameCard = () => {
             />
           </div>
 
-          <div className="action-buttons">
+          <div className="page-dashboard-action-buttons">
             <Button
               variant="primary"
               size="lg"

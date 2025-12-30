@@ -70,8 +70,8 @@ const AchievementsBadges = () => {
   return (
     <>
       <div className="achievements-badges">
-        <div className="section-header">
-          <h3 className="section-title">Achievements & Progress</h3>
+        <div className="achievements-section-header">
+          <h3 className="achievements-section-title">Achievements & Progress</h3>
           <p className="section-subtitle">Track your gaming milestones</p>
         </div>
 
@@ -94,9 +94,9 @@ const AchievementsBadges = () => {
               </p>
             </div>
           </div>
-          <div className="progress-bar">
+          <div className="achievements-progress-bar">
             <div
-              className="progress-fill"
+              className="achievements-progress-fill"
               style={{ width: `${skillLevel?.progress}%` }}
             />
           </div>

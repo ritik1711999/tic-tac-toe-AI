@@ -3,17 +3,12 @@ import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import Select from "../../../components/ui/Select";
+import type { GameFilters } from "../types";
+import "./styles/FilterPanel.css";
 
 interface FilterPanelProps {
-  filters: {
-    outcome?: string;
-    difficulty?: string;
-    duration?: string;
-    dateFrom?: string;
-    dateTo?: string;
-    search?: string;
-  };
-  onFilterChange: (filters: FilterPanelProps["filters"]) => void;
+  filters: GameFilters;
+  onFilterChange: (filters: GameFilters) => void;
   onReset: () => void;
   resultCount: number;
 }
@@ -77,98 +72,96 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   )?.length;
 
   return (
-    <>
-      <div className="filter-panel">
-        <div className="filter-header">
-          <div className="header-left">
-            <Icon name="Filter" size={20} strokeWidth={2} />
-            <h3 className="filter-title">Filters</h3>
-            {activeFilterCount > 0 && (
-              <span className="filter-badge">{activeFilterCount}</span>
-            )}
-          </div>
-          <div className="header-right">
-            <span className="result-count">{resultCount} games found</span>
-            {activeFilterCount > 0 && (
-              <Button variant="ghost" size="sm" iconName="X" onClick={onReset}>
-                Clear
-              </Button>
-            )}
-            <button
-              className="mobile-toggle"
-              onClick={() => setIsExpanded(!isExpanded)}
-              aria-label="Toggle filters"
-            >
-              <Icon
-                name={isExpanded ? "ChevronUp" : "ChevronDown"}
-                size={20}
-                strokeWidth={2}
-              />
-            </button>
-          </div>
+    <div className="history-filter-panel">
+      <div className="history-filter-header">
+        <div className="history-filter-header-left">
+          <Icon name="Filter" size={20} strokeWidth={2} />
+          <h3 className="history-filter-title">Filters</h3>
+          {activeFilterCount > 0 && (
+            <span className="history-filter-badge">{activeFilterCount}</span>
+          )}
         </div>
+        <div className="history-filter-header-right">
+          <span className="history-result-count">{resultCount} games found</span>
+          {activeFilterCount > 0 && (
+            <Button variant="ghost" size="sm" iconName="X" onClick={onReset}>
+              Clear
+            </Button>
+          )}
+          <button
+            className="history-mobile-toggle"
+            onClick={() => setIsExpanded(!isExpanded)}
+            aria-label="Toggle filters"
+          >
+            <Icon
+              name={isExpanded ? "ChevronUp" : "ChevronDown"}
+              size={20}
+              strokeWidth={2}
+            />
+          </button>
+        </div>
+      </div>
 
-        <div className={`filter-content ${isExpanded ? "expanded" : ""}`}>
-          <div className="filter-grid">
-            <div className="filter-group">
-              <Input
-                type="text"
-                label="Search"
-                placeholder="Search by date or outcome..."
-                value={filters?.search || ""}
-                onChange={handleSearchChange}
-                className="search-input"
-              />
-            </div>
+      <div className={`history-filter-content ${isExpanded ? "expanded" : ""}`}>
+        <div className="history-filter-grid">
+          <div className="history-filter-group">
+            <Input
+              type="text"
+              label="Search"
+              placeholder="Search by date or outcome..."
+              value={filters?.search || ""}
+              onChange={handleSearchChange}
+              className="search-input"
+            />
+          </div>
 
-            <div className="filter-group">
-              <Input
-                type="date"
-                label="From Date"
-                value={filters?.dateFrom || ""}
-                onChange={handleDateFromChange}
-              />
-            </div>
+          <div className="history-filter-group">
+            <Input
+              type="date"
+              label="From Date"
+              value={filters?.dateFrom || ""}
+              onChange={handleDateFromChange}
+            />
+          </div>
 
-            <div className="filter-group">
-              <Input
-                type="date"
-                label="To Date"
-                value={filters?.dateTo || ""}
-                onChange={handleDateToChange}
-              />
-            </div>
+          <div className="history-filter-group">
+            <Input
+              type="date"
+              label="To Date"
+              value={filters?.dateTo || ""}
+              onChange={handleDateToChange}
+            />
+          </div>
 
-            <div className="filter-group">
-              <Select
-                label="Outcome"
-                options={outcomeOptions}
-                value={filters?.outcome || "all"}
-                onChange={handleOutcomeChange}
-              />
-            </div>
+          <div className="history-filter-group">
+            <Select
+              label="Outcome"
+              options={outcomeOptions}
+              value={filters?.outcome || "all"}
+              onChange={handleOutcomeChange}
+            />
+          </div>
 
-            <div className="filter-group">
-              <Select
-                label="Difficulty"
-                options={difficultyOptions}
-                value={filters?.difficulty || "all"}
-                onChange={handleDifficultyChange}
-              />
-            </div>
+          <div className="history-filter-group">
+            <Select
+              label="Difficulty"
+              options={difficultyOptions}
+              value={filters?.difficulty || "all"}
+              onChange={handleDifficultyChange}
+            />
+          </div>
 
-            <div className="filter-group">
-              <Select
-                label="Duration"
-                options={durationOptions}
-                value={filters?.duration || "all"}
-                onChange={handleDurationChange}
-              />
-            </div>
+          <div className="history-filter-group">
+            <Select
+              label="Duration"
+              options={durationOptions}
+              value={filters?.duration || "all"}
+              onChange={handleDurationChange}
+            />
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

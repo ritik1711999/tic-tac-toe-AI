@@ -8,12 +8,14 @@ import FilterPanel from "./components/FilterPanel";
 import StatisticsPanel from "./components/StatisticsPanel";
 import BulkActionsBar from "./components/BulkActionsBar";
 import EmptyState from "./components/EmptyState";
+import type { Game, GameFilters, GameStats, ExportFormat } from "./types";
+import "./gameHistory.css";
 
-const GameHistory = () => {
+const GameHistory: React.FC = () => {
   const navigate = useNavigate();
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [selectedGames, setSelectedGames] = useState([]);
-  const [filters, setFilters] = useState({
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 768);
+  const [selectedGames, setSelectedGames] = useState<string[]>([]);
+  const [filters, setFilters] = useState<GameFilters>({
     search: "",
     dateFrom: "",
     dateTo: "",
@@ -22,7 +24,7 @@ const GameHistory = () => {
     duration: "all",
   });
 
-  const mockGames = [
+  const mockGames: Game[] = [
     {
       id: "game-001",
       date: new Date("2025-12-19T09:30:00"),
@@ -142,38 +144,34 @@ const GameHistory = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const filterGames = (games) => {
-    return games?.filter((game) => {
+  const filterGames = (games: Game[]): Game[] => {
+    return games.filter((game) => {
       const matchesSearch =
-        !filters?.search ||
-        game?.outcome
-          ?.toLowerCase()
-          ?.includes(filters?.search?.toLowerCase()) ||
-        new Date(game.date)?.toLocaleDateString()?.includes(filters?.search);
+        !filters.search ||
+        game.outcome.toLowerCase().includes(filters.search.toLowerCase()) ||
+        game.date.toLocaleDateString().includes(filters.search);
 
       const matchesDateFrom =
-        !filters?.dateFrom || new Date(game.date) >= new Date(filters.dateFrom);
+        !filters.dateFrom || game.date >= new Date(filters.dateFrom);
 
       const matchesDateTo =
-        !filters?.dateTo ||
-        new Date(game.date) <= new Date(filters.dateTo + "T23:59:59");
+        !filters.dateTo || game.date <= new Date(filters.dateTo + "T23:59:59");
 
       const matchesOutcome =
-        filters?.outcome === "all" || game?.outcome === filters?.outcome;
+        filters.outcome === "all" || game.outcome === filters.outcome;
 
       const matchesDifficulty =
-        filters?.difficulty === "all" ||
-        game?.difficulty === filters?.difficulty;
+        filters.difficulty === "all" || game.difficulty === filters.difficulty;
 
       const matchesDuration =
-        filters?.duration === "all" ||
+        filters.duration === "all" ||
         (() => {
-          if (filters?.duration === "0-60") return game?.duration < 60;
-          if (filters?.duration === "60-180")
-            return game?.duration >= 60 && game?.duration < 180;
-          if (filters?.duration === "180-300")
-            return game?.duration >= 180 && game?.duration < 300;
-          if (filters?.duration === "300+") return game?.duration >= 300;
+          if (filters.duration === "0-60") return game.duration < 60;
+          if (filters.duration === "60-180")
+            return game.duration >= 60 && game.duration < 180;
+          if (filters.duration === "180-300")
+            return game.duration >= 180 && game.duration < 300;
+          if (filters.duration === "300+") return game.duration >= 300;
           return true;
         })();
 
@@ -190,22 +188,22 @@ const GameHistory = () => {
 
   const filteredGames = filterGames(mockGames);
 
-  const calculateStats = (games) => {
-    const stats = {
-      totalGames: games?.length,
-      wins: games?.filter((g) => g?.outcome === "win")?.length,
-      losses: games?.filter((g) => g?.outcome === "loss")?.length,
-      draws: games?.filter((g) => g?.outcome === "draw")?.length,
-      totalMoves: games?.reduce((sum, g) => sum + g?.moves, 0),
-      totalDuration: games?.reduce((sum, g) => sum + g?.duration, 0),
-      byDifficulty: ["easy", "medium", "hard"]?.map((level) => {
-        const levelGames = games?.filter((g) => g?.difficulty === level);
+  const calculateStats = (games: Game[]): GameStats => {
+    const stats: GameStats = {
+      totalGames: games.length,
+      wins: games.filter((g) => g.outcome === "win").length,
+      losses: games.filter((g) => g.outcome === "loss").length,
+      draws: games.filter((g) => g.outcome === "draw").length,
+      totalMoves: games.reduce((sum, g) => sum + g.moves, 0),
+      totalDuration: games.reduce((sum, g) => sum + g.duration, 0),
+      byDifficulty: (["easy", "medium", "hard"] as const).map((level) => {
+        const levelGames = games.filter((g) => g.difficulty === level);
         return {
           level,
-          games: levelGames?.length,
-          wins: levelGames?.filter((g) => g?.outcome === "win")?.length,
-          losses: levelGames?.filter((g) => g?.outcome === "loss")?.length,
-          draws: levelGames?.filter((g) => g?.outcome === "draw")?.length,
+          games: levelGames.length,
+          wins: levelGames.filter((g) => g.outcome === "win").length,
+          losses: levelGames.filter((g) => g.outcome === "loss").length,
+          draws: levelGames.filter((g) => g.outcome === "draw").length,
         };
       }),
     };
@@ -214,24 +212,24 @@ const GameHistory = () => {
 
   const stats = calculateStats(mockGames);
 
-  const handleSelectGame = (gameId) => {
+  const handleSelectGame = (gameId: string) => {
     setSelectedGames((prev) =>
-      prev?.includes(gameId)
-        ? prev?.filter((id) => id !== gameId)
+      prev.includes(gameId)
+        ? prev.filter((id) => id !== gameId)
         : [...prev, gameId]
     );
   };
 
-  const handleSelectAll = (checked) => {
-    setSelectedGames(checked ? filteredGames?.map((g) => g?.id) : []);
+  const handleSelectAll = (checked: boolean) => {
+    setSelectedGames(checked ? filteredGames.map((g) => g.id) : []);
   };
 
-  const handleReplay = (gameId) => {
+  const handleReplay = (gameId: string) => {
     console.log("Replaying game:", gameId);
     navigate("/game-board", { state: { replayGameId: gameId } });
   };
 
-  const handleAnalyze = (gameId) => {
+  const handleAnalyze = (gameId: string) => {
     console.log("Analyzing game:", gameId);
     navigate("/game-analysis", { state: { gameId } });
   };
@@ -239,26 +237,26 @@ const GameHistory = () => {
   const handleCompare = () => {
     console.log("Comparing games:", selectedGames);
     alert(
-      `Comparing ${selectedGames?.length} games. This feature will show side-by-side analysis.`
+      `Comparing ${selectedGames.length} games. This feature will show side-by-side analysis.`
     );
   };
 
-  const handleExport = (format) => {
+  const handleExport = (format: ExportFormat) => {
     console.log("Exporting games in format:", format);
-    const selectedGameData = mockGames?.filter((g) =>
-      selectedGames?.includes(g?.id)
+    const selectedGameData = mockGames.filter((g) =>
+      selectedGames.includes(g.id)
     );
     alert(
       `Exporting ${
-        selectedGameData?.length
-      } games as ${format?.toUpperCase()}. Download will start shortly.`
+        selectedGameData.length
+      } games as ${format.toUpperCase()}. Download will start shortly.`
     );
   };
 
   const handleDelete = () => {
     if (
       window.confirm(
-        `Are you sure you want to delete ${selectedGames?.length} game(s)? This action cannot be undone.`
+        `Are you sure you want to delete ${selectedGames.length} game(s)? This action cannot be undone.`
       )
     ) {
       console.log("Deleting games:", selectedGames);
@@ -278,9 +276,7 @@ const GameHistory = () => {
     });
   };
 
-  const hasActiveFilters = Object.values(filters)?.some(
-    (v) => v && v !== "all"
-  );
+  const hasActiveFilters = Object.values(filters).some((v) => v && v !== "all");
 
   return (
     <>
@@ -295,7 +291,7 @@ const GameHistory = () => {
         <Header />
 
         <BulkActionsBar
-          selectedCount={selectedGames?.length}
+          selectedCount={selectedGames.length}
           onExport={handleExport}
           onCompare={handleCompare}
           onDelete={handleDelete}
@@ -305,7 +301,7 @@ const GameHistory = () => {
         <main className="main-content">
           <div className="content-container">
             <div className="page-header">
-              <div className="header-content">
+              <div className="game-history-header-content">
                 <h1 className="page-title">Game History</h1>
                 <p className="page-description">
                   Track your performance, analyze past games, and monitor your
@@ -320,10 +316,10 @@ const GameHistory = () => {
                   filters={filters}
                   onFilterChange={setFilters}
                   onReset={handleResetFilters}
-                  resultCount={filteredGames?.length}
+                  resultCount={filteredGames.length}
                 />
 
-                {filteredGames?.length === 0 ? (
+                {filteredGames.length === 0 ? (
                   <EmptyState
                     hasFilters={hasActiveFilters}
                     onResetFilters={handleResetFilters}
@@ -332,11 +328,11 @@ const GameHistory = () => {
                   <>
                     {isMobile ? (
                       <div className="mobile-cards-container">
-                        {filteredGames?.map((game) => (
+                        {filteredGames.map((game) => (
                           <GameHistoryMobileCard
-                            key={game?.id}
+                            key={game.id}
                             game={game}
-                            isSelected={selectedGames?.includes(game?.id)}
+                            isSelected={selectedGames.includes(game.id)}
                             onSelect={handleSelectGame}
                             onReplay={handleReplay}
                             onAnalyze={handleAnalyze}
@@ -365,111 +361,6 @@ const GameHistory = () => {
           </div>
         </main>
       </div>
-      <style jsx>{`
-        .game-history-page {
-          min-height: 100vh;
-          background: var(--color-background);
-          padding-top: 64px;
-        }
-
-        .main-content {
-          padding: 32px 0;
-        }
-
-        .content-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 24px;
-        }
-
-        .page-header {
-          margin-bottom: 32px;
-        }
-
-        .header-content {
-          max-width: 800px;
-        }
-
-        .page-title {
-          font-family: var(--font-heading);
-          font-size: 2rem;
-          font-weight: 700;
-          color: var(--color-foreground);
-          margin: 0 0 8px 0;
-        }
-
-        .page-description {
-          font-family: var(--font-body);
-          font-size: 1rem;
-          color: var(--color-muted-foreground);
-          margin: 0;
-          line-height: 1.6;
-        }
-
-        .content-layout {
-          display: grid;
-          grid-template-columns: 1fr 320px;
-          gap: 24px;
-          align-items: start;
-        }
-
-        .primary-content {
-          display: flex;
-          flex-direction: column;
-          gap: 24px;
-        }
-
-        .mobile-cards-container {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-
-        .sidebar-content {
-          position: sticky;
-          top: 96px;
-        }
-
-        @media (max-width: 1024px) {
-          .content-layout {
-            grid-template-columns: 1fr;
-          }
-
-          .sidebar-content {
-            position: static;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .game-history-page {
-            padding-top: 64px;
-          }
-
-          .main-content {
-            padding: 24px 0;
-          }
-
-          .content-container {
-            padding: 0 16px;
-          }
-
-          .page-header {
-            margin-bottom: 24px;
-          }
-
-          .page-title {
-            font-size: 1.5rem;
-          }
-
-          .page-description {
-            font-size: 0.875rem;
-          }
-
-          .primary-content {
-            gap: 16px;
-          }
-        }
-      `}</style>
     </>
   );
 };

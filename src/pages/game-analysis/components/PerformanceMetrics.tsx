@@ -60,9 +60,9 @@ const PerformanceMetrics = ({
         </div>
 
         <div className="key-moments">
-          <div className="section-header">
+          <div className="metrics-section-header">
             <Icon name="Star" size={18} strokeWidth={2} />
-            <span className="section-title">Key Moments</span>
+            <span className="metrics-section-title">Key Moments</span>
           </div>
           <div className="moments-list">
             {metrics?.keyMoments?.map((moment, index) => (

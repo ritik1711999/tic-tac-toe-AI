@@ -4,16 +4,16 @@
   padding-top: 64px;
 }
 
-.analysis-main {
+.page-analysis-main {
   padding: 24px;
 }
 
-.analysis-container {
+.page-analysis-container {
   max-width: 1400px;
   margin: 0 auto;
 }
 
-.analysis-header {
+.page-analysis-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -21,11 +21,11 @@
   margin-bottom: 32px;
 }
 
-.header-content {
+.page-analysis-header-content {
   flex: 1;
 }
 
-.page-title {
+.page-analysis-title {
   font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 700;
@@ -33,14 +33,14 @@
   margin: 0 0 16px 0;
 }
 
-.game-info {
+.page-analysis-game-info {
   display: flex;
   align-items: center;
   gap: 24px;
   flex-wrap: wrap;
 }
 
-.info-item {
+.page-analysis-info-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -49,24 +49,24 @@
   color: var(--color-muted-foreground);
 }
 
-.info-item.result {
+.page-analysis-info-item.result {
   padding: 6px 12px;
   background: var(--color-muted);
   border-radius: var(--radius-md);
   font-weight: 600;
 }
 
-.info-item.result.win {
+.page-analysis-info-item.result.win {
   color: var(--color-success);
 }
 
-.header-actions {
+.page-analysis-header-actions {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.mobile-tabs {
+.page-analysis-mobile-tabs {
   display: none;
   gap: 8px;
   margin-bottom: 24px;
@@ -76,7 +76,7 @@
   border-radius: var(--radius-lg);
 }
 
-.tab-button {
+.page-analysis-tab-button {
   flex: 1;
   display: flex;
   align-items: center;
@@ -94,94 +94,94 @@
   transition: all var(--transition-fast);
 }
 
-.tab-button:hover {
+.page-analysis-tab-button:hover {
   background: var(--color-muted);
   color: var(--color-foreground);
 }
 
-.tab-button.active {
+.page-analysis-tab-button.active {
   background: var(--color-primary);
   color: var(--color-primary-foreground);
 }
 
-.board-section {
+.page-analysis-board-section {
   grid-column: span 2;
 }
 
-.analysis-section {
+.page-analysis-analysis-section {
   grid-column: span 2;
 }
 
-.analysis-content {
+.page-analysis-content {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
   gap: 24px;
 }
 
-.content-section {
+.page-analysis-content-section {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
 @media (max-width: 1200px) {
-  .analysis-content {
+  .page-analysis-content {
     grid-template-columns: 1fr 1fr;
   }
 
   .timeline-section {
     grid-column: 1 / -1;
   }
+
+  .metrics-section {
+    grid-column: span 2;
+  }
 }
 
 @media (max-width: 767px) {
-  .analysis-main {
+  .page-analysis-main {
     padding: 16px;
   }
 
-  .analysis-header {
+  .page-analysis-header {
     flex-direction: column;
     gap: 16px;
     margin-bottom: 24px;
   }
 
-  .page-title {
+  .page-analysis-title {
     font-size: 1.5rem;
   }
 
-  .header-actions {
+  .page-analysis-header-actions {
     width: 100%;
     flex-direction: column;
   }
 
-  .header-actions > * {
+  .page-analysis-header-actions > * {
     width: 100%;
   }
 
-  .mobile-tabs {
+  .page-analysis-mobile-tabs {
     display: flex;
   }
 
-  .analysis-content {
-    display: block;
-  }
-
-  .content-section {
+  .page-analysis-content-section {
     display: none;
   }
 
-  .content-section.active {
+  .page-analysis-content-section.active {
     display: flex;
   }
 
-  .analysis-section {
+  .page-analysis-analysis-section {
     display: none;
   }
 
-  .analysis-section.active {
+  .page-analysis-analysis-section.active {
     display: flex;
-    margin-bottom: 24px;
+    margin-bottom: 10px;
   }
 
   .metrics-section {
@@ -194,7 +194,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tab-button {
+  .page-analysis-tab-button {
     transition: none;
   }
 }

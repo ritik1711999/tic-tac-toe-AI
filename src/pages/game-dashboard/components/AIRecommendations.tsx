@@ -59,15 +59,15 @@ const AIRecommendations = () => {
     <>
       <div className="ai-recommendations">
         <div className="recommendations-header">
-          <div className="header-icon">
+          <div className="recommendations-header-icon">
             <Icon
               name="Sparkles"
               size={24}
-              color="var(--color-primary)"
+              color="var(--color-primary-foreground)"
               strokeWidth={2}
             />
           </div>
-          <div className="header-content">
+          <div className="recommendations-header-content">
             <h3 className="recommendations-title">AI Recommendations</h3>
             <p className="recommendations-subtitle">
               Personalized insights to improve your game
@@ -80,7 +80,7 @@ const AIRecommendations = () => {
             const priorityBadge = getPriorityBadge(recommendation?.priority);
             return (
               <div key={recommendation?.id} className="recommendation-card">
-                <div className="card-header">
+                <div className="recommendation-card-header">
                   <div
                     className="recommendation-icon"
                     style={{ background: `${recommendation?.color}15` }}
@@ -102,7 +102,7 @@ const AIRecommendations = () => {
                     {priorityBadge?.label}
                   </span>
                 </div>
-                <div className="card-content">
+                <div className="recommendations-card-content">
                   <h4 className="recommendation-title">
                     {recommendation?.title}
                   </h4>
@@ -110,7 +110,7 @@ const AIRecommendations = () => {
                     {recommendation?.description}
                   </p>
                 </div>
-                <div className="card-footer">
+                <div className="recommendations-card-footer">
                   <Button
                     variant="outline"
                     size="sm"

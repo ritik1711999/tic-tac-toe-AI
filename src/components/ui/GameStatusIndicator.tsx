@@ -2,12 +2,19 @@ import { useLocation } from "react-router-dom";
 import Icon from "../AppIcon";
 import "../styles/ui/GameStatusIndicator.css";
 
+interface GameStatusIndicatorProps {
+  currentTurn?: string;
+  moveCount?: number;
+  gameTime?: string;
+  isGameActive?: boolean;
+}
+
 const GameStatusIndicator = ({
   currentTurn = "X",
   moveCount = 0,
   gameTime = "00:00",
   isGameActive = false,
-}) => {
+}: GameStatusIndicatorProps) => {
   const location = useLocation();
   const isGameBoard = location?.pathname === "/game-board";
 
