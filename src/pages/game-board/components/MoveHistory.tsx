@@ -34,14 +34,14 @@ const MoveHistory = ({
         <div className="history-header">
           <Icon name="History" size={20} strokeWidth={2} />
           <h3 className="history-title">Move History</h3>
-          <span className="move-count">{moves?.length} moves</span>
+          <span className="history-move-count">{moves?.length} moves</span>
         </div>
 
         <div className="history-content">
           {moves?.length === 0 ? (
-            <div className="empty-state">
+            <div className="history-empty-state">
               <Icon name="Clock" size={32} strokeWidth={1.5} />
-              <p className="empty-text">No moves yet. Start playing!</p>
+              <p className="history-empty-text">No moves yet. Start playing!</p>
             </div>
           ) : (
             <div className="moves-list">
@@ -53,8 +53,8 @@ const MoveHistory = ({
                   }`}
                   onClick={() => onMoveClick(index)}
                 >
-                  <div className="move-number">#{index + 1}</div>
-                  <div className="move-details">
+                  <div className="history-move-number">#{index + 1}</div>
+                  <div className="history-move-details">
                     <div className="move-info">
                       <span className="player-marker">{move?.player}</span>
                       <Icon name="ArrowRight" size={14} strokeWidth={2} />

@@ -14,7 +14,7 @@
   margin-bottom: 24px;
 }
 
-.header-content {
+.list-header-content {
   flex: 1;
   min-width: 0;
 }
@@ -121,7 +121,7 @@
   flex-wrap: wrap;
 }
 
-.info-item {
+.game-info-item {
   display: flex;
   align-items: center;
   gap: 6px;

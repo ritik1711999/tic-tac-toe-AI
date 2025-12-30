@@ -13,7 +13,7 @@
   margin-bottom: 24px;
 }
 
-.header-icon {
+.recommendations-header-icon {
   width: 48px;
   height: 48px;
   display: flex;
@@ -23,7 +23,7 @@
   border-radius: var(--radius-md);
 }
 
-.header-content {
+.recommendations-header-content {
   flex: 1;
   min-width: 0;
 }
@@ -63,12 +63,13 @@
   box-shadow: var(--shadow-md);
 }
 
-.card-header {
+.recommendation-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 16px;
+  background: var(--color-primary);
 }
 
 .recommendation-icon {
@@ -89,7 +90,7 @@
   text-transform: uppercase;
 }
 
-.card-content {
+.recommendations-card-content {
   margin-bottom: 16px;
 }
 
@@ -109,7 +110,7 @@
   margin: 0;
 }
 
-.card-footer {
+.recommendations-card-footer {
   display: flex;
   justify-content: flex-end;
 }
@@ -133,9 +134,10 @@
     padding: 20px;
   }
 
-  .card-header {
-    flex-direction: column;
-    align-items: flex-start;
+  .recommendation-card-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .recommendation-card {

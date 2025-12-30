@@ -6,11 +6,11 @@
   box-shadow: var(--shadow-sm);
 }
 
-.section-header {
+.achievements-section-header {
   margin-bottom: 24px;
 }
 
-.section-title {
+.achievements-section-title {
   font-family: var(--font-heading);
   font-size: 1.25rem;
   font-weight: 700;
@@ -73,7 +73,7 @@
   margin: 0;
 }
 
-.progress-bar {
+.achievements-progress-bar {
   width: 100%;
   height: 8px;
   background: var(--color-muted);
@@ -82,7 +82,7 @@
   margin-bottom: 8px;
 }
 
-.progress-fill {
+.achievements-progress-fill {
   height: 100%;
   background-image: linear-gradient(
     90deg,
@@ -222,7 +222,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .achievement-card,
-  .progress-fill,
+  .achievements-progress-fill,
   .mini-progress-fill {
     transition: none;
   }

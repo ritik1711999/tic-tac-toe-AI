@@ -1,0 +1,182 @@
+.game-history-table {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+}
+
+.history-table thead {
+  background: var(--color-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.history-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  white-space: nowrap;
+}
+
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition-fast);
+}
+
+.sortable-header:hover {
+  background: var(--color-muted);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-column {
+  width: 48px;
+  text-align: center;
+}
+
+.actions-column {
+  width: 120px;
+  text-align: center;
+}
+
+.history-table tbody tr {
+  border-bottom: 1px solid var(--color-border);
+  transition: background var(--transition-fast);
+}
+
+.history-table tbody tr:hover {
+  background: var(--color-muted);
+}
+
+.history-table tbody tr.selected-row {
+  background: rgba(30, 64, 175, 0.05);
+}
+
+.history-table td {
+  padding: 16px;
+  font-size: 0.875rem;
+  color: var(--color-foreground);
+}
+
+.date-column {
+  min-width: 140px;
+}
+
+.date-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.date-text {
+  font-weight: 500;
+  color: var(--color-foreground);
+}
+
+.time-text {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+}
+
+.table-difficulty-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table-difficulty-easy {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+}
+
+.table-difficulty-medium {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--color-warning);
+}
+
+.table-difficulty-hard {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+}
+
+.table-outcome-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.table-outcome-win {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+}
+
+.table-outcome-loss {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+}
+
+.table-outcome-draw {
+  background: rgba(107, 114, 128, 0.1);
+  color: var(--color-muted-foreground);
+}
+
+.moves-column,
+.duration-column {
+  font-family: var(--font-data);
+  font-weight: 500;
+}
+
+.rating-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.table-action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+@media (max-width: 1024px) {
+  .history-table th,
+  .history-table td {
+    padding: 12px;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sortable-header,
+  .history-table tbody tr {
+    transition: none;
+  }
+}
+

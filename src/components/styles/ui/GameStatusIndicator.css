@@ -44,17 +44,17 @@
   background: var(--color-border);
 }
 
-.desktop-only {
+.status-desktop-only {
   display: none;
 }
 
-.status-item.game-timer.desktop-only {
+.status-item.game-timer.status-desktop-only {
   display: flex;
   flex-direction: row;
 }
 
 @media (min-width: 768px) {
-  .desktop-only {
+  .status-desktop-only {
     display: flex;
   }
 

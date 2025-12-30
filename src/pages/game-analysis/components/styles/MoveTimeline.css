@@ -25,7 +25,7 @@
   margin: 0;
 }
 
-.move-count {
+.timeline-move-count {
   font-family: var(--font-data);
   font-size: 0.75rem;
   color: var(--color-muted-foreground);
@@ -66,7 +66,7 @@
   border-color: var(--color-primary);
 }
 
-.move-number {
+.timeline-move-number {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,7 +81,7 @@
   flex-shrink: 0;
 }
 
-.timeline-item.active .move-number {
+.timeline-item.active .timeline-move-number {
   background: var(--color-primary);
   color: var(--color-primary-foreground);
 }
@@ -118,7 +118,7 @@
   color: var(--color-font-secondary);
 }
 
-.move-details {
+.timeline-move-details {
   display: flex;
   align-items: center;
   justify-content: space-between;

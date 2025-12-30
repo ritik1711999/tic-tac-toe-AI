@@ -42,7 +42,7 @@
   }
 }
 
-.close-button {
+.modal-close-button {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -59,7 +59,7 @@
   transition: all var(--transition-fast);
 }
 
-.close-button:hover {
+.modal-close-button:hover {
   background: var(--color-muted);
   color: var(--color-foreground);
 }
@@ -88,7 +88,7 @@
   margin: 0 0 32px 0;
 }
 
-.game-stats {
+.modal-game-stats {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -98,26 +98,26 @@
   border-radius: var(--radius-lg);
 }
 
-.stat-item {
+.modal-stat-item {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.stat-content {
+.modal-stat-content {
   flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.stat-label {
+.modal-stat-label {
   font-family: var(--font-body);
   font-size: 0.875rem;
   color: var(--color-muted-foreground);
 }
 
-.stat-value {
+.modal-stat-value {
   font-family: var(--font-data);
   font-size: 1rem;
   font-weight: 600;
@@ -139,7 +139,7 @@
     font-size: 1.5rem;
   }
 
-  .game-stats {
+  .modal-game-stats {
     padding: 16px;
   }
 }

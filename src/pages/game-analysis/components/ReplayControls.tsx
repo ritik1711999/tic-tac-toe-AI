@@ -29,8 +29,8 @@ const ReplayControls = ({
     <>
       <div className="replay-controls-container">
         <div className="progress-section">
-          <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${progress}%` }} />
+          <div className="replay-progress-bar">
+            <div className="replay-progress-fill" style={{ width: `${progress}%` }} />
           </div>
           <div className="progress-info">
             <span className="current-move">Move {currentMoveIndex + 1}</span>

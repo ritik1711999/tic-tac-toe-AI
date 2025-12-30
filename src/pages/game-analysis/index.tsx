@@ -245,13 +245,13 @@ const GameAnalysis = () => {
           showBackButton={true}
         />
 
-        <main className="analysis-main">
-          <div className="analysis-container">
-            <div className="analysis-header">
-              <div className="header-content">
-                <h1 className="page-title">Game Analysis</h1>
-                <div className="game-info">
-                  <div className="info-item">
+        <main className="page-analysis-main">
+          <div className="page-analysis-container">
+            <div className="page-analysis-header">
+              <div className="page-analysis-header-content">
+                <h1 className="page-analysis-title">Game Analysis</h1>
+                <div className="page-analysis-game-info">
+                  <div className="page-analysis-info-item">
                     <Icon name="Calendar" size={16} strokeWidth={2} />
                     <span>
                       {new Date(gameData.date)?.toLocaleDateString("en-US", {
@@ -263,11 +263,13 @@ const GameAnalysis = () => {
                       })}
                     </span>
                   </div>
-                  <div className="info-item">
+                  <div className="page-analysis-info-item">
                     <Icon name="Clock" size={16} strokeWidth={2} />
                     <span>{gameData?.duration}</span>
                   </div>
-                  <div className={`info-item result ${gameData?.result}`}>
+                  <div
+                    className={`page-analysis-info-item result ${gameData?.result}`}
+                  >
                     <Icon
                       name={gameData?.result === "win" ? "Trophy" : "Award"}
                       size={16}
@@ -277,7 +279,7 @@ const GameAnalysis = () => {
                   </div>
                 </div>
               </div>
-              <div className="header-actions">
+              <div className="page-analysis-header-actions">
                 <ExportOptions gameData={gameData} onExport={handleExport} />
                 <Button
                   variant="primary"
@@ -290,9 +292,9 @@ const GameAnalysis = () => {
               </div>
             </div>
 
-            <div className="mobile-tabs">
+            <div className="page-analysis-mobile-tabs">
               <button
-                className={`tab-button ${
+                className={`page-analysis-tab-button ${
                   activeTab === "board" ? "active" : ""
                 }`}
                 onClick={() => setActiveTab("board")}
@@ -301,7 +303,7 @@ const GameAnalysis = () => {
                 <span>Board</span>
               </button>
               <button
-                className={`tab-button ${
+                className={`page-analysis-tab-button ${
                   activeTab === "timeline" ? "active" : ""
                 }`}
                 onClick={() => setActiveTab("timeline")}
@@ -310,7 +312,7 @@ const GameAnalysis = () => {
                 <span>Timeline</span>
               </button>
               <button
-                className={`tab-button ${
+                className={`page-analysis-tab-button ${
                   activeTab === "analysis" ? "active" : ""
                 }`}
                 onClick={() => setActiveTab("analysis")}
@@ -320,9 +322,9 @@ const GameAnalysis = () => {
               </button>
             </div>
 
-            <div className="analysis-content">
+            <div className="page-analysis-content">
               <div
-                className={`content-section board-section ${
+                className={`page-analysis-content-section page-analysis-board-section ${
                   activeTab === "board" ? "active" : ""
                 }`}
               >
@@ -344,7 +346,7 @@ const GameAnalysis = () => {
               </div>
 
               <div
-                className={`content-section timeline-section ${
+                className={`page-analysis-content-section timeline-section ${
                   activeTab === "timeline" ? "active" : ""
                 }`}
               >
@@ -356,7 +358,7 @@ const GameAnalysis = () => {
               </div>
 
               <div
-                className={`analysis-section ${
+                className={`page-analysis-analysis-section ${
                   activeTab === "analysis" ? "active" : ""
                 }`}
               >

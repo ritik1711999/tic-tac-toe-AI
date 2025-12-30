@@ -51,7 +51,7 @@ const GameResultModal = ({
       <div className="modal-overlay" onClick={onClose}>
         <div className="modal-content" onClick={(e) => e?.stopPropagation()}>
           <button
-            className="close-button"
+            className="modal-close-button"
             onClick={onClose}
             aria-label="Close modal"
           >
@@ -65,28 +65,28 @@ const GameResultModal = ({
           <h2 className="result-title">{getResultTitle()}</h2>
           <p className="result-message">{getResultMessage()}</p>
 
-          <div className="game-stats">
-            <div className="stat-item">
+          <div className="modal-game-stats">
+            <div className="modal-stat-item">
               <Icon name="Move" size={20} strokeWidth={2} />
-              <div className="stat-content">
-                <span className="stat-label">Total Moves</span>
-                <span className="stat-value">{gameStats?.totalMoves}</span>
+              <div className="modal-stat-content">
+                <span className="modal-stat-label">Total Moves</span>
+                <span className="modal-stat-value">{gameStats?.totalMoves}</span>
               </div>
             </div>
 
-            <div className="stat-item">
+            <div className="modal-stat-item">
               <Icon name="Clock" size={20} strokeWidth={2} />
-              <div className="stat-content">
-                <span className="stat-label">Game Time</span>
-                <span className="stat-value">{gameStats?.gameTime}</span>
+              <div className="modal-stat-content">
+                <span className="modal-stat-label">Game Time</span>
+                <span className="modal-stat-value">{gameStats?.gameTime}</span>
               </div>
             </div>
 
-            <div className="stat-item">
+            <div className="modal-stat-item">
               <Icon name="Target" size={20} strokeWidth={2} />
-              <div className="stat-content">
-                <span className="stat-label">Accuracy</span>
-                <span className="stat-value">{gameStats?.accuracy}%</span>
+              <div className="modal-stat-content">
+                <span className="modal-stat-label">Accuracy</span>
+                <span className="modal-stat-value">{gameStats?.accuracy}%</span>
               </div>
             </div>
           </div>

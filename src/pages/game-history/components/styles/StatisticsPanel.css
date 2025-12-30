@@ -1,0 +1,219 @@
+.history-statistics-panel {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.history-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.history-panel-title {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin: 0;
+}
+
+.history-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.history-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--color-muted);
+  border-radius: var(--radius-lg);
+}
+
+.history-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+}
+
+.history-stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.history-stat-label {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+  font-weight: 500;
+}
+
+.history-stat-value {
+  font-family: var(--font-data);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+}
+
+.outcome-breakdown,
+.difficulty-stats {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.history-breakdown-title {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.history-outcome-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.history-outcome-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-outcome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-outcome-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-foreground);
+}
+
+.history-outcome-value {
+  font-family: var(--font-data);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+}
+
+.history-outcome-bar {
+  height: 8px;
+  background: var(--color-muted);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.history-outcome-fill {
+  height: 100%;
+  transition: width var(--transition-base);
+  border-radius: var(--radius-md);
+}
+
+.history-difficulty-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.history-difficulty-card {
+  padding: 12px;
+  background: var(--color-muted);
+  border-radius: var(--radius-md);
+}
+
+.history-difficulty-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.history-difficulty-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.history-difficulty-easy {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+}
+
+.history-difficulty-medium {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--color-warning);
+}
+
+.history-difficulty-hard {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-error);
+}
+
+.history-difficulty-games {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+}
+
+.history-difficulty-stats-row {
+  display: flex;
+  gap: 12px;
+}
+
+.history-difficulty-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-data);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+@media (max-width: 768px) {
+  .history-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .history-stat-card {
+    padding: 12px;
+  }
+
+  .history-stat-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .history-stat-value {
+    font-size: 1.25rem;
+  }
+
+  .history-difficulty-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .history-outcome-fill {
+    transition: none;
+  }
+}
+

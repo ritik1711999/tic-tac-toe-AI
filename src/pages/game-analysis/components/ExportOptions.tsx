@@ -61,7 +61,7 @@ const ExportOptions = ({ gameData, onExport }: ExportOptionsProps) => {
             <div className="dropdown-header">
               <span className="dropdown-title">Export Options</span>
               <button
-                className="close-button"
+                className="export-close-button"
                 onClick={() => setIsOpen(false)}
                 aria-label="Close export options"
               >

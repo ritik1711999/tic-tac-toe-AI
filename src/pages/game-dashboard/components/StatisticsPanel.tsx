@@ -44,17 +44,19 @@ const StatisticsPanel = () => {
 
   return (
     <>
-      <div className="statistics-panel">
-        <div className="panel-header">
-          <h3 className="panel-title">Performance Statistics</h3>
-          <p className="panel-subtitle">Your gaming performance overview</p>
+      <div className="page-dashboard-statistics-panel">
+        <div className="page-dashboard-panel-header">
+          <h3 className="page-dashboard-panel-title">Performance Statistics</h3>
+          <p className="page-dashboard-panel-subtitle">
+            Your gaming performance overview
+          </p>
         </div>
 
-        <div className="stats-grid">
+        <div className="page-dashboard-stats-grid">
           {stats?.map((stat) => (
-            <div key={stat?.id} className="stat-card">
+            <div key={stat?.id} className="page-dashboard-stat-card">
               <div
-                className="stat-icon"
+                className="page-dashboard-stat-icon"
                 style={{ background: `${stat?.color}15` }}
               >
                 <Icon
@@ -64,11 +66,13 @@ const StatisticsPanel = () => {
                   strokeWidth={2}
                 />
               </div>
-              <div className="stat-content">
-                <p className="stat-label">{stat?.label}</p>
-                <div className="stat-value-row">
-                  <h4 className="stat-value">{stat?.value}</h4>
-                  <span className={`stat-change ${stat?.changeType}`}>
+              <div className="page-dashboard-stat-content">
+                <p className="page-dashboard-stat-label">{stat?.label}</p>
+                <div className="page-dashboard-stat-value-row">
+                  <h4 className="page-dashboard-stat-value">{stat?.value}</h4>
+                  <span
+                    className={`page-dashboard-stat-change ${stat?.changeType}`}
+                  >
                     {stat?.changeType === "positive" && (
                       <Icon name="TrendingUp" size={14} strokeWidth={2} />
                     )}

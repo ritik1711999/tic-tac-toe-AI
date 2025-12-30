@@ -87,14 +87,14 @@
   gap: 16px;
 }
 
-.section-header {
+.metrics-section-header {
   display: flex;
   align-items: center;
   gap: 8px;
   color: var(--color-foreground);
 }
 
-.section-title {
+.metrics-section-title {
   font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 600;

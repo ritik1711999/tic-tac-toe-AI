@@ -106,7 +106,7 @@ const RecentGamesList = () => {
     <>
       <div className="recent-games-list">
         <div className="list-header">
-          <div className="header-content">
+          <div className="list-header-content">
             <h3 className="list-title">Recent Games</h3>
             <p className="list-subtitle">Your latest gaming sessions</p>
           </div>
@@ -146,15 +146,15 @@ const RecentGamesList = () => {
                   </div>
 
                   <div className="game-info-row">
-                    <div className="info-item">
+                    <div className="game-info-item">
                       <Icon name="Bot" size={14} strokeWidth={2} />
                       <span>{game?.opponent}</span>
                     </div>
-                    <div className="info-item">
+                    <div className="game-info-item">
                       <Icon name="Move" size={14} strokeWidth={2} />
                       <span>{game?.moves} moves</span>
                     </div>
-                    <div className="info-item">
+                    <div className="game-info-item">
                       <Icon name="Clock" size={14} strokeWidth={2} />
                       <span>{game?.duration}</span>
                     </div>

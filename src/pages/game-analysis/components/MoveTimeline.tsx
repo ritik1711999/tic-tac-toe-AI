@@ -45,7 +45,7 @@ const MoveTimeline = ({
       <div className="move-timeline-container">
         <div className="timeline-header">
           <h3 className="timeline-title">Move Timeline</h3>
-          <span className="move-count">{moves?.length} moves</span>
+          <span className="timeline-move-count">{moves?.length} moves</span>
         </div>
 
         <div className="timeline-list">
@@ -69,7 +69,7 @@ const MoveTimeline = ({
                     />
                   </div>
                 )}
-                <div className="move-number">{index + 1}</div>
+                <div className="timeline-move-number">{index + 1}</div>
                 <div className="move-content">
                   <div className="move-header">
                     <div className="player-info">
@@ -85,7 +85,7 @@ const MoveTimeline = ({
                     </span>
                   </div>
 
-                  <div className="move-details">
+                  <div className="timeline-move-details">
                     <span className="move-position">
                       Position: {move?.position}
                     </span>
