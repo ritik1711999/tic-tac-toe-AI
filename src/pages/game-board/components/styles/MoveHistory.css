@@ -172,6 +172,16 @@
   color: var(--color-primary);
 }
 
+.move-item.expired-move {
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+
+.move-item.expired-move .history-move-number {
+  background: var(--color-error);
+  color: var(--color-error-foreground);
+}
+
 @media (max-width: 767px) {
   .history-header {
     padding: 12px;

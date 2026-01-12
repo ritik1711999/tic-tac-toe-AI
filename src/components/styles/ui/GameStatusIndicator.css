@@ -38,44 +38,14 @@
   font-weight: 600;
 }
 
-.status-divider {
-  width: 1px;
-  height: 20px;
-  background: var(--color-border);
-}
-
-.status-desktop-only {
-  display: none;
-}
-
-.status-item.game-timer.status-desktop-only {
-  display: flex;
-  flex-direction: row;
-}
-
-@media (min-width: 768px) {
-  .status-desktop-only {
-    display: flex;
-  }
-
-  .status-label {
-    display: inline;
-  }
-}
-
-@media (max-width: 767px) {
-  .game-status-indicator {
-    padding: 6px 12px;
-    gap: 8px;
-  }
-
-  .status-item {
-    gap: 4px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .game-status-indicator {
-    transition: none;
-  }
+.aging-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  background: var(--color-accent);
+  color: var(--color-accent-foreground);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 0.75rem;
 }

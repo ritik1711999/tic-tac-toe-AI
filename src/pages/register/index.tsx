@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Icon from "../../components/AppIcon";
+import { useRegister, useGoogleAuth } from "../../hooks/useAuth";
 import "./register.css";
 
 type FormErrors = {
   [key: string]: string | undefined;
-  fullName?: string;
   email?: string;
   password?: string;
   confirmPassword?: string;
@@ -16,7 +17,6 @@ type FormErrors = {
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -24,8 +24,20 @@ const Register = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
+
+  const registerMutation = useRegister();
+  const googleAuthMutation = useGoogleAuth();
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      googleAuthMutation.mutate(codeResponse.code);
+    },
+    onError: () => {
+      setErrors({ ...errors, email: "Google registration failed" });
+    },
+    flow: "auth-code",
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e?.target || {};
@@ -33,7 +45,6 @@ const Register = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-    // Clear error when user starts typing
     if (errors?.[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -42,20 +53,16 @@ const Register = () => {
   const validateForm = () => {
     const newErrors: FormErrors = {};
 
-    if (!formData?.fullName?.trim()) {
-      newErrors.fullName = "Full name is required";
-    }
-
     if (!formData?.email?.trim()) {
       newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/?.test(formData?.email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData?.email)) {
       newErrors.email = "Invalid email format";
     }
 
     if (!formData?.password) {
       newErrors.password = "Password is required";
-    } else if (formData?.password?.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
+    } else if (formData?.password?.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
     }
 
     if (formData?.password !== formData?.confirmPassword) {
@@ -77,21 +84,10 @@ const Register = () => {
       return;
     }
 
-    setIsLoading(true);
-
-    // Mock registration - replace with your backend integration
-    console.log("Registration attempt:", formData);
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      // Add your registration logic here
-    }, 1500);
-  };
-
-  const handleSocialRegister = (provider: string) => {
-    console.log(`${provider} registration initiated`);
-    // Add your social authentication logic here
+    registerMutation.mutate({
+      email: formData.email,
+      password: formData.password,
+    });
   };
 
   const getPasswordStrength = () => {
@@ -127,27 +123,19 @@ const Register = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
-          <Input
-            type="text"
-            name="fullName"
-            label="Full Name"
-            placeholder="John Doe"
-            value={formData?.fullName}
-            onChange={handleChange}
-            error={errors?.fullName}
-            required
-          />
-
-          <Input
-            type="email"
-            name="email"
-            label="Email Address"
-            placeholder="you@example.com"
-            value={formData?.email}
-            onChange={handleChange}
-            error={errors?.email}
-            required
-          />
+          <div>
+            <Input
+              type="email"
+              name="email"
+              label="Email Address"
+              placeholder="you@example.com"
+              value={formData?.email}
+              onChange={handleChange}
+              error={errors?.email}
+              required
+            />
+            {errors.email && <p className="error-message">{errors.email}</p>}
+          </div>
 
           <div className="password-field">
             <Input
@@ -187,6 +175,9 @@ const Register = () => {
                 </span>
               </div>
             )}
+            {errors.password && (
+              <p className="error-message">{errors.password}</p>
+            )}
           </div>
 
           <div className="password-field">
@@ -210,6 +201,9 @@ const Register = () => {
             >
               <Icon name={showConfirmPassword ? "EyeOff" : "Eye"} size={18} />
             </button>
+            {errors.confirmPassword && (
+              <p className="error-message">{errors.confirmPassword}</p>
+            )}
           </div>
 
           <div className="terms-container">
@@ -243,14 +237,24 @@ const Register = () => {
               </span>
             </label>
             {errors?.agreeToTerms && (
-              <p className="error-text">{errors?.agreeToTerms}</p>
+              <p className="error-message">{errors?.agreeToTerms}</p>
             )}
           </div>
+
+          {registerMutation.isPending && (
+            <p className="loading-message">Creating account...</p>
+          )}
+          {registerMutation.isError && (
+            <p className="error-message">
+              {(registerMutation.error as any)?.response?.data?.message ||
+                "Registration failed"}
+            </p>
+          )}
 
           <Button
             type="submit"
             fullWidth
-            loading={isLoading}
+            loading={registerMutation.isPending}
             className="submit-button"
           >
             Create Account
@@ -265,20 +269,12 @@ const Register = () => {
           <Button
             type="button"
             variant="outline"
-            onClick={() => handleSocialRegister("Google")}
+            onClick={() => googleLogin()}
+            loading={googleAuthMutation.isPending}
             className="social-button"
           >
             <Icon name="Chrome" size={20} />
             Google
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => handleSocialRegister("GitHub")}
-            className="social-button"
-          >
-            <Icon name="Github" size={20} />
-            GitHub
           </Button>
         </div>
 

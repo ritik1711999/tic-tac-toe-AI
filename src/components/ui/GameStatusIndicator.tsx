@@ -7,6 +7,8 @@ interface GameStatusIndicatorProps {
   moveCount?: number;
   gameTime?: string;
   isGameActive?: boolean;
+  agingEnabled?: boolean;
+  maxAge?: number;
 }
 
 const GameStatusIndicator = ({
@@ -14,9 +16,11 @@ const GameStatusIndicator = ({
   moveCount = 0,
   gameTime = "00:00",
   isGameActive = false,
+  agingEnabled = false,
+  maxAge = 5,
 }: GameStatusIndicatorProps) => {
   const location = useLocation();
-  const isGameBoard = location?.pathname === "/game-board";
+  const isGameBoard = location?.pathname.includes("/play-game/");
 
   if (!isGameBoard || !isGameActive) {
     return null;
@@ -45,6 +49,17 @@ const GameStatusIndicator = ({
           <Icon name="Clock" size={16} strokeWidth={2} />
           <span className="status-value">{gameTime}</span>
         </div>
+
+        {agingEnabled && (
+          <>
+            <div className="status-divider desktop-only" />
+            <div className="status-item aging-status desktop-only">
+              <Icon name="Zap" size={16} strokeWidth={2} />
+              <span className="status-label">Aging:</span>
+              <span className="status-value aging-badge">Max Age {maxAge}</span>
+            </div>
+          </>
+        )}
       </div>
     </>
   );

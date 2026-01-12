@@ -59,6 +59,125 @@
   display: none;
 }
 
+.profile-menu {
+  position: relative;
+}
+
+.profile-button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  transition: transform var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-button:hover {
+  transform: scale(1.1);
+}
+
+.profile-avatar {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #00d4aa 100%);
+  color: var(--color-primary-foreground);
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 50%;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  min-width: 240px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  padding: 12px;
+  animation: slideDownFade var(--transition-fast);
+  backdrop-filter: blur(10px);
+}
+
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-info {
+  padding: 12px 8px;
+}
+
+.profile-email {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  margin: 0 0 4px 0;
+  word-break: break-all;
+}
+
+.profile-name {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+  margin: 0;
+  font-weight: 500;
+}
+
+.profile-divider {
+  border: none;
+  height: 1px;
+  background: var(--color-border);
+  margin: 8px 0;
+  opacity: 0.5;
+}
+
+.logout-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border: none;
+  background: transparent;
+  color: var(--color-muted-foreground);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.logout-button:hover {
+  background: rgba(255, 59, 48, 0.1);
+  color: #ff3b30;
+}
+
 @media (min-width: 768px) {
   .nav-header-actions {
     display: flex;

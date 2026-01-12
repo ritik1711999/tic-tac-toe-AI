@@ -3,12 +3,19 @@ import { useNavigate } from "react-router-dom";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
 import Select from "../../../components/ui/Select";
+import { useCreateGame } from "../../../hooks/useGames";
+import type { CreateGamePayload } from "../../../hooks/useGames";
 import "./styles/NewGameCard.css";
 
 const NewGameCard = () => {
   const navigate = useNavigate();
-  const [difficulty, setDifficulty] = useState("medium");
-  const [gameMode, setGameMode] = useState("ai");
+  const createGameMutation = useCreateGame();
+  const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">(
+    "medium"
+  );
+  const [gameMode, setGameMode] = useState<"AI" | "Human">("AI");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const difficultyOptions = [
     { value: "easy", label: "Easy", description: "Perfect for beginners" },
@@ -18,20 +25,48 @@ const NewGameCard = () => {
       label: "Hard",
       description: "Strategic thinking required",
     },
-    { value: "expert", label: "Expert", description: "Master level AI" },
   ];
 
   const gameModeOptions = [
-    { value: "ai", label: "vs AI", description: "Play against computer" },
+    { value: "AI", label: "vs AI", description: "Play against computer" },
     {
-      value: "local",
+      value: "Human",
       label: "Local Multiplayer",
       description: "Two players on same device",
     },
   ];
 
-  const handleStartGame = () => {
-    navigate("/game-board", { state: { difficulty, gameMode } });
+  const handleStartGame = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Map gameMode to vs parameter
+      const vs: "Human" | "AI" = gameMode === "AI" ? "AI" : "Human";
+
+      const gamePayload: CreateGamePayload = {
+        vs,
+        ...(vs === "AI" && { difficulty }),
+      };
+
+      const createdGame = await createGameMutation.mutateAsync(gamePayload);
+
+      // Navigate to game board with the created game ID
+      navigate(`/play-game/${createdGame._id}`, {
+        state: {
+          difficulty: gameMode === "AI" ? difficulty : undefined,
+          gameMode,
+        },
+      });
+    } catch (err: any) {
+      const errorMessage =
+        err?.response?.data?.message ||
+        "Failed to create game. Please try again.";
+      setError(errorMessage);
+      console.error("Error creating game:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -55,13 +90,21 @@ const NewGameCard = () => {
         </div>
 
         <div className="page-dashboard-card-body">
+          {error && (
+            <div className="page-dashboard-error-message">
+              <Icon name="AlertCircle" size={16} />
+              <span>{error}</span>
+            </div>
+          )}
+
           <div className="page-dashboard-form-group">
             <Select
               label="Game Mode"
               description="Choose how you want to play"
               options={gameModeOptions}
               value={gameMode}
-              onChange={(value) => setGameMode(value as string)}
+              onChange={(value) => setGameMode(value as "AI" | "Human")}
+              disabled={isLoading}
             />
           </div>
 
@@ -71,8 +114,10 @@ const NewGameCard = () => {
               description="Select challenge level for AI opponent"
               options={difficultyOptions}
               value={difficulty}
-              onChange={(value) => setDifficulty(value as string)}
-              disabled={gameMode === "local"}
+              onChange={(value) =>
+                setDifficulty(value as "easy" | "medium" | "hard")
+              }
+              disabled={gameMode === "Human" || isLoading}
             />
           </div>
 
@@ -84,8 +129,9 @@ const NewGameCard = () => {
               iconName="Play"
               iconPosition="left"
               onClick={handleStartGame}
+              disabled={isLoading}
             >
-              Start Game
+              {isLoading ? "Creating Game..." : "Start Game"}
             </Button>
           </div>
         </div>
