@@ -50,7 +50,7 @@ const MoveHistory = ({
                   key={index}
                   className={`move-item ${
                     currentMoveIndex === index ? "active" : ""
-                  }`}
+                  } ${move.expiredOnMove ? "expired-move" : ""}`}
                   onClick={() => onMoveClick(index)}
                 >
                   <div className="history-move-number">#{index + 1}</div>
@@ -61,9 +61,14 @@ const MoveHistory = ({
                       <span className="position-notation">
                         {getPositionNotation(move?.position)}
                       </span>
+                      {move.expiredOnMove && (
+                        <Icon name="Clock" size={12} strokeWidth={2} />
+                      )}
                     </div>
                     <span className="move-timestamp">
                       {formatTimestamp(move?.timestamp)}
+                      {move.expiredOnMove &&
+                        ` (expired #${move.expiredOnMove})`}
                     </span>
                   </div>
                   {move?.isAiMove && (

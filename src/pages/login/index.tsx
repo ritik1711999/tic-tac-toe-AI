@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Icon from "../../components/AppIcon";
+import { useLogin, useGoogleAuth } from "../../hooks/useAuth";
 import "./login.css";
 
 const Login = () => {
@@ -11,8 +13,22 @@ const Login = () => {
     password: "",
     rememberMe: false,
   });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const loginMutation = useLogin();
+  const googleAuthMutation = useGoogleAuth();
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      console.log("Google login success:", codeResponse);
+      googleAuthMutation.mutate(codeResponse.code);
+    },
+    onError: () => {
+      setErrors({ google: "Google login failed" });
+    },
+    flow: "auth-code",
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e?.target || {};
@@ -20,25 +36,25 @@ const Login = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
-    setIsLoading(true);
+    const newErrors: { [key: string]: string } = {};
 
-    // Mock authentication - replace with your backend integration
-    console.log("Login attempt:", formData);
+    if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.password) newErrors.password = "Password is required";
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      // Add your authentication logic here
-    }, 1500);
-  };
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
-  const handleSocialLogin = (provider: string) => {
-    console.log(`${provider} login initiated`);
-    // Add your social authentication logic here
+    loginMutation.mutate({
+      email: formData.email,
+      password: formData.password,
+    });
   };
 
   return (
@@ -60,15 +76,18 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
-          <Input
-            type="email"
-            name="email"
-            label="Email Address"
-            placeholder="you@example.com"
-            value={formData?.email}
-            onChange={handleChange}
-            required
-          />
+          <div>
+            <Input
+              type="email"
+              name="email"
+              label="Email Address"
+              placeholder="you@example.com"
+              value={formData?.email}
+              onChange={handleChange}
+              required
+            />
+            {errors.email && <p className="error-message">{errors.email}</p>}
+          </div>
 
           <div className="password-field">
             <Input
@@ -88,6 +107,9 @@ const Login = () => {
             >
               <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
             </button>
+            {errors.password && (
+              <p className="error-message">{errors.password}</p>
+            )}
           </div>
 
           <div className="form-options">
@@ -106,10 +128,20 @@ const Login = () => {
             </Link>
           </div>
 
+          {loginMutation.isPending && (
+            <p className="loading-message">Signing in...</p>
+          )}
+          {loginMutation.isError && (
+            <p className="error-message">
+              {(loginMutation.error as any)?.response?.data?.message ||
+                "Login failed"}
+            </p>
+          )}
+
           <Button
             type="submit"
             fullWidth
-            loading={isLoading}
+            loading={loginMutation.isPending}
             className="submit-button"
           >
             Sign In
@@ -124,22 +156,16 @@ const Login = () => {
           <Button
             type="button"
             variant="outline"
-            onClick={() => handleSocialLogin("Google")}
+            onClick={() => googleLogin()}
+            loading={googleAuthMutation.isPending}
             className="social-button"
           >
             <Icon name="Chrome" size={20} />
             Google
           </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => handleSocialLogin("GitHub")}
-            className="social-button"
-          >
-            <Icon name="Github" size={20} />
-            GitHub
-          </Button>
         </div>
+
+        {errors.google && <p className="error-message">{errors.google}</p>}
 
         <div className="auth-footer">
           <p>

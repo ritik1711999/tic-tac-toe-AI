@@ -24,7 +24,7 @@ const QuickActionsMenu = ({
   const menuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
-  const isDashboard = location?.pathname === "/game-dashboard";
+  const isDashboard = location?.pathname === "/dashboard";
   const isGameBoard = location?.pathname === "/game-board";
 
   useEffect(() => {

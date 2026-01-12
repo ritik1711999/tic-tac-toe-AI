@@ -7,6 +7,7 @@ interface GameControlsProps {
   onRestart: () => void;
   onHint: () => void;
   onNewGame: () => void;
+  onLeaveGame?: () => void;
   isPaused: boolean;
   isGameOver: boolean;
   hintsRemaining: number;
@@ -18,6 +19,7 @@ const GameControls = ({
   onRestart,
   onHint,
   onNewGame,
+  onLeaveGame,
   isPaused,
   isGameOver,
   hintsRemaining,
@@ -54,6 +56,17 @@ const GameControls = ({
             >
               Hint ({hintsRemaining})
             </Button>
+
+            {onLeaveGame && (
+              <Button
+                variant="destructive"
+                iconName="LogOut"
+                iconPosition="left"
+                onClick={onLeaveGame}
+              >
+                Leave Game
+              </Button>
+            )}
           </div>
         ) : (
           <div className="game-over-controls">
