@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import confetti from "canvas-confetti";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
 import type { GameResult, GameStats } from "../types";
@@ -20,6 +22,40 @@ const GameResultModal = ({
   onViewAnalysis,
   gameStats,
 }: GameResultModalProps) => {
+  // Trigger confetti on win
+  useEffect(() => {
+    if (isOpen && result === "win") {
+      // Check if user prefers reduced motion
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+      if (!prefersReducedMotion) {
+        // Burst confetti from top of screen
+        const confettiConfig = {
+          particleCount: 150,
+          spread: 70,
+          origin: { x: 0.5, y: 0 },
+          colors: ["#14b8a6", "#38bdf8", "#facc15", "#f87171", "#a78bfa"],
+          zIndex: 1001,
+        };
+
+        // Initial burst
+        confetti(confettiConfig);
+
+        // Optional: Secondary smaller burst after 200ms for effect
+        const timeoutId = setTimeout(() => {
+          confetti({
+            ...confettiConfig,
+            particleCount: 75,
+          });
+        }, 200);
+
+        return () => clearTimeout(timeoutId);
+      }
+    }
+  }, [isOpen, result]);
+
   if (!isOpen) return null;
 
   const getResultIcon = () => {
@@ -49,7 +85,11 @@ const GameResultModal = ({
   return (
     <>
       <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content" onClick={(e) => e?.stopPropagation()}>
+        <div
+          className="modal-content"
+          data-result={result}
+          onClick={(e) => e?.stopPropagation()}
+        >
           <button
             className="modal-close-button"
             onClick={onClose}
@@ -70,7 +110,9 @@ const GameResultModal = ({
               <Icon name="Move" size={20} strokeWidth={2} />
               <div className="modal-stat-content">
                 <span className="modal-stat-label">Total Moves</span>
-                <span className="modal-stat-value">{gameStats?.totalMoves}</span>
+                <span className="modal-stat-value">
+                  {gameStats?.totalMoves}
+                </span>
               </div>
             </div>
 

@@ -64,3 +64,40 @@
     padding: 12px;
   }
 }
+
+.mobile-leave-fab {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff7b7b, #ff5252);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  box-shadow: 0 12px 30px rgba(255, 82, 82, 0.35);
+  cursor: pointer;
+  z-index: 80;
+  transition: transform var(--transition-fast),
+    box-shadow var(--transition-fast), opacity var(--transition-fast);
+}
+
+.mobile-leave-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(255, 82, 82, 0.45);
+}
+
+.mobile-leave-fab:active {
+  transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+  .mobile-leave-fab {
+    display: none;
+  }
+}

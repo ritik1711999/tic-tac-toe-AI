@@ -15,7 +15,7 @@ export interface ServerToClientEvents {
     gameId: string;
     board: string[];
     currentPlayer: "X" | "O";
-    result?: "win" | "loss" | "draw";
+    result?: "win" | "lose" | "draw";
   }) => void;
 
   "ai-move": (data: {
@@ -26,7 +26,7 @@ export interface ServerToClientEvents {
 
   "game-end": (data: {
     gameId: string;
-    result: "win" | "loss" | "draw";
+    result: "win" | "lose" | "draw";
     stats: {
       moves: number;
       duration: number;

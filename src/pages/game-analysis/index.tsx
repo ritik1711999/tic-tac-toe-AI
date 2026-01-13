@@ -42,7 +42,7 @@ const GameAnalysis = () => {
         reasoning:
           "Taking the center position provides maximum flexibility for future moves and controls the most winning lines (4 possible lines through center).",
         alternativeMove: null,
-        outcomes: { win: 65, draw: 30, loss: 5 },
+        outcomes: { win: 65, draw: 30, lose: 5 },
         boardState: ["", "", "", "", "X", "", "", "", ""],
       },
       {
@@ -57,7 +57,7 @@ const GameAnalysis = () => {
         reasoning:
           "Corner placement forces opponent to respond and maintains multiple winning possibilities. This move blocks potential X strategies while creating offensive opportunities.",
         alternativeMove: "Top Right (3) - 85% score",
-        outcomes: { win: 45, draw: 40, loss: 15 },
+        outcomes: { win: 45, draw: 40, lose: 15 },
         boardState: ["O", "", "", "", "X", "", "", "", ""],
       },
       {
@@ -72,7 +72,7 @@ const GameAnalysis = () => {
         reasoning:
           "This move establishes a strong diagonal line from top-left to bottom-right, forcing O to defend while X maintains offensive pressure with multiple winning paths.",
         alternativeMove: null,
-        outcomes: { win: 70, draw: 25, loss: 5 },
+        outcomes: { win: 70, draw: 25, lose: 5 },
         boardState: ["O", "", "", "", "X", "", "", "", "X"],
       },
       {
@@ -87,7 +87,7 @@ const GameAnalysis = () => {
         reasoning:
           "While this move creates a potential winning line, it fails to address X's immediate diagonal threat. A more defensive approach would have been strategically superior.",
         alternativeMove: "Middle Left (4) - 75% score",
-        outcomes: { win: 25, draw: 35, loss: 40 },
+        outcomes: { win: 25, draw: 35, lose: 40 },
         boardState: ["O", "", "O", "", "X", "", "", "", "X"],
       },
       {
@@ -102,7 +102,7 @@ const GameAnalysis = () => {
         reasoning:
           "This move completes the diagonal line from top-left to bottom-right, creating an unstoppable winning position. O has no defensive response available.",
         alternativeMove: null,
-        outcomes: { win: 100, draw: 0, loss: 0 },
+        outcomes: { win: 100, draw: 0, lose: 0 },
         boardState: ["O", "X", "O", "", "X", "", "", "", "X"],
       },
     ],

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Icon from "../../../components/AppIcon";
 import type { Suggestion } from "../types";
 import "./styles/AiSuggestionPanel.css";
@@ -19,6 +19,29 @@ const AiSuggestionPanel = ({
   const [expandedSuggestion, setExpandedSuggestion] = useState<number | null>(
     null
   );
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // Click-outside handler
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        panelRef.current &&
+        !panelRef.current.contains(event.target as Node)
+      ) {
+        if (isVisible) {
+          onToggle();
+        }
+      }
+    };
+
+    if (isVisible) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isVisible, onToggle]);
 
   const getConfidenceColor = (confidence: number): string => {
     if (confidence >= 80) return "var(--color-success)";
@@ -34,7 +57,15 @@ const AiSuggestionPanel = ({
 
   return (
     <>
+      {isVisible && (
+        <div
+          className="ai-panel-backdrop"
+          onClick={onToggle}
+          aria-label="Close suggestions panel"
+        />
+      )}
       <div
+        ref={panelRef}
         className={`ai-suggestion-panel ${isVisible ? "visible" : "collapsed"}`}
       >
         <div className="ai-panel-header">

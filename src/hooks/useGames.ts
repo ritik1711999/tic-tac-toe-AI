@@ -7,7 +7,7 @@ interface Game {
   difficulty?: "easy" | "medium" | "hard";
   agingEnabled?: boolean;
   maxAge?: number;
-  outcome?: "win" | "loss" | "draw";
+  outcome?: "win" | "lose" | "draw";
   moves?: any[];
   duration: number;
   rating?: number;

@@ -8,6 +8,7 @@ import AiSuggestionPanel from "./components/AiSuggestionPanel";
 import MoveHistory from "./components/MoveHistory";
 import GameControls from "./components/GameControls";
 import GameResultModal from "./components/GameResultModal";
+import LeaveGameConfirmationModal from "./components/LeaveGameConfirmationModal";
 import ConnectionStatus from "../../components/ConnectionStatus";
 import { useSocket } from "../../lib/socket/SocketContext";
 import { useGameById } from "../../hooks/useGames";
@@ -40,7 +41,6 @@ const GameBoard = () => {
   const [expiredCells, setExpiredCells] = useState<Set<number>>(new Set());
 
   // === UI-only state (managed client-side) ===
-  const [isPaused, setIsPaused] = useState(false);
   const [isAiThinking, setIsAiThinking] = useState(false);
   const [gameTime, setGameTime] = useState(0);
   const [hintsRemaining, setHintsRemaining] = useState(3);
@@ -50,6 +50,12 @@ const GameBoard = () => {
   const [error, setError] = useState<string | null>(null);
   const [agingEnabled, setAgingEnabled] = useState(true);
   const [maxAge, setMaxAge] = useState(5);
+
+  // === Leave Game Confirmation Modal ===
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(
+    null
+  );
 
   // === AI Suggestions (mock for now, will integrate later) ===
   const [suggestions] = useState<Suggestion[]>([
@@ -75,6 +81,48 @@ const GameBoard = () => {
       moveType: "Corner Control",
     },
   ]);
+
+  // Browser navigation blocking (back/forward buttons)
+  useEffect(() => {
+    const handlePopstate = () => {
+      if (isGameActive) {
+        // Prevent default navigation
+        window.history.pushState(null, "", window.location.href);
+        // Show confirmation modal for browser back/forward
+        setShowLeaveModal(true);
+        setPendingNavigation("/dashboard"); // Always navigate to dashboard when user tries browser back/forward
+      }
+    };
+
+    if (isGameActive) {
+      // Push a history entry to intercept back button
+      window.history.pushState(null, "", window.location.href);
+      window.addEventListener("popstate", handlePopstate);
+    }
+
+    return () => {
+      window.removeEventListener("popstate", handlePopstate);
+    };
+  }, [isGameActive]);
+
+  // Browser beforeunload warning for page close/reload
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isGameActive) {
+        // Modern browsers display their own message
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    if (isGameActive) {
+      window.addEventListener("beforeunload", handleBeforeUnload);
+    }
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isGameActive]);
 
   // Load initial game state from REST API
   useEffect(() => {
@@ -164,7 +212,7 @@ const GameBoard = () => {
       gameId: string;
       board: string[];
       currentPlayer: "X" | "O";
-      result?: "win" | "loss" | "draw";
+      result?: "win" | "lose" | "draw";
       duration?: number;
     }) => {
       console.log("📡 Game update received:", data);
@@ -227,7 +275,7 @@ const GameBoard = () => {
     // Listen for game over
     const handleGameOver = (data: {
       gameId: string;
-      result: "win" | "loss" | "draw";
+      result: "win" | "lose" | "draw";
       stats: { moves: number; duration: number };
     }) => {
       console.log("🏁 Game over:", data);
@@ -236,7 +284,7 @@ const GameBoard = () => {
       setShowResultModal(true);
       // Sync final duration from backend
       setGameTime(data.stats.duration);
-      calculateWinningLine(board);
+      // Don't calculate winning line here - let useEffect handle it with proper board state
     };
 
     // Listen for aging events
@@ -374,13 +422,25 @@ const GameBoard = () => {
 
   useEffect(() => {
     let timer: number;
-    if (isGameActive && !isPaused) {
+    if (isGameActive) {
       timer = setInterval(() => {
         setGameTime((prev) => prev + 1);
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [isGameActive, isPaused]);
+  }, [isGameActive]);
+
+  // Calculate winning line when game ends (watch for board state + game result changes)
+  useEffect(() => {
+    if (
+      !isGameActive &&
+      gameResult &&
+      (gameResult === "win" || gameResult === "lose")
+    ) {
+      console.log("🎯 Calculating winning line with board state:", board);
+      calculateWinningLine(board);
+    }
+  }, [isGameActive, gameResult, board]);
 
   const formatGameTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -394,7 +454,6 @@ const GameBoard = () => {
     // Client-side validation
     if (board[index]) return; // Cell already occupied
     if (!isGameActive) return; // Game is over
-    if (isPaused) return; // Game is paused
     if (isAiThinking) return; // AI is currently thinking
     if (!socket || !isConnected) {
       setError("Not connected to server");
@@ -420,33 +479,52 @@ const GameBoard = () => {
     });
   };
 
-  const handlePause = () => {
-    setIsPaused(true);
-  };
-
-  const handleResume = () => {
-    setIsPaused(false);
-  };
-
-  const handleRestart = () => {
-    // TODO: Emit socket event or call API to restart/create new game
-    // For now, just reset UI state
-    setIsPaused(false);
-    setShowResultModal(false);
-    setCurrentMoveIndex(-1);
-    setShowSuggestions(false);
-    setError(null);
-    console.log("Restart game:", gameId);
-  };
-
   const handleNewGame = () => {
     // Navigate back to dashboard to create a new game
     navigate("/dashboard");
   };
 
   const handleLeaveGame = () => {
-    // Navigate back to dashboard
-    navigate("/dashboard");
+    if (isGameActive) {
+      // Show confirmation modal when game is active
+      setShowLeaveModal(true);
+      setPendingNavigation("/dashboard");
+    } else {
+      // Navigate immediately if game is over
+      navigate("/dashboard");
+    }
+  };
+
+  const handleConfirmLeave = () => {
+    // Emit socket event to leave game
+    if (socket && gameId) {
+      socket.emit("leave-game", { gameId });
+    }
+
+    // Reset modal state
+    setShowLeaveModal(false);
+
+    // Navigate to pending route (always set, no null case)
+    if (pendingNavigation) {
+      navigate(pendingNavigation);
+    }
+    setPendingNavigation(null);
+  };
+
+  const handleCancelLeave = () => {
+    setShowLeaveModal(false);
+    setPendingNavigation(null);
+  };
+
+  const handleHeaderNavigation = (path: string) => {
+    if (isGameActive) {
+      // Show confirmation modal when game is active
+      setShowLeaveModal(true);
+      setPendingNavigation(path);
+    } else {
+      // Navigate immediately if game is over
+      navigate(path);
+    }
   };
 
   const handleHint = () => {
@@ -500,7 +578,7 @@ const GameBoard = () => {
   return (
     <>
       <div className="game-board-page">
-        <Header />
+        <Header onNavigationAttempt={handleHeaderNavigation} />
         <ConnectionStatus />
 
         <div className="game-board-page-header">
@@ -514,12 +592,8 @@ const GameBoard = () => {
               maxAge={maxAge}
             />
             <QuickActionsMenu
-              onPauseGame={handlePause}
-              onResumeGame={handleResume}
-              onRestartGame={handleRestart}
               onNewGame={handleNewGame}
               isGameActive={isGameActive}
-              isGamePaused={isPaused}
             />
           </div>
         </div>
@@ -543,13 +617,9 @@ const GameBoard = () => {
             />
 
             <GameControls
-              onPause={handlePause}
-              onResume={handleResume}
-              onRestart={handleRestart}
               onHint={handleHint}
               onNewGame={handleNewGame}
               onLeaveGame={handleLeaveGame}
-              isPaused={isPaused}
               isGameOver={!isGameActive}
               hintsRemaining={hintsRemaining}
             />
@@ -569,6 +639,14 @@ const GameBoard = () => {
           isVisible={showSuggestions}
           onToggle={() => setShowSuggestions(!showSuggestions)}
           isAiThinking={isAiThinking}
+        />
+
+        <LeaveGameConfirmationModal
+          isOpen={showLeaveModal}
+          targetRoute={pendingNavigation}
+          isAiThinking={isAiThinking}
+          onConfirm={handleConfirmLeave}
+          onCancel={handleCancelLeave}
         />
 
         <GameResultModal

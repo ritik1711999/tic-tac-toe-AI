@@ -29,7 +29,7 @@ const RecentGamesList = () => {
     {
       id: "G2025125",
       opponent: "AI - Hard",
-      result: "loss",
+      result: "lose",
       moves: 8,
       duration: "2m 48s",
       timestamp: new Date("2025-12-18T22:45:00"),
@@ -59,7 +59,7 @@ const RecentGamesList = () => {
     switch (result) {
       case "win":
         return { name: "Trophy", color: "var(--color-success)" };
-      case "loss":
+      case "lose":
         return { name: "X", color: "var(--color-error)" };
       case "draw":
         return { name: "Minus", color: "var(--color-muted-foreground)" };

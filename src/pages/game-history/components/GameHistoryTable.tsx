@@ -84,8 +84,8 @@ const GameHistoryTable: React.FC<GameHistoryTableProps> = ({
     switch (outcome) {
       case "win":
         return "table-outcome-win";
-      case "loss":
-        return "table-outcome-loss";
+      case "lose":
+        return "table-outcome-lose";
       case "draw":
         return "table-outcome-draw";
       default:
@@ -221,18 +221,26 @@ const GameHistoryTable: React.FC<GameHistoryTableProps> = ({
                     </td>
                     <td className="date-column">
                       <div className="date-info">
-                        <span className="date-text">{formatDate(game.date)}</span>
-                        <span className="time-text">{formatTime(game.date)}</span>
+                        <span className="date-text">
+                          {formatDate(game.date)}
+                        </span>
+                        <span className="time-text">
+                          {formatTime(game.date)}
+                        </span>
                       </div>
                     </td>
                     <td>
-                      <span className={`table-difficulty-badge ${difficulty.class}`}>
+                      <span
+                        className={`table-difficulty-badge ${difficulty.class}`}
+                      >
                         {difficulty.label}
                       </span>
                     </td>
                     <td>
                       <span
-                        className={`table-outcome-badge ${getOutcomeColor(game.outcome)}`}
+                        className={`table-outcome-badge ${getOutcomeColor(
+                          game.outcome
+                        )}`}
                       >
                         {game.outcome.charAt(0).toUpperCase() +
                           game.outcome.slice(1)}

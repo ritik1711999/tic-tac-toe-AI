@@ -185,7 +185,22 @@
   width: fit-content;
 }
 
+.ai-panel-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 35;
+  display: none;
+}
+
 @media (max-width: 1023px) {
+  .ai-panel-backdrop {
+    display: block;
+  }
   .ai-suggestion-panel {
     top: auto;
     bottom: 0;
@@ -198,7 +213,7 @@
   }
 
   .ai-suggestion-panel.collapsed {
-    transform: translateY(calc(100% - 75px));
+    transform: translateY(100%);
   }
 
   .toggle-button {

@@ -5,7 +5,11 @@ import { useAuthStore } from "../../store/authStore";
 import { useLogout } from "../../hooks/useAuth";
 import "../styles/ui/Header.css";
 
-const Header = () => {
+interface HeaderProps {
+  onNavigationAttempt?: (path: string) => void;
+}
+
+const Header = ({ onNavigationAttempt }: HeaderProps) => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -43,64 +47,85 @@ const Header = () => {
 
           {isAuthenticated && (
             <nav className="header-nav">
-              {navigationItems?.map((item) => (
-                <Link
-                  key={item?.path}
-                  to={item?.path}
-                  className={`nav-link ${
-                    isActivePath(item?.path) ? "active" : ""
-                  }`}
-                >
-                  <Icon name={item?.icon} size={20} strokeWidth={2} />
-                  <span>{item?.label}</span>
-                </Link>
-              ))}
+              {navigationItems?.map((item) => {
+                if (onNavigationAttempt) {
+                  return (
+                    <button
+                      key={item?.path}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onNavigationAttempt(item?.path);
+                      }}
+                      className={`nav-link ${
+                        isActivePath(item?.path) ? "active" : ""
+                      }`}
+                    >
+                      <Icon name={item?.icon} size={20} strokeWidth={2} />
+                      <span>{item?.label}</span>
+                    </button>
+                  );
+                }
+                return (
+                  <Link
+                    key={item?.path}
+                    to={item?.path}
+                    className={`nav-link ${
+                      isActivePath(item?.path) ? "active" : ""
+                    }`}
+                  >
+                    <Icon name={item?.icon} size={20} strokeWidth={2} />
+                    <span>{item?.label}</span>
+                  </Link>
+                );
+              })}
             </nav>
           )}
 
           <div className="nav-header-actions">
             {isAuthenticated ? (
-              <div className="profile-menu">
-                <button
-                  className="profile-button"
-                  onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-                  aria-label="Toggle profile menu"
-                >
-                  {user?.avatar ? (
-                    <img
-                      src={user.avatar}
-                      alt={user.email}
-                      className="profile-avatar"
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <div className="profile-avatar-placeholder">
-                      {user?.email?.charAt(0).toUpperCase()}
+              <>
+                <div className="profile-menu">
+                  <button
+                    className="profile-button"
+                    onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                    aria-label="Toggle profile menu"
+                  >
+                    {user?.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt={user.email}
+                        className="profile-avatar"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <div className="profile-avatar-placeholder">
+                        {user?.email?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </button>
+                  {profileMenuOpen && (
+                    <div className="profile-dropdown">
+                      <div className="profile-info">
+                        <p className="profile-email">{user?.email}</p>
+                        {user?.name && (
+                          <p className="profile-name">{user?.name}</p>
+                        )}
+                      </div>
+                      <hr className="profile-divider" />
+                      <button
+                        onClick={() => {
+                          logout();
+                          setProfileMenuOpen(false);
+                        }}
+                        className="logout-button"
+                      >
+                        <Icon name="LogOut" size={18} />
+                        Logout
+                      </button>
                     </div>
                   )}
-                </button>
-                {profileMenuOpen && (
-                  <div className="profile-dropdown">
-                    <div className="profile-info">
-                      <p className="profile-email">{user?.email}</p>
-                      {user?.name && (
-                        <p className="profile-name">{user?.name}</p>
-                      )}
-                    </div>
-                    <hr className="profile-divider" />
-                    <button
-                      onClick={() => {
-                        logout();
-                        setProfileMenuOpen(false);
-                      }}
-                      className="logout-button"
-                    >
-                      <Icon name="LogOut" size={18} />
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
+                </div>
+              </>
             ) : (
               <>
                 <Link to="/login" className="auth-button">
@@ -136,19 +161,38 @@ const Header = () => {
           <nav className="mobile-menu" onClick={(e) => e?.stopPropagation()}>
             {isAuthenticated && (
               <>
-                {navigationItems?.map((item) => (
-                  <Link
-                    key={item?.path}
-                    to={item?.path}
-                    className={`mobile-nav-link ${
-                      isActivePath(item?.path) ? "active" : ""
-                    }`}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Icon name={item?.icon} size={24} strokeWidth={2} />
-                    <span>{item?.label}</span>
-                  </Link>
-                ))}
+                {navigationItems?.map((item) => {
+                  if (onNavigationAttempt) {
+                    return (
+                      <button
+                        key={item?.path}
+                        onClick={() => {
+                          onNavigationAttempt(item?.path);
+                          setMobileMenuOpen(false);
+                        }}
+                        className={`mobile-nav-link ${
+                          isActivePath(item?.path) ? "active" : ""
+                        }`}
+                      >
+                        <Icon name={item?.icon} size={24} strokeWidth={2} />
+                        <span>{item?.label}</span>
+                      </button>
+                    );
+                  }
+                  return (
+                    <Link
+                      key={item?.path}
+                      to={item?.path}
+                      className={`mobile-nav-link ${
+                        isActivePath(item?.path) ? "active" : ""
+                      }`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Icon name={item?.icon} size={24} strokeWidth={2} />
+                      <span>{item?.label}</span>
+                    </Link>
+                  );
+                })}
                 <div className="mobile-divider" />
                 <button
                   onClick={() => {
