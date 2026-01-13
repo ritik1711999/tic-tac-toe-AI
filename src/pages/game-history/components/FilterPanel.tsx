@@ -24,7 +24,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   const outcomeOptions = [
     { value: "all", label: "All Outcomes" },
     { value: "win", label: "Wins" },
-    { value: "loss", label: "Losses" },
+    { value: "lose", label: "Loses" },
     { value: "draw", label: "Draws" },
   ];
 
@@ -82,7 +82,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           )}
         </div>
         <div className="history-filter-header-right">
-          <span className="history-result-count">{resultCount} games found</span>
+          <span className="history-result-count">
+            {resultCount} games found
+          </span>
           {activeFilterCount > 0 && (
             <Button variant="ghost" size="sm" iconName="X" onClick={onReset}>
               Clear

@@ -49,3 +49,20 @@
   font-weight: 500;
   font-size: 0.75rem;
 }
+
+/* Desktop-only elements - hide on mobile */
+@media (max-width: 767px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .game-status-indicator {
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .status-item {
+    gap: 4px;
+  }
+}

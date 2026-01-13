@@ -71,11 +71,11 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ stats }) => {
       color: "var(--color-success)",
     },
     {
-      label: "Losses",
-      value: stats.losses,
+      label: "Loses",
+      value: stats.loses,
       percentage:
         stats.totalGames > 0
-          ? ((stats.losses / stats.totalGames) * 100).toFixed(0)
+          ? ((stats.loses / stats.totalGames) * 100).toFixed(0)
           : "0",
       color: "var(--color-error)",
     },
@@ -156,7 +156,9 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ stats }) => {
                   >
                     {diff.level.charAt(0).toUpperCase() + diff.level.slice(1)}
                   </span>
-                  <span className="history-difficulty-games">{diff.games} games</span>
+                  <span className="history-difficulty-games">
+                    {diff.games} games
+                  </span>
                 </div>
                 <div className="history-difficulty-stats-row">
                   <div className="history-difficulty-stat">
@@ -175,7 +177,7 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ stats }) => {
                       strokeWidth={2}
                       color="var(--color-error)"
                     />
-                    <span>{diff.losses}L</span>
+                    <span>{diff.loses}L</span>
                   </div>
                   <div className="history-difficulty-stat">
                     <Icon

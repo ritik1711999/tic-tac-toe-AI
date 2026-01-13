@@ -44,9 +44,12 @@ const GameHistoryMobileCard: React.FC<GameHistoryMobileCardProps> = ({
   };
 
   const getOutcomeConfig = (outcome: string) => {
-    const configs: Record<string, { label: string; icon: string; class: string }> = {
+    const configs: Record<
+      string,
+      { label: string; icon: string; class: string }
+    > = {
       win: { label: "Win", icon: "Trophy", class: "mobile-outcome-win" },
-      loss: { label: "Loss", icon: "X", class: "mobile-outcome-loss" },
+      lose: { label: "Lose", icon: "X", class: "mobile-outcome-lose" },
       draw: { label: "Draw", icon: "Minus", class: "mobile-outcome-draw" },
     };
     return configs[outcome] || configs.draw;
@@ -89,7 +92,9 @@ const GameHistoryMobileCard: React.FC<GameHistoryMobileCardProps> = ({
           <div className="mobile-stat-item">
             <Icon name="Target" size={16} strokeWidth={2} />
             <span className="mobile-stat-label">Opponent:</span>
-            <span className={`mobile-difficulty-badge ${difficultyBadge.class}`}>
+            <span
+              className={`mobile-difficulty-badge ${difficultyBadge.class}`}
+            >
               {difficultyBadge.label}
             </span>
           </div>
@@ -103,7 +108,9 @@ const GameHistoryMobileCard: React.FC<GameHistoryMobileCardProps> = ({
           <div className="mobile-stat-item">
             <Icon name="Clock" size={16} strokeWidth={2} />
             <span className="mobile-stat-label">Duration:</span>
-            <span className="mobile-stat-value">{formatDuration(game.duration)}</span>
+            <span className="mobile-stat-value">
+              {formatDuration(game.duration)}
+            </span>
           </div>
 
           <div className="mobile-stat-item">

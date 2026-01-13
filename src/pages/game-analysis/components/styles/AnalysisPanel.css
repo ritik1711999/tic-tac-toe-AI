@@ -230,7 +230,7 @@
   background: var(--color-warning);
 }
 
-.analysis-panel-outcome-fill.loss {
+.analysis-panel-outcome-fill.lose {
   background: var(--color-error);
 }
 

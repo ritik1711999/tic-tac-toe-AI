@@ -135,15 +135,15 @@ const AnalysisPanel = ({ currentMove }: { currentMove: Move | undefined }) => {
                 </span>
               </div>
               <div className="analysis-panel-outcome-item">
-                <span className="analysis-panel-outcome-label">Loss</span>
+                <span className="analysis-panel-outcome-label">Lose</span>
                 <div className="analysis-panel-outcome-bar">
                   <div
-                    className="analysis-panel-outcome-fill loss"
-                    style={{ width: `${currentMove?.outcomes?.loss}%` }}
+                    className="analysis-panel-outcome-fill lose"
+                    style={{ width: `${currentMove?.outcomes?.lose}%` }}
                   />
                 </div>
                 <span className="analysis-panel-outcome-value">
-                  {currentMove?.outcomes?.loss}%
+                  {currentMove?.outcomes?.lose}%
                 </span>
               </div>
             </div>

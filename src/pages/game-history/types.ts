@@ -1,4 +1,4 @@
-export type GameOutcome = "win" | "loss" | "draw";
+export type GameOutcome = "win" | "lose" | "draw";
 export type GameDifficulty = "easy" | "medium" | "hard";
 export type ExportFormat = "json" | "csv" | "pdf";
 
@@ -24,7 +24,7 @@ export interface GameFilters {
 export interface GameStats {
   totalGames: number;
   wins: number;
-  losses: number;
+  loses: number;
   draws: number;
   totalMoves: number;
   totalDuration: number;
@@ -35,7 +35,7 @@ export interface DifficultyStats {
   level: GameDifficulty;
   games: number;
   wins: number;
-  losses: number;
+  loses: number;
   draws: number;
 }
 
@@ -43,4 +43,3 @@ export interface SortConfig {
   key: "date" | "duration" | "moves" | "rating";
   direction: "asc" | "desc";
 }
-

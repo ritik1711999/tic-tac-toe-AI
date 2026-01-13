@@ -11,7 +11,7 @@ export interface Move {
   outcomes: {
     win: number;
     draw: number;
-    loss: number;
+    lose: number;
   };
   boardState: ("X" | "O" | "")[];
 }

@@ -5,20 +5,12 @@ import "../styles/ui/QuickActionsMenu.css";
 
 interface QuickActionsMenuProps {
   onNewGame?: () => void;
-  onPauseGame?: () => void;
-  onResumeGame?: () => void;
-  onRestartGame?: () => void;
   isGameActive?: boolean;
-  isGamePaused?: boolean;
 }
 
 const QuickActionsMenu = ({
   onNewGame,
-  onPauseGame,
-  onResumeGame,
-  onRestartGame,
   isGameActive = false,
-  isGamePaused = false,
 }: QuickActionsMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -59,25 +51,7 @@ const QuickActionsMenu = ({
     }
 
     if (isGameBoard && isGameActive) {
-      return [
-        {
-          label: isGamePaused ? "Resume" : "Pause",
-          icon: isGamePaused ? "Play" : "Pause",
-          onClick: () => {
-            isGamePaused ? onResumeGame?.() : onPauseGame?.();
-            setIsOpen(false);
-          },
-        },
-        {
-          label: "Restart",
-          icon: "RotateCcw",
-          onClick: () => {
-            onRestartGame?.();
-            setIsOpen(false);
-          },
-          variant: "warning",
-        },
-      ];
+      return [];
     }
 
     return [];

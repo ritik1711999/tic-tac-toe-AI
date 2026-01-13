@@ -2,7 +2,7 @@
 
 export type Player = "X" | "O";
 
-export type GameResult = "win" | "lose" | "loss" | "draw" | null;
+export type GameResult = "win" | "lose" | "draw" | null;
 
 export interface Move {
   moveNumber?: number;

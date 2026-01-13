@@ -4,12 +4,12 @@ import apiClient from "../lib/api/client";
 export interface StatsData {
   totalGames: number;
   wins: number;
-  losses: number;
+  loses: number;
   draws: number;
   statsByDifficulty: {
-    easy: { wins: number; losses: number; draws: number };
-    medium: { wins: number; losses: number; draws: number };
-    hard: { wins: number; losses: number; draws: number };
+    easy: { wins: number; loses: number; draws: number };
+    medium: { wins: number; loses: number; draws: number };
+    hard: { wins: number; loses: number; draws: number };
   };
 }
 
@@ -27,7 +27,7 @@ export interface Achievement {
 export interface RecentGame {
   _id: string;
   difficulty: "easy" | "medium" | "hard";
-  outcome: "win" | "loss" | "draw";
+  outcome: "win" | "lose" | "draw";
   moves: any[];
   duration: number;
   createdAt: string;
