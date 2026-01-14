@@ -148,6 +148,87 @@
   color: var(--color-foreground);
 }
 
+/* Aging game metrics section */
+.metrics-aging-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 2px solid var(--color-border);
+}
+
+.metrics-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  color: var(--color-foreground);
+}
+
+.metrics-section-title {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.aging-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.aging-stat {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.aging-stat-label {
+  font-size: 0.75rem;
+  color: var(--color-muted-foreground);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.aging-stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+}
+
+.volatility-bar {
+  height: 6px;
+  background-color: var(--color-muted);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 6px 0;
+}
+
+.volatility-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-success), var(--color-error));
+  transition: width 0.3s ease;
+}
+
+.volatility-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+  display: block;
+}
+
+/* Key moments aging critical styles */
+.moment-item.aging-critical {
+  border-left: 4px solid var(--color-error);
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+.moment-item.aging-critical .moment-badge {
+  color: var(--color-error);
+}
+
 @media (max-width: 767px) {
   .performance-metrics-container {
     padding: 16px;
@@ -169,5 +250,9 @@
 
   .metric-value {
     font-size: 1.25rem;
+  }
+
+  .aging-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

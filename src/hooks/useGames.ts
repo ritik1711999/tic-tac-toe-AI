@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../lib/api/client";
+import type { GameData } from "../pages/game-analysis/types";
 
 interface Game {
   _id: string;
@@ -117,5 +118,20 @@ export const useDeleteGame = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["games"] });
     },
+  });
+};
+export const useGameAnalysis = (gameId: string | undefined) => {
+  return useQuery({
+    queryKey: ["game-analysis", gameId],
+    queryFn: async () => {
+      if (!gameId) throw new Error("Game ID is required");
+      const { data } = await apiClient.get<GameData>(
+        `/games/${gameId}/analysis`
+      );
+      return data;
+    },
+    enabled: !!gameId,
+    retry: 1,
+    gcTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 };
