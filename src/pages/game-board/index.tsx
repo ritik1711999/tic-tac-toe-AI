@@ -163,8 +163,14 @@ const GameBoard = () => {
       const expired = new Set<number>();
       const maxAge = gameData.game.maxAge ?? 5;
       uiMoves.forEach((m) => {
-        const isExpired =
-          m.expiredOnMove != null && m.expiredOnMove <= totalMoves;
+        // Calculate effective expiration point for this move
+        const effExpiresOn =
+          m.expiresOnMove ??
+          (m.moveNumber ? m.moveNumber + maxAge : totalMoves + maxAge);
+
+        // Check if move is expired based on current total moves
+        const isExpired = m.expiredOnMove != null || effExpiresOn <= totalMoves;
+
         if (isExpired) {
           expired.add(m.position);
         } else {
@@ -172,9 +178,6 @@ const GameBoard = () => {
             1,
             totalMoves - (m.moveNumber ?? totalMoves) + 1
           );
-          const effExpiresOn =
-            m.expiresOnMove ??
-            (m.moveNumber ? m.moveNumber + maxAge : totalMoves + maxAge);
           const expiresIn = Math.max(0, effExpiresOn - totalMoves);
           aging.set(m.position, { age, expiresIn });
         }
@@ -226,6 +229,11 @@ const GameBoard = () => {
       const newBoard = data.board.map((cell) =>
         cell === "" ? null : (cell as Player)
       );
+
+      // Find which position changed
+      const placedBy: Player = data.currentPlayer === "X" ? "O" : "X";
+      const placedPos = findPlacedPosition(board, newBoard, placedBy);
+
       setBoard(newBoard);
       // If a cell is now filled, ensure it is not marked expired
       setExpiredCells((prev) => {
@@ -238,19 +246,41 @@ const GameBoard = () => {
         return next;
       });
       setCurrentPlayer(data.currentPlayer);
-      setMoveCount((prev) => prev + 1); // authoritative move count
       setIsAiThinking(false);
 
-      // Add move to history
-      const placedBy: Player = data.currentPlayer === "X" ? "O" : "X";
-      const placedPos = findPlacedPosition(board, newBoard, placedBy);
-      const lastMove: Move = {
-        player: placedBy,
-        position: placedPos,
-        timestamp: new Date().toISOString(),
-        isAiMove: false, // Will be set by ai-move event
-      };
-      setMoves((prev) => [...prev, lastMove]);
+      // Update move count and add move to history
+      setMoveCount((prev) => {
+        const newMoveCount = prev + 1;
+
+        // Add move to history with proper tracking
+        setMoves((prevMoves) => {
+          // Check if this move already exists (prevent duplicates)
+          const alreadyExists = prevMoves.some(
+            (m) =>
+              m.position === placedPos &&
+              m.player === placedBy &&
+              m.moveNumber === newMoveCount
+          );
+
+          if (alreadyExists) {
+            return prevMoves;
+          }
+
+          const lastMove: Move = {
+            moveNumber: newMoveCount,
+            player: placedBy,
+            position: placedPos,
+            timestamp: new Date().toISOString(),
+            isAiMove: false, // Will be set by ai-move event
+            expiresOnMove: agingEnabled ? newMoveCount + maxAge : null,
+            expiredOnMove: null,
+            expiredAt: null,
+          };
+          return [...prevMoves, lastMove];
+        });
+
+        return newMoveCount;
+      });
     };
 
     // Listen for AI move indicator
@@ -292,6 +322,8 @@ const GameBoard = () => {
       gameId: string;
       expired: Array<{ position: number; player: "X" | "O" }>;
     }) => {
+      console.log("⏰ Cells expired:", payload);
+
       // Clear cells on the board and mark in sets
       setBoard((prev) => {
         const next = [...prev];
@@ -305,17 +337,38 @@ const GameBoard = () => {
         payload.expired.forEach(({ position }) => next.add(position));
         return next;
       });
+
       // Annotate the original move as expired
       setMoves((prev) => {
-        const next = prev.map((m) => ({ ...m }));
-        payload.expired.forEach(({ position }) => {
-          const idx = next.findIndex((m) => m.position === position);
-          if (idx >= 0) {
-            next[idx].expiredOnMove = moveCount + 1; // this expiration coincides with the current move being processed
-            next[idx].expiredAt = new Date().toISOString();
+        return prev.map((m) => {
+          const expiredInfo = payload.expired.find(
+            (e) => e.position === m.position && e.player === m.player
+          );
+          if (expiredInfo) {
+            return {
+              ...m,
+              expiredOnMove: moveCount,
+              expiredAt: new Date().toISOString(),
+            };
           }
+          return m;
         });
-        return next;
+      });
+
+      // Reset currentMoveIndex if it points to an expired move
+      setCurrentMoveIndex((prev) => {
+        if (prev === -1) return prev;
+
+        const currentMove = moves[prev];
+        if (!currentMove) return -1;
+
+        const isExpired = payload.expired.some(
+          (exp) =>
+            exp.position === currentMove.position &&
+            exp.player === currentMove.player
+        );
+
+        return isExpired ? -1 : prev;
       });
     };
 
@@ -363,7 +416,17 @@ const GameBoard = () => {
       socket.off("aging-state", handleAgingState);
       socket.off("error", handleError);
     };
-  }, [socket, gameId, isConnected, user, board]);
+  }, [
+    socket,
+    gameId,
+    isConnected,
+    user,
+    board,
+    moveCount,
+    agingEnabled,
+    maxAge,
+    moves,
+  ]);
 
   // Helper function to find which position changed
   const findChangedPosition = (
@@ -630,6 +693,7 @@ const GameBoard = () => {
               moves={moves}
               onMoveClick={handleMoveClick}
               currentMoveIndex={currentMoveIndex}
+              maxAge={maxAge}
             />
           </div>
         </main>

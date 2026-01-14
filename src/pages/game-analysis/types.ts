@@ -5,6 +5,9 @@ export interface Move {
   timestamp: string;
   quality: "excellent" | "good" | "suboptimal" | "mistake";
   score: number;
+  tacticalScore?: number;
+  longevityScore?: number;
+  volatilityRisk?: number;
   aiRecommendation: string;
   reasoning: string;
   alternativeMove: string | null;
@@ -14,6 +17,9 @@ export interface Move {
     lose: number;
   };
   boardState: ("X" | "O" | "")[];
+  expiresOnMove?: number | null;
+  expiredOnMove?: number | null;
+  lifespan?: number;
 }
 
 export interface KeyMoment {
@@ -42,4 +48,11 @@ export interface GameData {
   duration: string;
   moves: Move[];
   performanceMetrics: PerformanceMetricsData;
+  agingMetrics?: {
+    maxAge: number;
+    totalMoves: number;
+    totalExpirations: number;
+    avgLifespan: number;
+    volatilityScore: number;
+  };
 }

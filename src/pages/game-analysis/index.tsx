@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "../../components/ui/Header";
 import GameStatusIndicator from "../../components/ui/GameStatusIndicator";
 import QuickActionsMenu from "../../components/ui/QuickActionsMenu";
@@ -12,134 +12,31 @@ import PerformanceMetrics from "./components/PerformanceMetrics";
 import ExportOptions from "./components/ExportOptions";
 import Button from "../../components/ui/Button";
 import Icon from "../../components/AppIcon";
-import type { GameData, Move } from "./types";
+import { useGameAnalysis } from "../../hooks/useGames";
+import type { Move } from "./types";
 import "./gameAnalysis.css";
 
 const GameAnalysis = () => {
   const navigate = useNavigate();
+  const { gameId } = useParams();
   const [currentMoveIndex, setCurrentMoveIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("board");
-  // const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const gameData: GameData = {
-    id: "GA-2025-001",
-    title: "Player X vs AI (Hard)",
-    date: "2025-12-19T10:30:00",
-    result: "win",
-    duration: "00:03:45",
-    moves: [
-      {
-        moveNumber: 1,
-        player: "X",
-        position: "Center (5)",
-        timestamp: "2025-12-19T10:30:15",
-        quality: "excellent",
-        score: 95,
-        aiRecommendation:
-          "Excellent opening move. Center control is optimal in tic-tac-toe strategy.",
-        reasoning:
-          "Taking the center position provides maximum flexibility for future moves and controls the most winning lines (4 possible lines through center).",
-        alternativeMove: null,
-        outcomes: { win: 65, draw: 30, lose: 5 },
-        boardState: ["", "", "", "", "X", "", "", "", ""],
-      },
-      {
-        moveNumber: 2,
-        player: "O",
-        position: "Top Left (1)",
-        timestamp: "2025-12-19T10:30:22",
-        quality: "good",
-        score: 80,
-        aiRecommendation:
-          "Solid defensive move. Corner positions are strategically valuable.",
-        reasoning:
-          "Corner placement forces opponent to respond and maintains multiple winning possibilities. This move blocks potential X strategies while creating offensive opportunities.",
-        alternativeMove: "Top Right (3) - 85% score",
-        outcomes: { win: 45, draw: 40, lose: 15 },
-        boardState: ["O", "", "", "", "X", "", "", "", ""],
-      },
-      {
-        moveNumber: 3,
-        player: "X",
-        position: "Bottom Right (9)",
-        timestamp: "2025-12-19T10:30:35",
-        quality: "excellent",
-        score: 92,
-        aiRecommendation:
-          "Perfect continuation. Creates diagonal threat while maintaining center control.",
-        reasoning:
-          "This move establishes a strong diagonal line from top-left to bottom-right, forcing O to defend while X maintains offensive pressure with multiple winning paths.",
-        alternativeMove: null,
-        outcomes: { win: 70, draw: 25, lose: 5 },
-        boardState: ["O", "", "", "", "X", "", "", "", "X"],
-      },
-      {
-        moveNumber: 4,
-        player: "O",
-        position: "Top Right (3)",
-        timestamp: "2025-12-19T10:30:48",
-        quality: "suboptimal",
-        score: 55,
-        aiRecommendation:
-          "Defensive move needed. Should have blocked the diagonal threat.",
-        reasoning:
-          "While this move creates a potential winning line, it fails to address X's immediate diagonal threat. A more defensive approach would have been strategically superior.",
-        alternativeMove: "Middle Left (4) - 75% score",
-        outcomes: { win: 25, draw: 35, lose: 40 },
-        boardState: ["O", "", "O", "", "X", "", "", "", "X"],
-      },
-      {
-        moveNumber: 5,
-        player: "X",
-        position: "Top Middle (2)",
-        timestamp: "2025-12-19T10:31:05",
-        quality: "excellent",
-        score: 98,
-        aiRecommendation:
-          "Game-winning move. Completes the diagonal and secures victory.",
-        reasoning:
-          "This move completes the diagonal line from top-left to bottom-right, creating an unstoppable winning position. O has no defensive response available.",
-        alternativeMove: null,
-        outcomes: { win: 100, draw: 0, lose: 0 },
-        boardState: ["O", "X", "O", "", "X", "", "", "", "X"],
-      },
-    ],
-    performanceMetrics: {
-      overallScore: 84,
-      breakdown: {
-        excellent: 3,
-        good: 1,
-        suboptimal: 1,
-        mistakes: 0,
-      },
-      keyMoments: [
-        {
-          moveNumber: 1,
-          description:
-            "Strong opening with center control establishing board dominance",
-        },
-        {
-          moveNumber: 3,
-          description:
-            "Created winning diagonal threat forcing opponent into defensive position",
-        },
-        {
-          moveNumber: 5,
-          description:
-            "Capitalized on opponent's defensive error to secure victory",
-        },
-      ],
-    },
-  };
+  // Fetch game analysis
+  const { data: gameData, isLoading, error } = useGameAnalysis(gameId);
 
+  // Move useEffect BEFORE any conditional returns to follow React Rules of Hooks
   useEffect(() => {
     // Clear any existing interval
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+
+    // Guard clause: only set up interval if we have data and are not loading
+    if (!gameData || isLoading) return;
 
     // Start new interval if playing and not at the end
     if (isPlaying && currentMoveIndex < gameData.moves.length - 1) {
@@ -161,7 +58,69 @@ const GameAnalysis = () => {
         intervalRef.current = null;
       }
     };
-  }, [isPlaying, currentMoveIndex, gameData.moves.length]);
+  }, [isPlaying, currentMoveIndex, gameData, isLoading]);
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="game-analysis-page">
+        <Header />
+        <GameStatusIndicator
+          currentTurn="Loading"
+          moveCount={0}
+          gameTime="00:00:00"
+          isGameActive={false}
+        />
+        <main className="page-analysis-main">
+          <div className="page-analysis-container">
+            <div className="analysis-loading-state">
+              <Icon name="Loader" size={48} strokeWidth={2} />
+              <p className="loading-text">Generating analysis with AI...</p>
+              <p className="loading-subtext">This may take a moment</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error || !gameData) {
+    return (
+      <div className="game-analysis-page">
+        <Header />
+        <main className="page-analysis-main">
+          <div className="page-analysis-container">
+            <div className="analysis-error-state">
+              <Icon name="AlertTriangle" size={48} strokeWidth={2} />
+              <p className="error-text">Failed to load analysis</p>
+              <p className="error-subtext">
+                {(error as any)?.message || "Please try again"}
+              </p>
+              <div className="error-actions">
+                <Button
+                  variant="primary"
+                  iconName="RotateCcw"
+                  iconPosition="left"
+                  onClick={() => window.location.reload()}
+                >
+                  Retry
+                </Button>
+                <Button
+                  variant="outline"
+                  iconName="ArrowLeft"
+                  iconPosition="left"
+                  onClick={() => navigate("/dashboard")}
+                >
+                  Go Back
+                </Button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   const handleMoveSelect = (index: number) => {
     setCurrentMoveIndex(index);
@@ -354,6 +313,7 @@ const GameAnalysis = () => {
                   moves={gameData?.moves}
                   currentMoveIndex={currentMoveIndex}
                   onMoveSelect={handleMoveSelect}
+                  maxAge={gameData?.agingMetrics?.maxAge}
                 />
               </div>
 
@@ -376,13 +336,7 @@ const GameAnalysis = () => {
           </div>
         </main>
 
-        <QuickActionsMenu
-          onNewGame={handleNewGame}
-          isGameActive={false}
-          onPauseGame={() => {}}
-          onResumeGame={() => {}}
-          onRestartGame={handleNewGame}
-        />
+        <QuickActionsMenu onNewGame={handleNewGame} isGameActive={false} />
       </div>
     </>
   );

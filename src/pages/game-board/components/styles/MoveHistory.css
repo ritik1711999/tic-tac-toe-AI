@@ -73,8 +73,10 @@
   background: var(--color-background);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out,
+    max-height 0.3s ease-out;
   text-align: left;
+  overflow: hidden;
 }
 
 .move-item:hover {
@@ -173,13 +175,34 @@
 }
 
 .move-item.expired-move {
-  opacity: 0.7;
+  opacity: 0.6;
+  background: var(--color-background);
+}
+
+.move-item.expired-move .move-timestamp {
   text-decoration: line-through;
+  color: var(--color-muted-foreground);
 }
 
 .move-item.expired-move .history-move-number {
   background: var(--color-error);
   color: var(--color-error-foreground);
+}
+
+.move-item.expired-move .player-marker {
+  opacity: 0.7;
+}
+
+.move-item.active.expired-move {
+  opacity: 1;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.move-item.active.expired-move .move-timestamp {
+  color: var(--color-primary-foreground);
+  opacity: 0.8;
+  text-decoration: line-through;
 }
 
 @media (max-width: 767px) {
