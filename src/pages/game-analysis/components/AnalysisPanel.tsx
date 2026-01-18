@@ -14,8 +14,15 @@ const AnalysisPanel = ({ currentMove }: { currentMove: Move | undefined }) => {
     );
   }
 
+  // Normalize outcome values: convert decimals (0.1) to percentages (10)
+  const normalizeOutcome = (value: number | undefined): number => {
+    if (value === undefined) return 0;
+    // If value is <= 1, treat it as a decimal and convert to percentage
+    return value > 1 ? value : value * 100;
+  };
+
   const getQualityColor = (
-    quality: "excellent" | "good" | "suboptimal" | "mistake"
+    quality: "excellent" | "good" | "suboptimal" | "mistake",
   ) => {
     const colors = {
       excellent: "var(--color-success)",
@@ -115,11 +122,13 @@ const AnalysisPanel = ({ currentMove }: { currentMove: Move | undefined }) => {
                 <div className="analysis-panel-outcome-bar">
                   <div
                     className="analysis-panel-outcome-fill win"
-                    style={{ width: `${currentMove?.outcomes?.win}%` }}
+                    style={{
+                      width: `${normalizeOutcome(currentMove?.outcomes?.win)}%`,
+                    }}
                   />
                 </div>
                 <span className="analysis-panel-outcome-value">
-                  {currentMove?.outcomes?.win}%
+                  {normalizeOutcome(currentMove?.outcomes?.win).toFixed(0)}%
                 </span>
               </div>
               <div className="analysis-panel-outcome-item">
@@ -127,11 +136,13 @@ const AnalysisPanel = ({ currentMove }: { currentMove: Move | undefined }) => {
                 <div className="analysis-panel-outcome-bar">
                   <div
                     className="analysis-panel-outcome-fill draw"
-                    style={{ width: `${currentMove?.outcomes?.draw}%` }}
+                    style={{
+                      width: `${normalizeOutcome(currentMove?.outcomes?.draw)}%`,
+                    }}
                   />
                 </div>
                 <span className="analysis-panel-outcome-value">
-                  {currentMove?.outcomes?.draw}%
+                  {normalizeOutcome(currentMove?.outcomes?.draw).toFixed(0)}%
                 </span>
               </div>
               <div className="analysis-panel-outcome-item">
@@ -139,11 +150,13 @@ const AnalysisPanel = ({ currentMove }: { currentMove: Move | undefined }) => {
                 <div className="analysis-panel-outcome-bar">
                   <div
                     className="analysis-panel-outcome-fill lose"
-                    style={{ width: `${currentMove?.outcomes?.lose}%` }}
+                    style={{
+                      width: `${normalizeOutcome(currentMove?.outcomes?.lose)}%`,
+                    }}
                   />
                 </div>
                 <span className="analysis-panel-outcome-value">
-                  {currentMove?.outcomes?.lose}%
+                  {normalizeOutcome(currentMove?.outcomes?.lose).toFixed(0)}%
                 </span>
               </div>
             </div>

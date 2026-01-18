@@ -8,8 +8,8 @@
 .game-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  max-width: 480px;
+  gap: 14px;
+  max-width: 520px;
   width: 100%;
   aspect-ratio: 1;
 }
@@ -120,7 +120,7 @@
   }
 
   .game-grid {
-    gap: 8px;
+    gap: 10px;
     max-width: 360px;
   }
 }

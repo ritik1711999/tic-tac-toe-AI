@@ -683,6 +683,7 @@ const GameBoard = () => {
               onHint={handleHint}
               onNewGame={handleNewGame}
               onLeaveGame={handleLeaveGame}
+              onViewAnalysis={handleViewAnalysis}
               isGameOver={!isGameActive}
               hintsRemaining={hintsRemaining}
             />

@@ -6,6 +6,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .timeline-header {
@@ -40,6 +41,30 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  /* Firefox scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) var(--color-background);
+}
+
+/* Custom Scrollbar Styling for Webkit browsers */
+.timeline-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.timeline-list::-webkit-scrollbar-track {
+  background: var(--color-background);
+  border-radius: var(--radius-md);
+}
+
+.timeline-list::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.timeline-list::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
 }
 
 .timeline-item {
@@ -143,6 +168,13 @@
   border-radius: 5px;
 }
 
+.quality-badge.header-quality {
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
 .active-indicator {
   display: flex;
   align-items: center;
@@ -190,9 +222,16 @@
   color: var(--color-dark);
 }
 
+@media (max-width: 1024px) {
+  .move-timeline-container {
+    max-height: 500px;
+  }
+}
+
 @media (max-width: 767px) {
   .move-timeline-container {
     padding: 16px;
+    max-height: 400px;
   }
 
   .timeline-item {

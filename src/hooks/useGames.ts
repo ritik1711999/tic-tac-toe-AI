@@ -132,7 +132,8 @@ export const useGameAnalysis = (gameId: string | undefined) => {
     },
     enabled: !!gameId,
     retry: 1,
-    gcTime: 5 * 60 * 1000, // Cache for 5 minutes
+    gcTime: 60 * 60 * 1000, // Cache for 1 hour (increased from 5 minutes)
+    staleTime: 60 * 60 * 1000, // Data considered fresh for 1 hour
   });
 };
 

@@ -9,7 +9,6 @@ import MoveTimeline from "./components/MoveTimeline";
 import AnalysisPanel from "./components/AnalysisPanel";
 import ReplayControls from "./components/ReplayControls";
 import PerformanceMetrics from "./components/PerformanceMetrics";
-import ExportOptions from "./components/ExportOptions";
 import Button from "../../components/ui/Button";
 import Icon from "../../components/AppIcon";
 import { useGameAnalysis } from "../../hooks/useGames";
@@ -175,17 +174,15 @@ const GameAnalysis = () => {
     setIsPlaying(!isPlaying);
   };
 
-  const handleExport = (format: string) => {
-    console.log(`Exporting game analysis as ${format}`);
-  };
-
   const handleNewGame = () => {
-    navigate("/game-board");
+    navigate("/dashboard");
   };
 
   const currentMove: Move | undefined = gameData.moves[currentMoveIndex];
   const winningLine: number[] | null =
-    currentMoveIndex === gameData.moves.length - 1 ? [0, 4, 8] : null;
+    currentMoveIndex === gameData.moves.length - 1
+      ? gameData.winningLine || null
+      : null;
 
   return (
     <>
@@ -208,7 +205,15 @@ const GameAnalysis = () => {
           <div className="page-analysis-container">
             <div className="page-analysis-header">
               <div className="page-analysis-header-content">
-                <h1 className="page-analysis-title">Game Analysis</h1>
+                <div className="page-analysis-title-row">
+                  <h1 className="page-analysis-title">Game Analysis</h1>
+                  {gameData?.cached && (
+                    <span className="analysis-cached-badge">
+                      <Icon name="CheckCircle2" size={14} strokeWidth={2.5} />
+                      Cached
+                    </span>
+                  )}
+                </div>
                 <div className="page-analysis-game-info">
                   <div className="page-analysis-info-item">
                     <Icon name="Calendar" size={16} strokeWidth={2} />
@@ -239,7 +244,6 @@ const GameAnalysis = () => {
                 </div>
               </div>
               <div className="page-analysis-header-actions">
-                <ExportOptions gameData={gameData} onExport={handleExport} />
                 <Button
                   variant="primary"
                   onClick={handleNewGame}
@@ -291,6 +295,8 @@ const GameAnalysis = () => {
                   boardState={currentMove?.boardState}
                   currentMoveIndex={currentMoveIndex}
                   winningLine={winningLine}
+                  allMoves={gameData?.moves}
+                  maxMoveAge={gameData?.agingMetrics?.maxAge}
                 />
                 <ReplayControls
                   currentMoveIndex={currentMoveIndex}

@@ -35,12 +35,14 @@
 .game-board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 14px;
   aspect-ratio: 1;
-  max-width: 400px;
+  max-width: 520px;
   margin: 0 auto;
   flex: 1;
 }
+
+/* ==================== BOARD CELL STATES ==================== */
 
 .board-cell {
   background: var(--color-muted);
@@ -49,21 +51,71 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-base);
   position: relative;
+  overflow: visible;
 }
 
+/* Filled cell - currently has a move */
 .board-cell.filled {
   background: var(--color-background);
+  border-color: var(--color-border);
 }
 
+/* Active cell - currently occupied (most recent state) */
+.board-cell.active-cell {
+  animation: moveActivate 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  box-shadow: 0 0 16px rgba(20, 184, 166, 0.3);
+}
+
+/* Expiring cell - about to be replaced/expired */
+.board-cell.expiring-cell {
+  animation: moveExpiring 1s ease-in-out infinite;
+  border-color: #f59e0b;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+}
+
+/* Winning cell with animation */
 .board-cell.winning {
   background: var(--color-secondary);
   border-color: var(--color-secondary);
-  animation: pulse 1s ease-in-out infinite;
+  animation: pulseWinning 1s ease-in-out infinite;
+  z-index: 10;
 }
 
-@keyframes pulse {
+.board-cell.winning .cell-content {
+  color: white;
+}
+
+/* ==================== ANIMATIONS ==================== */
+
+@keyframes moveActivate {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes moveExpiring {
+  0% {
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+  }
+}
+
+@keyframes pulseWinning {
   0%,
   100% {
     transform: scale(1);
@@ -73,12 +125,24 @@
   }
 }
 
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
+
+/* ==================== CELL CONTENT ==================== */
+
 .cell-content {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
+  transition: all var(--transition-base);
 }
 
 .cell-content.x {
@@ -89,11 +153,60 @@
   color: var(--color-secondary);
 }
 
+.cell-content.expired {
+  opacity: 0.6;
+  color: #94a3b8;
+}
+
+/* Age badge on moves - positioned from board-cell */
+.cell-age-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary);
+  color: white;
+  font-family: var(--font-data);
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-card);
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.5);
+  z-index: 20;
+  animation: badgeAppear 0.3s ease-out;
+}
+
+/* Current move focus */
+.board-cell.current-move {
+  border-color: var(--color-success);
+  box-shadow:
+    0 0 0 2px rgba(34, 197, 94, 0.35),
+    0 0 12px rgba(34, 197, 94, 0.35);
+}
+
+@keyframes badgeAppear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ==================== LEGEND ==================== */
+
 .board-legend {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 32px;
+  gap: 16px;
+  flex-wrap: wrap;
   margin-top: 24px;
   padding-top: 24px;
   border-top: 1px solid var(--color-border);
@@ -105,20 +218,69 @@
   gap: 8px;
   font-family: var(--font-body);
   font-size: 0.875rem;
-  color: var(--color-foreground);
+  color: var(--color-muted-foreground);
 }
 
 .legend-item:first-child {
   color: var(--color-primary);
 }
 
-.legend-item:last-child {
+.legend-item:nth-child(2) {
   color: var(--color-secondary);
 }
 
+.legend-divider {
+  color: var(--color-border);
+  opacity: 0.5;
+}
+
+/* Lifecycle legend items */
+.legend-item.lifecycle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: var(--color-muted);
+  border-radius: var(--radius-md);
+}
+
+.lifecycle-badge {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.lifecycle-badge.active {
+  background: var(--color-primary);
+  box-shadow: 0 0 8px rgba(20, 184, 166, 0.6);
+}
+
+.lifecycle-badge.expiring {
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+  animation: pulse-badge 1s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(245, 158, 11, 1);
+  }
+}
+
+/* ==================== RESPONSIVE ==================== */
+
 @media (max-width: 767px) {
   .game-board-container {
-    padding: 16px;
+    padding: 20px 16px;
+  }
+
+  .board-header {
+    margin-bottom: 20px;
   }
 
   .board-title {
@@ -126,21 +288,55 @@
   }
 
   .game-board {
-    gap: 8px;
+    gap: 12px;
     max-width: 100%;
+    width: 100%;
+    min-height: 320px;
+  }
+
+  .board-cell {
+    min-height: 100px;
   }
 
   .board-legend {
-    gap: 24px;
-    margin-top: 16px;
+    gap: 12px;
+    margin-top: 20px;
     padding-top: 16px;
+    font-size: 0.8rem;
+  }
+
+  .legend-item {
+    gap: 6px;
+  }
+
+  .cell-age-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 0.65rem;
+    top: -3px;
+    right: -3px;
   }
 }
 
+/* ==================== ACCESSIBILITY ==================== */
+
 @media (prefers-reduced-motion: reduce) {
   .board-cell,
-  .board-cell.winning {
+  .board-cell.winning,
+  .board-cell.active-cell,
+  .board-cell.expiring-cell,
+  .lifecycle-badge.expiring {
     animation: none;
     transition: none;
+  }
+
+  .lifecycle-badge.active,
+  .lifecycle-badge.expiring {
+    box-shadow: none;
+  }
+
+  .board-cell.active-cell,
+  .board-cell.expiring-cell {
+    box-shadow: none;
   }
 }
