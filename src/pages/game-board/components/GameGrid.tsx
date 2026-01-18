@@ -28,8 +28,8 @@ const GameGrid = ({
       return (
         <Icon
           name="X"
-          size={48}
-          strokeWidth={3}
+          size={36}
+          strokeWidth={2.5}
           color={`${isWinningCell ? "white" : "var(--color-secondary)"}`}
         />
       );
@@ -37,8 +37,8 @@ const GameGrid = ({
     return (
       <Icon
         name="Circle"
-        size={48}
-        strokeWidth={3}
+        size={36}
+        strokeWidth={2.5}
         color={`${isWinningCell ? "white" : "var(--color-secondary)"}`}
       />
     );

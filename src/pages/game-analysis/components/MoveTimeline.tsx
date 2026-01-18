@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import Icon from "../../../components/AppIcon";
 import "./styles/MoveTimeline.css";
 import { type Move } from "../types";
@@ -15,6 +16,19 @@ const MoveTimeline = ({
   onMoveSelect,
   maxAge,
 }: MoveTimelineProps) => {
+  // Create refs for timeline items to enable auto-scrolling
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Auto-scroll to current move when index changes
+  useEffect(() => {
+    if (itemRefs.current[currentMoveIndex]) {
+      itemRefs.current[currentMoveIndex]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [currentMoveIndex]);
+
   const getMoveQuality = (quality: Move["quality"]) => {
     const qualities = {
       excellent: {
@@ -48,7 +62,7 @@ const MoveTimeline = ({
   };
 
   const getExpirationLabel = (
-    move: Move
+    move: Move,
   ): { label: string; style: string } | null => {
     if (!maxAge) return null; // Non-aging game
     if (move.expiredOnMove !== null && move.expiredOnMove !== undefined) {
@@ -65,15 +79,6 @@ const MoveTimeline = ({
       return { label: `Expires M${move.expiresOnMove}`, style: "expires" };
     }
     return null;
-  };
-
-  const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date?.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
   };
 
   return (
@@ -96,6 +101,9 @@ const MoveTimeline = ({
             return (
               <div
                 key={index}
+                ref={(el) => {
+                  itemRefs.current[index] = el;
+                }}
                 className={`timeline-item ${isActive ? "active" : ""} ${
                   isExpired ? "expired" : ""
                 }`}
@@ -129,22 +137,19 @@ const MoveTimeline = ({
                       />
                       <span className="player-name">Player {move?.player}</span>
                     </div>
-                    <span className="move-time">
-                      {formatTime(move?.timestamp)}
-                    </span>
+                    <div
+                      className="quality-badge header-quality"
+                      style={{ color: quality?.color }}
+                    >
+                      <Icon name={quality?.icon} size={14} strokeWidth={2} />
+                      <span>{quality?.label}</span>
+                    </div>
                   </div>
 
                   <div className="timeline-move-details">
                     <span className="move-position">
                       Position: {move?.position}
                     </span>
-                    <div
-                      className="quality-badge"
-                      style={{ color: quality?.color }}
-                    >
-                      <Icon name={quality?.icon} size={14} strokeWidth={2} />
-                      <span>{quality?.label}</span>
-                    </div>
                     {expirationLabel && (
                       <span
                         className={`timeline-expiration-badge ${expirationLabel.style}`}

@@ -69,7 +69,7 @@ export const useGameById = (gameId: string | undefined) => {
     queryFn: async () => {
       if (!gameId) throw new Error("Game ID is required");
       const { data } = await apiClient.get<GameDetailResponse>(
-        `/games/${gameId}`
+        `/games/${gameId}`,
       );
       return data;
     },
@@ -126,12 +126,13 @@ export const useGameAnalysis = (gameId: string | undefined) => {
     queryFn: async () => {
       if (!gameId) throw new Error("Game ID is required");
       const { data } = await apiClient.get<GameData>(
-        `/games/${gameId}/analysis`
+        `/games/${gameId}/analysis`,
       );
       return data;
     },
     enabled: !!gameId,
     retry: 1,
-    gcTime: 5 * 60 * 1000, // Cache for 5 minutes
+    gcTime: 60 * 60 * 1000, // Cache for 1 hour (increased from 5 minutes)
+    staleTime: 60 * 60 * 1000, // Data considered fresh for 1 hour
   });
 };
