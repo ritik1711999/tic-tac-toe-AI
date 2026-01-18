@@ -5,6 +5,7 @@ interface GameControlsProps {
   onHint: () => void;
   onNewGame: () => void;
   onLeaveGame?: () => void;
+  onViewAnalysis?: () => void;
   isGameOver: boolean;
   hintsRemaining: number;
 }
@@ -13,6 +14,7 @@ const GameControls = ({
   onHint,
   onNewGame,
   onLeaveGame,
+  onViewAnalysis,
   isGameOver,
   hintsRemaining,
 }: GameControlsProps) => {
@@ -49,10 +51,19 @@ const GameControls = ({
               iconName="Plus"
               iconPosition="left"
               onClick={onNewGame}
-              fullWidth
             >
               New Game
             </Button>
+            {onViewAnalysis && (
+              <Button
+                variant="secondary"
+                iconName="BarChart3"
+                iconPosition="left"
+                onClick={onViewAnalysis}
+              >
+                View Analysis
+              </Button>
+            )}
           </div>
         )}
       </div>

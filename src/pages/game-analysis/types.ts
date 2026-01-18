@@ -1,7 +1,8 @@
 export interface Move {
   moveNumber: number;
   player: "X" | "O";
-  position: string;
+  position: number | string; // Numeric position (0-8) or string label
+  positionLabel?: string; // Human-readable position label (e.g., "center", "top-left")
   timestamp: string;
   quality: "excellent" | "good" | "suboptimal" | "mistake";
   score: number;
@@ -46,6 +47,7 @@ export interface GameData {
   date: string;
   result: string;
   duration: string;
+  winningLine?: number[] | null;
   moves: Move[];
   performanceMetrics: PerformanceMetricsData;
   agingMetrics?: {
@@ -55,4 +57,5 @@ export interface GameData {
     avgLifespan: number;
     volatilityScore: number;
   };
+  cached?: boolean; // Whether this analysis was retrieved from cache
 }
