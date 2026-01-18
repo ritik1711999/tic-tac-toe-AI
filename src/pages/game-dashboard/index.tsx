@@ -58,30 +58,19 @@ const GameDashboard = () => {
                   Welcome back! Track your progress and start new games
                 </p>
               </div>
-              <QuickActionsMenu
-                onNewGame={handleNewGame}
-                onPauseGame={() => {}}
-                onResumeGame={() => {}}
-                onRestartGame={() => {}}
-              />
+              <QuickActionsMenu onNewGame={handleNewGame} />
             </div>
 
             <div className="page-dashboard-grid">
               <div className="page-dashboard-grid-section page-dashboard-primary-section">
                 <NewGameCard />
                 <StatisticsPanel />
+                <AIRecommendations />
               </div>
 
               <div className="page-dashboard-grid-section page-dashboard-secondary-section">
                 <RecentGamesList />
-              </div>
-
-              <div className="page-dashboard-grid-section page-dashboard-tertiary-section">
                 <AchievementsBadges />
-              </div>
-
-              <div className="page-dashboard-grid-section page-dashboard-quaternary-section">
-                <AIRecommendations />
               </div>
             </div>
           </div>

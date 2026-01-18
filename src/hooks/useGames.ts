@@ -69,7 +69,7 @@ export const useGameById = (gameId: string | undefined) => {
     queryFn: async () => {
       if (!gameId) throw new Error("Game ID is required");
       const { data } = await apiClient.get<GameDetailResponse>(
-        `/games/${gameId}`
+        `/games/${gameId}`,
       );
       return data;
     },
@@ -126,12 +126,44 @@ export const useGameAnalysis = (gameId: string | undefined) => {
     queryFn: async () => {
       if (!gameId) throw new Error("Game ID is required");
       const { data } = await apiClient.get<GameData>(
-        `/games/${gameId}/analysis`
+        `/games/${gameId}/analysis`,
       );
       return data;
     },
     enabled: !!gameId,
     retry: 1,
     gcTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+};
+
+export interface RecentGame {
+  id: string;
+  opponent: string;
+  result: "win" | "lose" | "draw";
+  moves: number;
+  duration: string;
+  timestamp: Date;
+  winningPattern: string;
+}
+
+interface RecentGamesResponse {
+  games: RecentGame[];
+  total: number;
+}
+
+export const useRecentGames = (limit = 20) => {
+  return useQuery({
+    queryKey: ["recent-games", limit],
+    queryFn: async () => {
+      const { data } = await apiClient.get<RecentGamesResponse>(
+        "/games/recent",
+        {
+          params: { limit },
+        },
+      );
+      return data;
+    },
+    retry: 1,
+    gcTime: 2 * 60 * 1000, // Cache for 2 minutes
   });
 };

@@ -1,59 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
+import { useRecentGames } from "../../../hooks/useGames";
 import type { RecentGame } from "../types";
 import "./styles/RecentGamesList.css";
 
 const RecentGamesList = () => {
   const navigate = useNavigate();
+  const { data: recentGamesData, isLoading, error } = useRecentGames(20);
 
-  const recentGames: RecentGame[] = [
-    {
-      id: "G2025127",
-      opponent: "AI - Hard",
-      result: "win",
-      moves: 7,
-      duration: "2m 34s",
-      timestamp: new Date("2025-12-19T09:30:00"),
-      winningPattern: "Diagonal",
-    },
-    {
-      id: "G2025126",
-      opponent: "AI - Medium",
-      result: "win",
-      moves: 9,
-      duration: "3m 12s",
-      timestamp: new Date("2025-12-19T08:15:00"),
-      winningPattern: "Top Row",
-    },
-    {
-      id: "G2025125",
-      opponent: "AI - Hard",
-      result: "lose",
-      moves: 8,
-      duration: "2m 48s",
-      timestamp: new Date("2025-12-18T22:45:00"),
-      winningPattern: "Middle Column",
-    },
-    {
-      id: "G2025124",
-      opponent: "AI - Expert",
-      result: "draw",
-      moves: 9,
-      duration: "4m 05s",
-      timestamp: new Date("2025-12-18T21:30:00"),
-      winningPattern: "Draw",
-    },
-    {
-      id: "G2025123",
-      opponent: "AI - Medium",
-      result: "win",
-      moves: 6,
-      duration: "2m 10s",
-      timestamp: new Date("2025-12-18T20:15:00"),
-      winningPattern: "Left Column",
-    },
-  ];
+  const recentGames: RecentGame[] = recentGamesData?.games || [];
 
   const getResultIcon = (result: string) => {
     switch (result) {
@@ -72,10 +28,23 @@ const RecentGamesList = () => {
     return result?.charAt(0)?.toUpperCase() + result?.slice(1);
   };
 
-  const formatTimestamp = (date: Date) => {
+  const formatGameTitle = (game: RecentGame) => {
+    const dateObj = new Date(game.timestamp);
+    const dd = String(dateObj.getDate()).padStart(2, "0");
+    const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const yyyy = dateObj.getFullYear();
+    const vsType = game.opponent?.toLowerCase().includes("ai")
+      ? "vsAI"
+      : "vsHuman";
+    const idSuffix = game.id?.slice(-4) || "0000";
+    return `${dd}${mm}${yyyy}-${vsType}-${idSuffix}`;
+  };
+
+  const formatTimestamp = (date: Date | string) => {
+    const dateObj = new Date(date);
     const now = new Date().getTime();
-    const dateObj = date.getTime();
-    const diffMs = now - dateObj;
+    const dateTime = dateObj.getTime();
+    const diffMs = now - dateTime;
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffHours / 24);
 
@@ -87,7 +56,7 @@ const RecentGamesList = () => {
     } else if (diffDays === 1) {
       return "Yesterday";
     } else {
-      return date?.toLocaleDateString("en-US", {
+      return dateObj?.toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
       });
@@ -122,6 +91,42 @@ const RecentGamesList = () => {
         </div>
 
         <div className="games-container">
+          {isLoading && (
+            <div
+              style={{
+                padding: "2rem",
+                textAlign: "center",
+                color: "var(--color-muted-foreground)",
+              }}
+            >
+              Loading your recent games...
+            </div>
+          )}
+
+          {error && (
+            <div
+              style={{
+                padding: "2rem",
+                textAlign: "center",
+                color: "var(--color-error)",
+              }}
+            >
+              Failed to load recent games. Please try again.
+            </div>
+          )}
+
+          {!isLoading && !error && recentGames.length === 0 && (
+            <div
+              style={{
+                padding: "2rem",
+                textAlign: "center",
+                color: "var(--color-muted-foreground)",
+              }}
+            >
+              No games yet. Start by creating a new game!
+            </div>
+          )}
+
           {recentGames?.map((game) => {
             const resultIcon = getResultIcon(game?.result);
             return (
@@ -139,7 +144,7 @@ const RecentGamesList = () => {
                 </div>
                 <div className="game-details">
                   <div className="game-header-row">
-                    <h4 className="game-id">{game?.id}</h4>
+                    <h4 className="recent-game-id">{formatGameTitle(game)}</h4>
                     <span className={`result-label ${game?.result}`}>
                       {getResultLabel(game?.result)}
                     </span>
