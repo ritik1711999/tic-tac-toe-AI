@@ -1,17 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "../lib/api/client";
-
-export interface StatsData {
-  totalGames: number;
-  wins: number;
-  loses: number;
-  draws: number;
-  statsByDifficulty: {
-    easy: { wins: number; loses: number; draws: number };
-    medium: { wins: number; loses: number; draws: number };
-    hard: { wins: number; loses: number; draws: number };
-  };
-}
+import type { DashboardStatsResponse } from "../pages/game-dashboard/types";
 
 export interface Achievement {
   _id: string;
@@ -37,7 +26,8 @@ export const useDashboardStats = () => {
   return useQuery({
     queryKey: ["dashboard", "stats"],
     queryFn: async () => {
-      const { data } = await apiClient.get<StatsData>("/dashboard/stats");
+      const { data } =
+        await apiClient.get<DashboardStatsResponse>("/dashboard/stats");
       return data;
     },
     staleTime: 5 * 60 * 1000,
@@ -49,7 +39,7 @@ export const useAchievements = () => {
     queryKey: ["dashboard", "achievements"],
     queryFn: async () => {
       const { data } = await apiClient.get<Achievement[]>(
-        "/dashboard/achievements"
+        "/dashboard/achievements",
       );
       return data;
     },
@@ -61,7 +51,7 @@ export const useRecentGames = () => {
     queryKey: ["dashboard", "recent-games"],
     queryFn: async () => {
       const { data } = await apiClient.get<RecentGame[]>(
-        "/dashboard/recent-games"
+        "/dashboard/recent-games",
       );
       return data;
     },

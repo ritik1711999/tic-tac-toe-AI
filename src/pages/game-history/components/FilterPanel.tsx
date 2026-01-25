@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
-import Input from "../../../components/ui/Input";
 import Select from "../../../components/ui/Select";
-import type { GameFilters } from "../types";
+import Input from "../../../components/ui/Input";
+import type { GameHistoryFilters } from "../../../hooks/useGames";
 import "./styles/FilterPanel.css";
 
 interface FilterPanelProps {
-  filters: GameFilters;
-  onFilterChange: (filters: GameFilters) => void;
+  filters: GameHistoryFilters;
+  onFilterChange: (filters: GameHistoryFilters) => void;
   onReset: () => void;
   resultCount: number;
 }
@@ -22,21 +22,21 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const outcomeOptions = [
-    { value: "all", label: "All Outcomes" },
+    { value: "", label: "All Outcomes" },
     { value: "win", label: "Wins" },
     { value: "lose", label: "Loses" },
     { value: "draw", label: "Draws" },
   ];
 
   const difficultyOptions = [
-    { value: "all", label: "All Difficulties" },
+    { value: "", label: "All Difficulties" },
     { value: "easy", label: "Easy" },
     { value: "medium", label: "Medium" },
     { value: "hard", label: "Hard" },
   ];
 
   const durationOptions = [
-    { value: "all", label: "Any Duration" },
+    { value: "", label: "Any Duration" },
     { value: "0-60", label: "Under 1 minute" },
     { value: "60-180", label: "1-3 minutes" },
     { value: "180-300", label: "3-5 minutes" },
@@ -63,12 +63,14 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     onFilterChange({ ...filters, dateTo: e.target.value });
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onFilterChange({ ...filters, search: e.target.value });
+  const openNativePicker = (e: React.FocusEvent<HTMLInputElement>) => {
+    // Hint the browser to open the date picker immediately
+    if (typeof (e.target as HTMLInputElement).showPicker === "function") {
+      (e.target as HTMLInputElement).showPicker();
+    }
   };
-
   const activeFilterCount = Object.values(filters)?.filter(
-    (v) => v && v !== "all"
+    (v) => v && v !== "",
   )?.length;
 
   return (
@@ -108,21 +110,11 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         <div className="history-filter-grid">
           <div className="history-filter-group">
             <Input
-              type="text"
-              label="Search"
-              placeholder="Search by date or outcome..."
-              value={filters?.search || ""}
-              onChange={handleSearchChange}
-              className="search-input"
-            />
-          </div>
-
-          <div className="history-filter-group">
-            <Input
               type="date"
               label="From Date"
               value={filters?.dateFrom || ""}
               onChange={handleDateFromChange}
+              onFocus={openNativePicker}
             />
           </div>
 
@@ -132,6 +124,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               label="To Date"
               value={filters?.dateTo || ""}
               onChange={handleDateToChange}
+              onFocus={openNativePicker}
             />
           </div>
 
@@ -139,7 +132,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             <Select
               label="Outcome"
               options={outcomeOptions}
-              value={filters?.outcome || "all"}
+              value={filters?.outcome || ""}
               onChange={handleOutcomeChange}
             />
           </div>
@@ -148,7 +141,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             <Select
               label="Difficulty"
               options={difficultyOptions}
-              value={filters?.difficulty || "all"}
+              value={filters?.difficulty || ""}
               onChange={handleDifficultyChange}
             />
           </div>
@@ -157,7 +150,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             <Select
               label="Duration"
               options={durationOptions}
-              value={filters?.duration || "all"}
+              value={filters?.duration || ""}
               onChange={handleDurationChange}
             />
           </div>

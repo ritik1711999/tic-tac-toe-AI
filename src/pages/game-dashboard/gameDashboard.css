@@ -46,6 +46,7 @@
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 24px;
+  align-items: start;
 }
 
 .page-dashboard-grid-section {
@@ -55,19 +56,15 @@
 }
 
 .page-dashboard-primary-section {
-  grid-column: span 4;
+  grid-column: span 5;
 }
 
 .page-dashboard-secondary-section {
-  grid-column: span 8;
-}
-
-.page-dashboard-tertiary-section {
   grid-column: span 7;
 }
 
-.page-dashboard-quaternary-section {
-  grid-column: span 5;
+.page-dashboard-secondary-section .recent-games-list {
+  max-height: 1265px;
 }
 
 @media (max-width: 1200px) {
@@ -77,14 +74,6 @@
 
   .page-dashboard-secondary-section {
     grid-column: span 7;
-  }
-
-  .page-dashboard-tertiary-section {
-    grid-column: span 12;
-  }
-
-  .page-dashboard-quaternary-section {
-    grid-column: span 12;
   }
 }
 

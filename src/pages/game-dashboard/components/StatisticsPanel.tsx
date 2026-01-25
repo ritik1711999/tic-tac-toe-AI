@@ -1,46 +1,107 @@
 import Icon from "../../../components/AppIcon";
-import type { Stat } from "../types";
+import type { Stat, DashboardStatsResponse } from "../types";
+import { useDashboardStats } from "../../../hooks/useDashboard";
 import "./styles/StatisticsPanel.css";
 
 const StatisticsPanel = () => {
-  const stats: Stat[] = [
-    {
-      id: 1,
-      label: "Total Games",
-      value: "127",
-      change: "+12",
-      changeType: "positive",
-      icon: "Gamepad2",
-      color: "var(--color-primary)",
-    },
-    {
-      id: 2,
-      label: "Win Rate",
-      value: "68%",
-      change: "+5%",
-      changeType: "positive",
-      icon: "Trophy",
-      color: "var(--color-success)",
-    },
-    {
-      id: 3,
-      label: "Current Streak",
-      value: "7",
-      change: "Active",
-      changeType: "neutral",
-      icon: "Flame",
-      color: "var(--color-warning)",
-    },
-    {
-      id: 4,
-      label: "Avg. Moves",
-      value: "5.8",
-      change: "-0.3",
-      changeType: "negative",
-      icon: "Move",
-      color: "var(--color-secondary)",
-    },
-  ];
+  const { data, isLoading, isError } = useDashboardStats();
+
+  const formatDelta = (v: number) => {
+    if (v === 0) return "0";
+    const rounded = Math.round(v);
+    return rounded > 0 ? `+${rounded}` : `${rounded}`;
+  };
+
+  const changeTypeOf = (v: number): Stat["changeType"] => {
+    if (v === 0) return "neutral";
+    return v > 0 ? "positive" : "negative";
+  };
+
+  const stats: Stat[] = (() => {
+    const current = (data as DashboardStatsResponse | undefined)?.current;
+    const deltas = (data as DashboardStatsResponse | undefined)?.deltas;
+    const streak = (data as DashboardStatsResponse | undefined)?.streak;
+
+    if (!current || !deltas) {
+      return [
+        {
+          id: 1,
+          label: "Total Games",
+          value: isLoading ? "…" : 0,
+          change: "",
+          changeType: "neutral",
+          icon: "Gamepad2",
+          color: "var(--color-primary)",
+        },
+        {
+          id: 2,
+          label: "Win Rate",
+          value: isLoading ? "…" : "0%",
+          change: "",
+          changeType: "neutral",
+          icon: "Trophy",
+          color: "var(--color-success)",
+        },
+        {
+          id: 3,
+          label: "Current Streak",
+          value: isLoading ? "…" : 0,
+          change: isLoading ? "" : "None",
+          changeType: "neutral",
+          icon: "Flame",
+          color: "var(--color-warning)",
+        },
+        {
+          id: 4,
+          label: "Avg. Moves",
+          value: isLoading ? "…" : 0,
+          change: "",
+          changeType: "neutral",
+          icon: "Move",
+          color: "var(--color-secondary)",
+        },
+      ];
+    }
+
+    return [
+      {
+        id: 1,
+        label: "Total Games",
+        value: current.totalGames,
+        change: formatDelta(deltas.totalGames.abs),
+        changeType: changeTypeOf(deltas.totalGames.abs),
+        icon: "Gamepad2",
+        color: "var(--color-primary)",
+      },
+      {
+        id: 2,
+        label: "Win Rate",
+        value: `${Math.round(current.winRate)}%`,
+        change: formatDelta(deltas.winRate.abs) + "%",
+        changeType: changeTypeOf(deltas.winRate.abs),
+        icon: "Trophy",
+        color: "var(--color-success)",
+      },
+      {
+        id: 3,
+        label: "Current Streak",
+        value: streak?.count ?? 0,
+        change: streak?.count && streak.count > 0 ? "Active" : "None",
+        changeType: "neutral",
+        icon: "Flame",
+        color: "var(--color-warning)",
+      },
+      {
+        id: 4,
+        label: "Avg. Moves",
+        value: (current.avgMoves ?? 0).toFixed(1),
+        change: formatDelta(deltas.avgMoves.abs),
+        changeType: changeTypeOf(deltas.avgMoves.abs),
+        icon: "Move",
+        color: "var(--color-secondary)",
+      },
+    ];
+  })();
 
   return (
     <>
@@ -53,6 +114,9 @@ const StatisticsPanel = () => {
         </div>
 
         <div className="page-dashboard-stats-grid">
+          {isError && (
+            <div className="page-dashboard-error">Failed to load stats.</div>
+          )}
           {stats?.map((stat) => (
             <div key={stat?.id} className="page-dashboard-stat-card">
               <div

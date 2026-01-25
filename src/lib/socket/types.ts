@@ -31,6 +31,14 @@ export interface ServerToClientEvents {
       moves: number;
       duration: number;
     };
+    leveledUp?: boolean;
+    newSkill?: string | null;
+    previousSkill?: string | null;
+    skillPoints?: number;
+    newAchievements?: Array<{
+      achievementId: string;
+      unlockedAt: Date;
+    }>;
   }) => void;
 
   "cell-expired": (data: {

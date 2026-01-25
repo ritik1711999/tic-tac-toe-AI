@@ -1,44 +1,58 @@
+import { useNavigate } from "react-router-dom";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
-import type { Recommendation } from "../types";
+import { useRecommendations } from "../../../hooks/useRecommendations";
+import { useCreateGame } from "../../../hooks/useGames";
+import type { Recommendation } from "../../../hooks/useRecommendations";
 import "./styles/AiRecommendations.css";
 
 const AIRecommendations = () => {
-  const recommendations: Recommendation[] = [
-    {
-      id: 1,
-      type: "difficulty",
-      title: "Ready for a Challenge?",
-      description:
-        "Based on your recent performance, you might be ready to try Hard difficulty. Your win rate against Medium AI is 78%.",
-      icon: "TrendingUp",
-      color: "var(--color-primary-foreground)",
-      action: "Try Hard Mode",
-      priority: "high",
-    },
-    {
-      id: 2,
-      type: "strategy",
-      title: "Improve Your Opening",
-      description:
-        "Analysis shows you win 65% more games when starting with center position. Consider this strategy more often.",
-      icon: "Target",
-      color: "var(--color-primary-foreground)",
-      action: "View Analysis",
-      priority: "medium",
-    },
-    {
-      id: 3,
-      type: "practice",
-      title: "Practice Defensive Play",
-      description:
-        "Your defensive blocking could be stronger. Try focusing on opponent threat detection in your next 5 games.",
-      icon: "Shield",
-      color: "var(--color-primary-foreground)",
-      action: "Start Practice",
-      priority: "medium",
-    },
-  ];
+  const navigate = useNavigate();
+  const { data: recommendations, isLoading, error } = useRecommendations();
+  const createGameMutation = useCreateGame();
+
+  const handleRecommendationAction = async (rec: Recommendation) => {
+    const { action } = rec;
+
+    try {
+      if (action.type === "play-game") {
+        // Create game with specified difficulty
+        const createdGame = await createGameMutation.mutateAsync({
+          vs: "AI",
+          difficulty: (action.difficulty || "medium") as
+            | "easy"
+            | "medium"
+            | "hard",
+        });
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        // Navigate to game
+        navigate(`/play-game/${createdGame._id}`, {
+          state: { gameMode: "ai" },
+        });
+      } else if (action.type === "view-analysis") {
+        // Navigate to game history for analysis
+        navigate("/history");
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    } catch (error) {
+      console.error("Error handling recommendation action:", error);
+    }
+  };
+
+  const getRecommendationIcon = (iconType: string): string => {
+    const iconMap: Record<string, string> = {
+      "trending-up": "TrendingUp",
+      target: "Target",
+      lightbulb: "Lightbulb",
+      shield: "Shield",
+    };
+    return iconMap[iconType] || "Sparkles";
+  };
 
   const getPriorityBadge = (priority: "high" | "medium" | "low") => {
     const badges = {
@@ -54,6 +68,56 @@ const AIRecommendations = () => {
     };
     return badges?.[priority] || badges?.medium;
   };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="ai-recommendations">
+        <div className="recommendations-header">
+          <div className="recommendations-header-icon">
+            <Icon
+              name="Sparkles"
+              size={24}
+              color="var(--color-primary-foreground)"
+              strokeWidth={2}
+            />
+          </div>
+          <div className="recommendations-header-content">
+            <h3 className="recommendations-title">AI Recommendations</h3>
+            <p className="recommendations-subtitle">
+              Analyzing your performance...
+            </p>
+          </div>
+        </div>
+        <div className="recommendations-list">
+          <div className="recommendation-card" style={{ opacity: 0.6 }}>
+            <div className="recommendation-card-header">
+              <div
+                className="recommendation-icon skeleton"
+                style={{ width: 48, height: 48 }}
+              />
+              <span
+                className="priority-badge skeleton"
+                style={{ width: 100, height: 24 }}
+              />
+            </div>
+            <div className="recommendations-card-content">
+              <div
+                className="skeleton"
+                style={{ width: "70%", height: 20, marginBottom: 8 }}
+              />
+              <div className="skeleton" style={{ width: "100%", height: 16 }} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error or no recommendations
+  if (error || !recommendations || recommendations.length === 0) {
+    return null; // Hide section if no recommendations
+  }
 
   return (
     <>
@@ -78,17 +142,19 @@ const AIRecommendations = () => {
         <div className="recommendations-list">
           {recommendations?.map((recommendation) => {
             const priorityBadge = getPriorityBadge(recommendation?.priority);
+            const iconName = getRecommendationIcon(recommendation?.icon);
+
             return (
               <div key={recommendation?.id} className="recommendation-card">
                 <div className="recommendation-card-header">
                   <div
                     className="recommendation-icon"
-                    style={{ background: `${recommendation?.color}15` }}
+                    style={{ background: `var(--color-primary-foreground)15` }}
                   >
                     <Icon
-                      name={recommendation?.icon}
+                      name={iconName}
                       size={24}
-                      color={recommendation?.color}
+                      color="var(--color-primary-foreground)"
                       strokeWidth={2}
                     />
                   </div>
@@ -116,8 +182,10 @@ const AIRecommendations = () => {
                     size="sm"
                     iconName="ArrowRight"
                     iconPosition="right"
+                    onClick={() => handleRecommendationAction(recommendation)}
+                    disabled={createGameMutation.isPending}
                   >
-                    {recommendation?.action}
+                    {recommendation?.action?.label}
                   </Button>
                 </div>
               </div>
@@ -128,7 +196,10 @@ const AIRecommendations = () => {
         <div className="recommendations-footer">
           <div className="footer-info">
             <Icon name="Info" size={16} strokeWidth={2} />
-            <span>Recommendations update based on your last 20 games</span>
+            <span>
+              Recommendations are refreshed every 24 hours using your last 10
+              games
+            </span>
           </div>
         </div>
       </div>

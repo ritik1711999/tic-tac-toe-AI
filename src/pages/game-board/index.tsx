@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import Header from "../../components/ui/Header";
 import GameStatusIndicator from "../../components/ui/GameStatusIndicator";
 import QuickActionsMenu from "../../components/ui/QuickActionsMenu";
@@ -21,6 +22,7 @@ const GameBoard = () => {
   const { gameId } = useParams();
   const { socket, isConnected } = useSocket();
   const user = useAuthStore((state) => state.user);
+  const queryClient = useQueryClient();
 
   // Fetch initial game state
   const { data: gameData, isLoading, error: fetchError } = useGameById(gameId);
@@ -54,7 +56,7 @@ const GameBoard = () => {
   // === Leave Game Confirmation Modal ===
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(
-    null
+    null,
   );
 
   // === AI Suggestions (mock for now, will integrate later) ===
@@ -129,7 +131,7 @@ const GameBoard = () => {
     if (gameData) {
       // Convert board strings to Player | null
       const initialBoard = gameData.board.map((cell) =>
-        cell === "" ? null : (cell as Player)
+        cell === "" ? null : (cell as Player),
       );
       setBoard(initialBoard);
       setCurrentPlayer(gameData.currentPlayer);
@@ -176,7 +178,7 @@ const GameBoard = () => {
         } else {
           const age = Math.max(
             1,
-            totalMoves - (m.moveNumber ?? totalMoves) + 1
+            totalMoves - (m.moveNumber ?? totalMoves) + 1,
           );
           const expiresIn = Math.max(0, effExpiresOn - totalMoves);
           aging.set(m.position, { age, expiresIn });
@@ -227,7 +229,7 @@ const GameBoard = () => {
 
       // Update board
       const newBoard = data.board.map((cell) =>
-        cell === "" ? null : (cell as Player)
+        cell === "" ? null : (cell as Player),
       );
 
       // Find which position changed
@@ -259,7 +261,7 @@ const GameBoard = () => {
             (m) =>
               m.position === placedPos &&
               m.player === placedBy &&
-              m.moveNumber === newMoveCount
+              m.moveNumber === newMoveCount,
           );
 
           if (alreadyExists) {
@@ -342,7 +344,7 @@ const GameBoard = () => {
       setMoves((prev) => {
         return prev.map((m) => {
           const expiredInfo = payload.expired.find(
-            (e) => e.position === m.position && e.player === m.player
+            (e) => e.position === m.position && e.player === m.player,
           );
           if (expiredInfo) {
             return {
@@ -365,7 +367,7 @@ const GameBoard = () => {
         const isExpired = payload.expired.some(
           (exp) =>
             exp.position === currentMove.position &&
-            exp.player === currentMove.player
+            exp.player === currentMove.player,
         );
 
         return isExpired ? -1 : prev;
@@ -383,7 +385,7 @@ const GameBoard = () => {
     }) => {
       const map = new Map<number, { age: number; expiresIn: number }>();
       payload.cells.forEach((c) =>
-        map.set(c.position, { age: c.age, expiresIn: c.expiresIn })
+        map.set(c.position, { age: c.age, expiresIn: c.expiresIn }),
       );
       setCellAging(map);
     };
@@ -431,7 +433,7 @@ const GameBoard = () => {
   // Helper function to find which position changed
   const findChangedPosition = (
     oldBoard: (Player | null)[],
-    newBoard: (Player | null)[]
+    newBoard: (Player | null)[],
   ): number => {
     for (let i = 0; i < 9; i++) {
       if (oldBoard[i] !== newBoard[i]) {
@@ -445,7 +447,7 @@ const GameBoard = () => {
   const findPlacedPosition = (
     oldBoard: (Player | null)[],
     newBoard: (Player | null)[],
-    placedBy: Player
+    placedBy: Player,
   ): number => {
     for (let i = 0; i < 9; i++) {
       const was = oldBoard[i];
@@ -542,7 +544,17 @@ const GameBoard = () => {
     });
   };
 
+  const invalidateDashboardCache = () => {
+    // Invalidate all dashboard-related queries
+    queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    queryClient.invalidateQueries({ queryKey: ["progression"] });
+    queryClient.invalidateQueries({ queryKey: ["games"] });
+    queryClient.invalidateQueries({ queryKey: ["achievements"] });
+  };
+
   const handleNewGame = () => {
+    // Invalidate dashboard cache before navigating back
+    invalidateDashboardCache();
     // Navigate back to dashboard to create a new game
     navigate("/dashboard");
   };
@@ -553,7 +565,8 @@ const GameBoard = () => {
       setShowLeaveModal(true);
       setPendingNavigation("/dashboard");
     } else {
-      // Navigate immediately if game is over
+      // Invalidate dashboard cache and navigate immediately if game is over
+      invalidateDashboardCache();
       navigate("/dashboard");
     }
   };
@@ -566,6 +579,11 @@ const GameBoard = () => {
 
     // Reset modal state
     setShowLeaveModal(false);
+
+    // Invalidate dashboard cache before navigating back
+    if (pendingNavigation === "/dashboard") {
+      invalidateDashboardCache();
+    }
 
     // Navigate to pending route (always set, no null case)
     if (pendingNavigation) {
@@ -585,7 +603,10 @@ const GameBoard = () => {
       setShowLeaveModal(true);
       setPendingNavigation(path);
     } else {
-      // Navigate immediately if game is over
+      // Invalidate dashboard cache if navigating to dashboard, then navigate
+      if (path === "/dashboard") {
+        invalidateDashboardCache();
+      }
       navigate(path);
     }
   };
