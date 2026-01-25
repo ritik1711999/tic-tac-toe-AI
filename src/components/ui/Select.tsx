@@ -56,7 +56,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
       onOpenChange,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -75,7 +75,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                 option.value
                   .toString()
                   .toLowerCase()
-                  .includes(searchTerm.toLowerCase()))
+                  .includes(searchTerm.toLowerCase())),
           )
         : options;
 
@@ -85,7 +85,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
 
       if (multiple) {
         const selectedOptions = options.filter(
-          (opt) => Array.isArray(value) && value.includes(opt.value)
+          (opt) => Array.isArray(value) && value.includes(opt.value),
         );
         if (selectedOptions.length === 0) return placeholder;
         if (selectedOptions.length === 1) return selectedOptions[0].label;
@@ -149,7 +149,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             htmlFor={selectId}
             className={cn(
               "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2 block",
-              error ? "text-destructive" : "text-foreground"
+              error ? "text-destructive" : "text-foreground",
             )}
           >
             {label}
@@ -162,9 +162,9 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             id={selectId}
             type="button"
             className={cn(
-              "flex h-10 w-full items-center justify-between rounded-md border border-input bg-white text-black px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+              "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
               error && "border-destructive focus:ring-destructive",
-              !hasValue && "text-muted-foreground"
+              !hasValue && "text-muted-foreground",
             )}
             onClick={handleToggle}
             disabled={disabled}
@@ -208,7 +208,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
               <ChevronDown
                 className={cn(
                   "h-4 w-4 transition-transform",
-                  isOpen && "rotate-180"
+                  isOpen && "rotate-180",
                 )}
               />
             </div>
@@ -262,7 +262,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                         "relative flex cursor-pointer select-none items-center rounded-sm px-3 py-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
                         isSelected(option.value) &&
                           "bg-primary text-primary-foreground",
-                        option.disabled && "pointer-events-none opacity-50"
+                        option.disabled && "pointer-events-none opacity-50",
                       )}
                       onClick={() =>
                         !option.disabled && handleOptionSelect(option)
@@ -290,7 +290,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
         {error && <p className="text-sm text-destructive mt-1">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
 Select.displayName = "Select";

@@ -1,13 +1,24 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
 import { useRecentGames } from "../../../hooks/useGames";
+import apiClient from "../../../lib/api/client";
 import type { RecentGame } from "../types";
 import "./styles/RecentGamesList.css";
 
 const RecentGamesList = () => {
   const navigate = useNavigate();
+  const [activeGameId, setActiveGameId] = useState<string | null>(null);
   const { data: recentGamesData, isLoading, error } = useRecentGames(20);
+  const { mutateAsync: generateReport, isPending: isGeneratingReport } =
+    useMutation({
+      mutationFn: async (gameId: string) => {
+        const { data } = await apiClient.get(`/games/${gameId}/analysis`);
+        return data;
+      },
+    });
 
   const recentGames: RecentGame[] = recentGamesData?.games || [];
 
@@ -63,12 +74,20 @@ const RecentGamesList = () => {
     }
   };
 
-  const handleViewAnalysis = (gameId: string) => {
-    navigate("/game-analysis", { state: { gameId } });
+  const handleViewAnalysis = async (gameId: string) => {
+    try {
+      setActiveGameId(gameId);
+      await generateReport(gameId);
+    } catch (err) {
+      console.error("Failed to generate analysis", err);
+    } finally {
+      setActiveGameId(null);
+      navigate(`/analysis/${gameId}`);
+    }
   };
 
   const handleViewAllGames = () => {
-    navigate("/game-history");
+    navigate("/history");
   };
 
   return (
@@ -179,6 +198,8 @@ const RecentGamesList = () => {
                     variant="ghost"
                     size="sm"
                     iconName="LineChart"
+                    loading={isGeneratingReport && activeGameId === game?.id}
+                    disabled={isGeneratingReport && activeGameId === game?.id}
                     onClick={() => handleViewAnalysis(game?.id)}
                   >
                     Analyze

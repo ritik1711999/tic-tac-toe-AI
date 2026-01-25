@@ -2,6 +2,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -11,16 +12,32 @@ import type { ClientToServerEvents, ServerToClientEvents } from "./types";
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
 
+interface LevelUpData {
+  leveledUp: boolean;
+  newSkill: string | null;
+  previousSkill: string | null;
+  skillPoints: number;
+}
+
+interface NewAchievement {
+  achievementId: string;
+  unlockedAt: Date;
+}
+
 interface SocketContextType {
   socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
   isConnected: boolean;
   connectionError: string | null;
+  consumeLevelUp: () => LevelUpData | null;
+  consumeNewAchievements: () => NewAchievement[];
 }
 
 const SocketContext = createContext<SocketContextType>({
   socket: null,
   isConnected: false,
   connectionError: null,
+  consumeLevelUp: () => null,
+  consumeNewAchievements: () => [],
 });
 
 export const useSocket = () => {
@@ -42,11 +59,13 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   > | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
-  const { token, isAuthenticated } = useAuthStore();
+  const { token, isAuthenticated, user } = useAuthStore();
+  const levelUpRef = useRef<LevelUpData | null>(null);
+  const achievementsRef = useRef<NewAchievement[]>([]);
 
   useEffect(() => {
     // Only connect if user is authenticated
-    if (!isAuthenticated || !token) {
+    if (!isAuthenticated || !token || !user?._id) {
       return;
     }
 
@@ -57,12 +76,13 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       {
         auth: {
           token, // Backend authMiddleware will validate
+          userId: user._id,
         },
         reconnection: true,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
         timeout: 10000,
-      }
+      },
     );
 
     // Connection events
@@ -88,6 +108,31 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       setConnectionError(error);
     });
 
+    // Listen for level-up events and achievements, buffer them
+    newSocket.on("game-end", (data: any) => {
+      if (data?.leveledUp && data?.newSkill) {
+        levelUpRef.current = {
+          leveledUp: true,
+          newSkill: data.newSkill,
+          previousSkill: data.previousSkill ?? null,
+          skillPoints: data.skillPoints ?? 0,
+        };
+      }
+      if (data?.newAchievements && Array.isArray(data.newAchievements)) {
+        // Append new achievements to buffer (avoiding duplicates)
+        const existingIds = new Set(
+          achievementsRef.current.map((a) => a.achievementId),
+        );
+        const uniqueNewAchievements = data.newAchievements.filter(
+          (a: NewAchievement) => !existingIds.has(a.achievementId),
+        );
+        achievementsRef.current = [
+          ...achievementsRef.current,
+          ...uniqueNewAchievements,
+        ];
+      }
+    });
+
     setSocket(newSocket);
 
     // Cleanup on unmount or token change
@@ -97,10 +142,30 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       setSocket(null);
       setIsConnected(false);
     };
-  }, [token, isAuthenticated]);
+  }, [token, isAuthenticated, user?._id]);
+
+  const consumeLevelUp = () => {
+    const val = levelUpRef.current;
+    levelUpRef.current = null;
+    return val;
+  };
+
+  const consumeNewAchievements = () => {
+    const val = achievementsRef.current;
+    achievementsRef.current = [];
+    return val;
+  };
 
   return (
-    <SocketContext.Provider value={{ socket, isConnected, connectionError }}>
+    <SocketContext.Provider
+      value={{
+        socket,
+        isConnected,
+        connectionError,
+        consumeLevelUp,
+        consumeNewAchievements,
+      }}
+    >
       {children}
     </SocketContext.Provider>
   );

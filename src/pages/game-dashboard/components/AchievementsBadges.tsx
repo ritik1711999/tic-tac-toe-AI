@@ -1,77 +1,34 @@
 import Icon from "../../../components/AppIcon";
-import type { Achievement } from "../types";
 import "./styles/AchievementsBadges.css";
+import {
+  useProgression,
+  useProgressionRefetchOnGameEnd,
+} from "../../../hooks/useProgression";
+import {
+  useAchievements,
+  useAchievementsRefetchOnGameEnd,
+} from "../../../hooks/useAchievements";
 
 const AchievementsBadges = () => {
-  const achievements: Achievement[] = [
-    {
-      id: 1,
-      name: "First Victory",
-      description: "Win your first game",
-      icon: "Award",
-      color: "var(--color-success)",
-      unlocked: true,
-      unlockedDate: "12/15/2025",
-    },
-    {
-      id: 2,
-      name: "Winning Streak",
-      description: "Win 5 games in a row",
-      icon: "Flame",
-      color: "var(--color-warning)",
-      unlocked: true,
-      unlockedDate: "12/18/2025",
-    },
-    {
-      id: 3,
-      name: "Strategic Master",
-      description: "Win against Expert AI",
-      icon: "Brain",
-      color: "var(--color-primary)",
-      unlocked: false,
-      progress: 60,
-    },
-    {
-      id: 4,
-      name: "Speed Demon",
-      description: "Win a game in under 2 minutes",
-      icon: "Zap",
-      color: "var(--color-accent)",
-      unlocked: true,
-      unlockedDate: "12/17/2025",
-    },
-    {
-      id: 5,
-      name: "Century Club",
-      description: "Play 100 games",
-      icon: "Target",
-      color: "var(--color-secondary)",
-      unlocked: false,
-      progress: 85,
-    },
-    {
-      id: 6,
-      name: "Perfect Game",
-      description: "Win without opponent scoring",
-      icon: "Star",
-      color: "var(--color-success)",
-      unlocked: false,
-      progress: 0,
-    },
-  ];
+  const { data: progression, isLoading } = useProgression();
+  const { data: achievements, isLoading: achievementsLoading } =
+    useAchievements();
 
-  const skillLevel = {
-    current: "Advanced",
-    progress: 72,
-    nextLevel: "Expert",
-    gamesUntilNext: 15,
-  };
+  useProgressionRefetchOnGameEnd();
+  useAchievementsRefetchOnGameEnd();
+
+  const skillCurrentLabel = progression?.currentSkill?.label ?? "—";
+  const skillProgressPct = Math.round(progression?.progressPercent ?? 0);
+  const nextLabel = progression?.nextSkill?.label ?? "—";
+  const pointsToNext = progression?.pointsToNextLevel ?? 0;
 
   return (
     <>
       <div className="achievements-badges">
         <div className="achievements-section-header">
-          <h3 className="achievements-section-title">Achievements & Progress</h3>
+          <h3 className="achievements-section-title">
+            Achievements & Progress
+          </h3>
           <p className="section-subtitle">Track your gaming milestones</p>
         </div>
 
@@ -87,75 +44,108 @@ const AchievementsBadges = () => {
             </div>
             <div className="skill-info">
               <h4 className="skill-current">
-                Skill Level: {skillLevel?.current}
+                Skill Level: {isLoading ? "Loading..." : skillCurrentLabel}
               </h4>
               <p className="skill-next">
-                {skillLevel?.gamesUntilNext} games until {skillLevel?.nextLevel}
+                {isLoading
+                  ? ""
+                  : `Next: ${nextLabel} • ${pointsToNext} pts to level`}
               </p>
             </div>
           </div>
           <div className="achievements-progress-bar">
             <div
               className="achievements-progress-fill"
-              style={{ width: `${skillLevel?.progress}%` }}
+              style={{ width: `${skillProgressPct}%` }}
             />
           </div>
           <div className="progress-label">
-            <span>{skillLevel?.progress}% Complete</span>
+            <span>{skillProgressPct}% Complete</span>
           </div>
         </div>
 
         <div className="achievements-grid">
-          {achievements?.map((achievement) => (
+          {achievementsLoading ? (
             <div
-              key={achievement?.id}
-              className={`achievement-card ${
-                achievement?.unlocked ? "unlocked" : "locked"
-              }`}
+              style={{
+                gridColumn: "1 / -1",
+                textAlign: "center",
+                padding: "2rem",
+              }}
             >
-              <div
-                className="achievement-icon"
-                style={{ background: `${achievement?.color}15` }}
-              >
-                <Icon
-                  name={achievement?.icon}
-                  size={28}
-                  color={
-                    achievement?.unlocked
-                      ? achievement?.color
-                      : "var(--color-muted-foreground)"
-                  }
-                  strokeWidth={2}
-                />
-              </div>
-              <div className="achievement-content">
-                <h5 className="achievement-name">{achievement?.name}</h5>
-                <p className="achievement-description">
-                  {achievement?.description}
-                </p>
-                {achievement?.unlocked ? (
-                  <div className="unlocked-badge">
-                    <Icon name="Check" size={12} strokeWidth={3} />
-                    <span>Unlocked {achievement?.unlockedDate}</span>
-                  </div>
-                ) : (
-                  achievement?.progress !== undefined && (
-                    <div className="progress-indicator">
-                      <div className="mini-progress-bar">
-                        <div
-                          className="mini-progress-fill"
-                          style={{ width: `${achievement?.progress}%` }}
-                        />
-                      </div>
-                      <span className="progress-text">
-                        {achievement?.progress}%
-                      </span>
-                    </div>
-                  )
-                )}
-              </div>
+              Loading achievements...
             </div>
-          ))}
+          ) : (
+            achievements?.map((achievement: any) => {
+              const progressPercent =
+                achievement.target > 0
+                  ? Math.round(
+                      (achievement.progress / achievement.target) * 100,
+                    )
+                  : 0;
+
+              const formattedDate = achievement.unlockedAt
+                ? new Date(achievement.unlockedAt).toLocaleDateString("en-US", {
+                    month: "2-digit",
+                    day: "2-digit",
+                    year: "numeric",
+                  })
+                : "";
+
+              return (
+                <div
+                  key={achievement.id}
+                  className={`achievement-card ${
+                    achievement.isUnlocked ? "unlocked" : "locked"
+                  }`}
+                >
+                  <div
+                    className="achievement-icon"
+                    style={{
+                      background: achievement.isUnlocked
+                        ? "var(--color-success-subtle)"
+                        : "var(--color-muted)",
+                    }}
+                  >
+                    <Icon
+                      name={achievement.icon}
+                      size={28}
+                      color={
+                        achievement.isUnlocked
+                          ? "var(--color-success)"
+                          : "var(--color-muted-foreground)"
+                      }
+                      strokeWidth={2}
+                    />
+                  </div>
+                  <div className="achievement-content">
+                    <h5 className="achievement-name">{achievement.title}</h5>
+                    <p className="achievement-description">
+                      {achievement.description}
+                    </p>
+                    {achievement.isUnlocked ? (
+                      <div className="unlocked-badge">
+                        <Icon name="Check" size={12} strokeWidth={3} />
+                        <span>Unlocked {formattedDate}</span>
+                      </div>
+                    ) : (
+                      <div className="progress-indicator">
+                        <div className="mini-progress-bar">
+                          <div
+                            className="mini-progress-fill"
+                            style={{ width: `${progressPercent}%` }}
+                          />
+                        </div>
+                        <span className="progress-text">
+                          {achievement.progress} / {achievement.target}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
     </>

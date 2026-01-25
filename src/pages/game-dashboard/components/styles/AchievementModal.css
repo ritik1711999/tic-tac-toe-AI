@@ -1,0 +1,177 @@
+.achievement-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.achievement-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.achievement-modal-overlay.closing {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.achievement-modal-content {
+  background: linear-gradient(135deg, #1a1f2e 0%, #16213e 100%);
+  border: 2px solid var(--color-warning);
+  border-radius: 16px;
+  padding: 40px 32px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.achievement-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.achievement-modal-close:hover {
+  color: var(--color-text-primary);
+}
+
+.achievement-modal-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  animation: bounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.achievement-modal-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-warning);
+  text-align: center;
+  margin: 0 0 12px 0;
+}
+
+.achievement-modal-body {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.achievement-badge {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 24px 0;
+}
+
+.achievement-badge-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 8px 0;
+}
+
+.achievement-badge-description {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.achievement-modal-date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 16px 0;
+}
+
+.achievement-modal-message {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 16px 0 0 0;
+}
+
+.achievement-modal-btn {
+  width: 100%;
+  padding: 12px 24px;
+  background: linear-gradient(
+    135deg,
+    var(--color-warning),
+    var(--color-accent)
+  );
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.achievement-modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 152, 0, 0.3);
+}
+
+.achievement-modal-btn:active {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .achievement-modal-content,
+  .achievement-modal-icon {
+    animation: none;
+  }
+
+  .achievement-modal-overlay.active,
+  .achievement-modal-overlay.closing {
+    transition: none;
+  }
+}

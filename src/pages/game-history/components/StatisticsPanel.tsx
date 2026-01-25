@@ -5,29 +5,70 @@ import "./styles/StatisticsPanel.css";
 
 interface StatisticsPanelProps {
   stats: GameStats;
+  isLoading?: boolean;
+  error?: Error | null;
 }
 
-const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ stats }) => {
+const StatisticsPanel: React.FC<StatisticsPanelProps> = ({
+  stats,
+  isLoading = false,
+  error = null,
+}) => {
+  // Use provided derived metrics or fallback to calculations
   const winRate =
-    stats.totalGames > 0
-      ? ((stats.wins / stats.totalGames) * 100).toFixed(1)
-      : "0";
+    stats.winRate !== undefined
+      ? stats.winRate
+      : stats.totalGames > 0
+        ? (stats.wins / stats.totalGames) * 100
+        : 0;
 
   const avgMoves =
-    stats.totalGames > 0
-      ? (stats.totalMoves / stats.totalGames).toFixed(1)
-      : "0";
+    stats.avgMoves !== undefined
+      ? stats.avgMoves
+      : stats.totalGames > 0
+        ? stats.totalMoves / stats.totalGames
+        : 0;
 
   const avgDuration =
-    stats.totalGames > 0
-      ? Math.floor(stats.totalDuration / stats.totalGames)
-      : 0;
+    stats.avgDuration !== undefined
+      ? Math.floor(stats.avgDuration)
+      : stats.totalGames > 0
+        ? Math.floor(stats.totalDuration / stats.totalGames)
+        : 0;
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
+
+  if (isLoading) {
+    return (
+      <div className="history-statistics-panel">
+        <div className="history-panel-header">
+          <Icon name="BarChart3" size={20} strokeWidth={2} />
+          <h3 className="history-panel-title">Performance Statistics</h3>
+        </div>
+        <div className="history-stats-skeleton">
+          <p>Loading statistics...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="history-statistics-panel">
+        <div className="history-panel-header">
+          <Icon name="BarChart3" size={20} strokeWidth={2} />
+          <h3 className="history-panel-title">Performance Statistics</h3>
+        </div>
+        <div className="history-stats-error">
+          <p>Failed to load statistics</p>
+        </div>
+      </div>
+    );
+  }
 
   const statCards = [
     {
@@ -39,14 +80,14 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ stats }) => {
     },
     {
       label: "Win Rate",
-      value: `${winRate}%`,
+      value: `${winRate.toFixed(1)}%`,
       icon: "Trophy",
       color: "var(--color-success)",
       bgColor: "rgba(16, 185, 129, 0.1)",
     },
     {
       label: "Avg Moves",
-      value: avgMoves,
+      value: avgMoves.toFixed(1),
       icon: "Move",
       color: "var(--color-secondary)",
       bgColor: "rgba(15, 118, 110, 0.1)",
@@ -60,31 +101,37 @@ const StatisticsPanel: React.FC<StatisticsPanelProps> = ({ stats }) => {
     },
   ];
 
+  const outcomeBreakdown = stats.outcomeBreakdown || {
+    win: stats.wins,
+    lose: stats.loses,
+    draw: stats.draws,
+  };
+
   const outcomeStats = [
     {
       label: "Wins",
-      value: stats.wins,
+      value: outcomeBreakdown.win,
       percentage:
         stats.totalGames > 0
-          ? ((stats.wins / stats.totalGames) * 100).toFixed(0)
+          ? ((outcomeBreakdown.win / stats.totalGames) * 100).toFixed(0)
           : "0",
       color: "var(--color-success)",
     },
     {
       label: "Loses",
-      value: stats.loses,
+      value: outcomeBreakdown.lose,
       percentage:
         stats.totalGames > 0
-          ? ((stats.loses / stats.totalGames) * 100).toFixed(0)
+          ? ((outcomeBreakdown.lose / stats.totalGames) * 100).toFixed(0)
           : "0",
       color: "var(--color-error)",
     },
     {
       label: "Draws",
-      value: stats.draws,
+      value: outcomeBreakdown.draw,
       percentage:
         stats.totalGames > 0
-          ? ((stats.draws / stats.totalGames) * 100).toFixed(0)
+          ? ((outcomeBreakdown.draw / stats.totalGames) * 100).toFixed(0)
           : "0",
       color: "var(--color-muted-foreground)",
     },

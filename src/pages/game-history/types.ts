@@ -28,6 +28,14 @@ export interface GameStats {
   draws: number;
   totalMoves: number;
   totalDuration: number;
+  winRate?: number;
+  avgMoves?: number;
+  avgDuration?: number;
+  outcomeBreakdown?: {
+    win: number;
+    lose: number;
+    draw: number;
+  };
   byDifficulty: DifficultyStats[];
 }
 
@@ -37,6 +45,24 @@ export interface DifficultyStats {
   wins: number;
   loses: number;
   draws: number;
+}
+
+export interface HistoryStatsResponse {
+  totalGames: number;
+  wins: number;
+  loses: number;
+  draws: number;
+  totalMoves: number;
+  totalDuration: number;
+  winRate: number;
+  avgMoves: number;
+  avgDuration: number;
+  outcomeBreakdown: {
+    win: number;
+    lose: number;
+    draw: number;
+  };
+  byDifficulty: DifficultyStats[];
 }
 
 export interface SortConfig {

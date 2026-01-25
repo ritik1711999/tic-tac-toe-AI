@@ -1,46 +1,35 @@
 import React from "react";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
-import { Checkbox } from "../../../components/ui/Checkbox";
-import type { Game } from "../types";
+import type { RecentGame } from "../../../hooks/useGames";
 import "./styles/GameHistoryMobileCard.css";
 
 interface GameHistoryMobileCardProps {
-  game: Game;
-  isSelected: boolean;
-  onSelect: (gameId: string) => void;
-  onReplay: (gameId: string) => void;
+  game: RecentGame;
+  onReplay?: (gameId: string) => void;
   onAnalyze: (gameId: string) => void;
 }
 
 const GameHistoryMobileCard: React.FC<GameHistoryMobileCardProps> = ({
   game,
-  isSelected,
-  onSelect,
   onReplay,
   onAnalyze,
 }) => {
-  const formatDate = (date: Date) => {
-    const d = new Date(date);
-    return d?.toLocaleDateString("en-US", {
+  const formatDate = (dateStr: string | Date) => {
+    const date = typeof dateStr === "string" ? new Date(dateStr) : dateStr;
+    return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
     });
   };
 
-  const formatTime = (date: Date) => {
-    const d = new Date(date);
-    return d.toLocaleTimeString("en-US", {
+  const formatTime = (dateStr: string | Date) => {
+    const date = typeof dateStr === "string" ? new Date(dateStr) : dateStr;
+    return date.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
-
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const getOutcomeConfig = (outcome: string) => {
@@ -55,7 +44,15 @@ const GameHistoryMobileCard: React.FC<GameHistoryMobileCardProps> = ({
     return configs[outcome] || configs.draw;
   };
 
-  const getDifficultyBadge = (difficulty: string) => {
+  const extractDifficulty = (opponent: string): string => {
+    if (opponent.includes("Easy")) return "easy";
+    if (opponent.includes("Medium")) return "medium";
+    if (opponent.includes("Hard")) return "hard";
+    return "easy";
+  };
+
+  const getDifficultyBadge = (opponent: string) => {
+    const difficulty = extractDifficulty(opponent);
     const badges: Record<string, { label: string; class: string }> = {
       easy: { label: "Easy", class: "mobile-difficulty-easy" },
       medium: { label: "Medium", class: "mobile-difficulty-medium" },
@@ -64,21 +61,20 @@ const GameHistoryMobileCard: React.FC<GameHistoryMobileCardProps> = ({
     return badges[difficulty] || badges.easy;
   };
 
-  const outcomeConfig = getOutcomeConfig(game.outcome);
-  const difficultyBadge = getDifficultyBadge(game.difficulty);
+  const outcomeConfig = getOutcomeConfig(game.result);
+  const difficultyBadge = getDifficultyBadge(game.opponent);
 
   return (
-    <div className={`mobile-game-card ${isSelected ? "selected" : ""}`}>
+    <div className="mobile-game-card">
       <div className="mobile-card-header">
         <div className="mobile-header-left">
-          <Checkbox
-            checked={isSelected}
-            onChange={() => onSelect(game.id)}
-            aria-label={`Select game ${game.id}`}
-          />
           <div className="mobile-game-info">
-            <span className="mobile-game-date">{formatDate(game.date)}</span>
-            <span className="mobile-game-time">{formatTime(game.date)}</span>
+            <span className="mobile-game-date">
+              {formatDate(game.timestamp)}
+            </span>
+            <span className="mobile-game-time">
+              {formatTime(game.timestamp)}
+            </span>
           </div>
         </div>
         <div className={`mobile-outcome-indicator ${outcomeConfig.class}`}>
@@ -108,9 +104,7 @@ const GameHistoryMobileCard: React.FC<GameHistoryMobileCardProps> = ({
           <div className="mobile-stat-item">
             <Icon name="Clock" size={16} strokeWidth={2} />
             <span className="mobile-stat-label">Duration:</span>
-            <span className="mobile-stat-value">
-              {formatDuration(game.duration)}
-            </span>
+            <span className="mobile-stat-value">{game.duration}</span>
           </div>
 
           <div className="mobile-stat-item">
@@ -122,22 +116,24 @@ const GameHistoryMobileCard: React.FC<GameHistoryMobileCardProps> = ({
               color="var(--color-warning)"
             />
             <span className="mobile-stat-label">Rating:</span>
-            <span className="mobile-stat-value">{game.rating.toFixed(1)}</span>
+            <span className="mobile-stat-value">-</span>
           </div>
         </div>
       </div>
 
       <div className="mobile-card-footer">
-        <Button
-          variant="outline"
-          size="sm"
-          iconName="Play"
-          iconPosition="left"
-          onClick={() => onReplay(game.id)}
-          fullWidth
-        >
-          Replay
-        </Button>
+        {onReplay && (
+          <Button
+            variant="outline"
+            size="sm"
+            iconName="Play"
+            iconPosition="left"
+            onClick={() => onReplay(game.id)}
+            fullWidth
+          >
+            Replay
+          </Button>
+        )}
         <Button
           variant="primary"
           size="sm"

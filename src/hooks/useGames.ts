@@ -1,6 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
 import apiClient from "../lib/api/client";
 import type { GameData } from "../pages/game-analysis/types";
+import type { HistoryStatsResponse } from "../pages/game-history/types";
 
 interface Game {
   _id: string;
@@ -145,6 +151,7 @@ export interface RecentGame {
   duration: string;
   timestamp: Date;
   winningPattern: string;
+  durationSeconds: number;
 }
 
 interface RecentGamesResponse {
@@ -166,5 +173,80 @@ export const useRecentGames = (limit = 20) => {
     },
     retry: 1,
     gcTime: 2 * 60 * 1000, // Cache for 2 minutes
+  });
+};
+
+export interface GameHistoryFilters {
+  search: string;
+  dateFrom: string;
+  dateTo: string;
+  outcome: string;
+  difficulty: string;
+  duration: string;
+}
+
+export interface PaginatedGameResponse {
+  games: RecentGame[];
+  pageInfo: {
+    currentPage: number;
+    pageSize: number;
+    totalCount: number;
+    hasNextPage: boolean;
+  };
+}
+
+export const useGameHistory = (filters: GameHistoryFilters, limit = 10) => {
+  return useInfiniteQuery({
+    queryKey: ["game-history", filters],
+    queryFn: async ({ pageParam = 1 }) => {
+      const { data } = await apiClient.get<PaginatedGameResponse>(
+        "/games/history",
+        {
+          params: {
+            page: pageParam,
+            limit,
+            search: filters.search,
+            outcome: filters.outcome,
+            difficulty: filters.difficulty,
+            duration: filters.duration,
+            dateFrom: filters.dateFrom,
+            dateTo: filters.dateTo,
+          },
+        },
+      );
+      return data;
+    },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.pageInfo.hasNextPage) {
+        return lastPage.pageInfo.currentPage + 1;
+      }
+      return undefined;
+    },
+    initialPageParam: 1,
+    retry: 1,
+  });
+};
+
+export const useGameHistoryStats = (filters: GameHistoryFilters) => {
+  return useQuery({
+    queryKey: ["game-history", "stats", filters],
+    queryFn: async () => {
+      const { data } = await apiClient.get<HistoryStatsResponse>(
+        "/games/history/stats",
+        {
+          params: {
+            outcome: filters.outcome,
+            difficulty: filters.difficulty,
+            duration: filters.duration,
+            dateFrom: filters.dateFrom,
+            dateTo: filters.dateTo,
+          },
+        },
+      );
+      return data;
+    },
+    retry: 1,
+    gcTime: 5 * 60 * 1000, // Cache for 5 minutes
+    staleTime: 1 * 60 * 1000, // Fresh for 1 minute
   });
 };
