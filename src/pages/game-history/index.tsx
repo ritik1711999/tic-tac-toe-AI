@@ -107,7 +107,6 @@ const GameHistory: React.FC = () => {
       };
 
   const handleReplay = (gameId: string) => {
-    console.log("Replaying game:", gameId);
     navigate("/game-board", { state: { replayGameId: gameId } });
   };
 

@@ -80,7 +80,6 @@ export const useGoogleAuth = () => {
 
   return useMutation({
     mutationFn: async (code: string) => {
-      console.log("google_auth_code_to_exchange_for_token_in_backend", code);
       //   const { data } = await apiClient.post<AuthResponse>("/auth/google", {
       //     idToken,
       //   });
