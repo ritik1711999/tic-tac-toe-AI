@@ -21,7 +21,6 @@ const Login = () => {
 
   const googleLogin = useGoogleLogin({
     onSuccess: (codeResponse) => {
-      console.log("Google login success:", codeResponse);
       googleAuthMutation.mutate(codeResponse.code);
     },
     onError: () => {

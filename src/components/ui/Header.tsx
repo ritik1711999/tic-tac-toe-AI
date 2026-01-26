@@ -14,7 +14,7 @@ const Header = ({ onNavigationAttempt }: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
-  console.log("USER___", user);
+
   const logout = useLogout();
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
