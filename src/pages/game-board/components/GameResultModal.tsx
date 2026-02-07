@@ -12,6 +12,9 @@ interface GameResultModalProps {
   onNewGame: () => void;
   onViewAnalysis: () => void;
   gameStats: GameStats;
+  isTimedOut?: boolean;
+  timeoutLoser?: "X" | "O" | null;
+  userSymbol?: "X" | "O";
 }
 
 const GameResultModal = ({
@@ -21,13 +24,16 @@ const GameResultModal = ({
   onNewGame,
   onViewAnalysis,
   gameStats,
+  isTimedOut = false,
+  timeoutLoser = null,
+  userSymbol = "X",
 }: GameResultModalProps) => {
   // Trigger confetti on win
   useEffect(() => {
     if (isOpen && result === "win") {
       // Check if user prefers reduced motion
       const prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
+        "(prefers-reduced-motion: reduce)",
       ).matches;
 
       if (!prefersReducedMotion) {
@@ -59,24 +65,38 @@ const GameResultModal = ({
   if (!isOpen) return null;
 
   const getResultIcon = () => {
+    if (isTimedOut) return "Timer";
     if (result === "win") return "Trophy";
     if (result === "lose") return "X";
     return "Minus";
   };
 
   const getResultTitle = () => {
+    if (isTimedOut) {
+      if (timeoutLoser === userSymbol) return "Time's Up!";
+      return "Opponent Timed Out!";
+    }
     if (result === "win") return "Victory!";
     if (result === "lose") return "Defeat";
     return "Draw";
   };
 
   const getResultMessage = () => {
+    if (isTimedOut) {
+      if (timeoutLoser === userSymbol)
+        return "You ran out of time. Better play faster next time!";
+      return "Your opponent ran out of time. You win!";
+    }
     if (result === "win") return "Congratulations! You won the game.";
     if (result === "lose") return "Better luck next time!";
     return "Well played! The game ended in a draw.";
   };
 
   const getResultColor = () => {
+    if (isTimedOut) {
+      if (timeoutLoser === userSymbol) return "var(--color-error)";
+      return "var(--color-success)";
+    }
     if (result === "win") return "var(--color-success)";
     if (result === "lose") return "var(--color-error)";
     return "var(--color-warning)";

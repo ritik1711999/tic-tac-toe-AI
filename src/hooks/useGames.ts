@@ -19,6 +19,19 @@ interface Game {
   duration: number;
   rating?: number;
   status: "in-progress" | "completed" | "abandoned" | "paused";
+  // Timer fields
+  timerEnabled?: boolean;
+  turnDuration?: number;
+  playerXTimeRemaining?: number;
+  playerOTimeRemaining?: number;
+  timerLastStartedAt?: string | null;
+  timeoutLoser?: "X" | "O";
+  // User info (populated)
+  user?: {
+    _id: string;
+    name?: string;
+    avatar?: string;
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -26,6 +39,7 @@ interface Game {
 export interface CreateGamePayload {
   vs: "AI" | "Human";
   difficulty?: "easy" | "medium" | "hard";
+  timerDuration?: number; // Duration in seconds for local multiplayer
   opponentId?: string;
 }
 
