@@ -4,6 +4,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Icon from "../../components/AppIcon";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import { useRegister, useGoogleAuth } from "../../hooks/useAuth";
 import "./register.css";
 
@@ -242,7 +243,7 @@ const Register = () => {
           </div>
 
           {registerMutation.isPending && (
-            <p className="loading-message">Creating account...</p>
+            <LoadingSpinner size="small" message="Creating account..." variant="inline" />
           )}
           {registerMutation.isError && (
             <p className="error-message">

@@ -4,6 +4,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Icon from "../../components/AppIcon";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import { useLogin, useGoogleAuth } from "../../hooks/useAuth";
 import "./login.css";
 
@@ -128,7 +129,7 @@ const Login = () => {
           </div>
 
           {loginMutation.isPending && (
-            <p className="loading-message">Signing in...</p>
+            <LoadingSpinner size="small" message="Signing in..." variant="inline" />
           )}
           {loginMutation.isError && (
             <p className="error-message">
