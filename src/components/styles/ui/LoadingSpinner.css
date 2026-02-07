@@ -46,6 +46,7 @@
   border-radius: var(--radius-lg);
   border: 2px solid var(--color-border);
   box-shadow: var(--shadow-md);
+  animation: subtle-rotate 8s ease-in-out infinite;
 }
 
 .grid-cell {
@@ -136,11 +137,6 @@
     opacity: 1;
     transform: scale(1);
   }
-}
-
-/* Rotating animation for the entire grid */
-.tictactoe-grid {
-  animation: subtle-rotate 8s ease-in-out infinite;
 }
 
 @keyframes subtle-rotate {
