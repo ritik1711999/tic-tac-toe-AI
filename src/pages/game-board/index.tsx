@@ -11,6 +11,7 @@ import MoveHistory from "./components/MoveHistory";
 import GameControls from "./components/GameControls";
 import GameResultModal from "./components/GameResultModal";
 import LeaveGameConfirmationModal from "./components/LeaveGameConfirmationModal";
+import PlayerTimerAvatar from "./components/PlayerTimerAvatar";
 import ConnectionStatus from "../../components/ConnectionStatus";
 import { useSocket } from "../../lib/socket/SocketContext";
 import { useGameById } from "../../hooks/useGames";
@@ -53,6 +54,23 @@ const GameBoard = () => {
   const [error, setError] = useState<string | null>(null);
   const [agingEnabled, setAgingEnabled] = useState(true);
   const [maxAge, setMaxAge] = useState(5);
+
+  // === Timer State (chess-clock) ===
+  const [timerEnabled, setTimerEnabled] = useState(false);
+  const [turnDuration, setTurnDuration] = useState(0);
+  const [playerXTime, setPlayerXTime] = useState(0);
+  const [playerOTime, setPlayerOTime] = useState(0);
+  const [timerActivePlayer, setTimerActivePlayer] = useState<"X" | "O" | null>(
+    "X",
+  );
+  const [gameVs, setGameVs] = useState<"AI" | "Human">("AI");
+  const [gameDifficulty, setGameDifficulty] = useState<string>("");
+  const [playerAvatar, setPlayerAvatar] = useState<string | undefined>(
+    undefined,
+  );
+  const [playerName, setPlayerName] = useState<string>("You");
+  const [isTimedOut, setIsTimedOut] = useState(false);
+  const [timeoutLoser, setTimeoutLoser] = useState<"X" | "O" | null>(null);
 
   // === Leave Game Confirmation Modal ===
   const [showLeaveModal, setShowLeaveModal] = useState(false);
@@ -187,6 +205,54 @@ const GameBoard = () => {
       });
       setCellAging(aging);
       setExpiredCells(expired);
+
+      // Initialize timer state from game data
+      setGameVs(gameData.game.vs || "AI");
+      setGameDifficulty(gameData.game.difficulty || "");
+      if (gameData.game.timerEnabled) {
+        setTimerEnabled(true);
+        setTurnDuration(gameData.game.turnDuration || 0);
+        // Calculate remaining time accounting for elapsed turn time
+        let pxTime = gameData.game.playerXTimeRemaining ?? 0;
+        let poTime = gameData.game.playerOTimeRemaining ?? 0;
+        if (
+          gameData.game.timerLastStartedAt &&
+          gameData.game.status === "in-progress"
+        ) {
+          const elapsed =
+            (Date.now() -
+              new Date(gameData.game.timerLastStartedAt).getTime()) /
+            1000;
+          if (gameData.currentPlayer === "X") {
+            pxTime = Math.max(0, pxTime - elapsed);
+          } else {
+            poTime = Math.max(0, poTime - elapsed);
+          }
+        }
+        setPlayerXTime(pxTime);
+        setPlayerOTime(poTime);
+        setTimerActivePlayer(
+          gameData.game.status === "in-progress"
+            ? gameData.currentPlayer
+            : null,
+        );
+      }
+
+      // Load player avatar/name from populated user
+      if (gameData.game.user) {
+        const gameUser = gameData.game.user as any;
+        if (gameUser.avatar) setPlayerAvatar(gameUser.avatar);
+        if (gameUser.name) setPlayerName(gameUser.name);
+      }
+      // Also use auth store user info as fallback
+      if (user?.avatar) setPlayerAvatar(user.avatar);
+      if (user?.name) setPlayerName(user.name || "You");
+
+      // Check if game ended by timeout
+      if (gameData.game.timeoutLoser) {
+        setIsTimedOut(true);
+        setTimeoutLoser(gameData.game.timeoutLoser as "X" | "O");
+      }
 
       // Check if game is already completed
       if (gameData.game.status === "completed") {
@@ -403,11 +469,40 @@ const GameBoard = () => {
       setTimeout(() => setError(null), 5000);
     };
 
+    // Listen for timer updates
+    const handleTimerUpdate = (data: {
+      gameId: string;
+      playerXTimeRemaining: number;
+      playerOTimeRemaining: number;
+      activePlayer: "X" | "O" | null;
+    }) => {
+      console.log("⏱️ Timer update:", data);
+      setPlayerXTime(data.playerXTimeRemaining);
+      setPlayerOTime(data.playerOTimeRemaining);
+      setTimerActivePlayer(data.activePlayer);
+    };
+
+    // Listen for game timeout
+    const handleGameTimeout = (data: {
+      gameId: string;
+      winner: "X" | "O";
+      loser: "X" | "O";
+      reason: "timeout";
+    }) => {
+      console.log("⏰ Game timeout:", data);
+      setIsTimedOut(true);
+      setTimeoutLoser(data.loser);
+      setTimerActivePlayer(null);
+      // The game-end event will also fire and handle the result modal
+    };
+
     socket.on("game-update", handleGameUpdate);
     socket.on("ai-move", handleAiMove);
     socket.on("game-end", handleGameOver);
     socket.on("cell-expired", handleCellExpired);
     socket.on("aging-state", handleAgingState);
+    socket.on("timer-update", handleTimerUpdate);
+    socket.on("game-timeout", handleGameTimeout);
     socket.on("error", handleError);
 
     // Cleanup listeners on unmount
@@ -417,6 +512,8 @@ const GameBoard = () => {
       socket.off("game-end", handleGameOver);
       socket.off("cell-expired", handleCellExpired);
       socket.off("aging-state", handleAgingState);
+      socket.off("timer-update", handleTimerUpdate);
+      socket.off("game-timeout", handleGameTimeout);
       socket.off("error", handleError);
     };
   }, [
@@ -691,6 +788,39 @@ const GameBoard = () => {
           )}
 
           <div className="game-main">
+            {/* Timer Players Row */}
+            <div className="timer-players-row">
+              <PlayerTimerAvatar
+                label={playerName || "You"}
+                shortLabel={playerName ? playerName.split(" ")[0] : "You"}
+                avatar={playerAvatar}
+                isAI={false}
+                symbol="X"
+                timeRemaining={playerXTime}
+                totalBudget={turnDuration}
+                isActive={timerActivePlayer === "X" && isGameActive}
+                timerEnabled={timerEnabled}
+                isCurrentUser
+              />
+              <div className="timer-vs-divider">VS</div>
+              <PlayerTimerAvatar
+                label={
+                  gameVs === "AI"
+                    ? `AI (${gameDifficulty || "easy"})`
+                    : "Opponent"
+                }
+                shortLabel={gameVs === "AI" ? "AI" : "Opponent"}
+                avatar={undefined}
+                isAI={gameVs === "AI"}
+                symbol="O"
+                timeRemaining={playerOTime}
+                totalBudget={turnDuration}
+                isActive={timerActivePlayer === "O" && isGameActive}
+                timerEnabled={timerEnabled}
+                mirrored
+              />
+            </div>
+
             <GameGrid
               board={board}
               onCellClick={handleCellClick}
@@ -743,6 +873,9 @@ const GameBoard = () => {
           onNewGame={handleNewGame}
           onViewAnalysis={handleViewAnalysis}
           gameStats={gameStats}
+          isTimedOut={isTimedOut}
+          timeoutLoser={timeoutLoser}
+          userSymbol={userSymbol}
         />
       </div>
     </>

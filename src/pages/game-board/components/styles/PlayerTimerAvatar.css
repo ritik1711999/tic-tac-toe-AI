@@ -1,0 +1,416 @@
+/* ===== Player Timer Avatar ===== */
+
+.player-timer-avatar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-lg);
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
+  transition: all var(--transition-fast);
+  min-width: 0;
+}
+
+.player-timer-avatar.active {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-card));
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+.player-timer-avatar.urgent {
+  border-color: var(--color-error);
+  background: color-mix(in srgb, var(--color-error) 6%, var(--color-card));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 15%, transparent);
+  animation: urgentPulse 1s ease-in-out infinite;
+}
+
+.player-timer-avatar.low-time {
+  border-color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 6%, var(--color-card));
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-warning) 12%, transparent);
+}
+
+@keyframes urgentPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--color-error) 15%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 6px color-mix(in srgb, var(--color-error) 25%, transparent),
+      0 0 20px color-mix(in srgb, var(--color-error) 15%, transparent);
+  }
+}
+
+/* ===== Avatar Ring Container ===== */
+
+.avatar-ring-container {
+  position: relative;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+}
+
+.timer-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.timer-ring-bg {
+  stroke: var(--color-border);
+  opacity: 0.3;
+}
+
+.timer-ring-progress {
+  transition:
+    stroke-dashoffset 1s linear,
+    stroke 0.3s ease;
+}
+
+.avatar-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.avatar-placeholder.ai-avatar {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #ffffff;
+}
+
+.avatar-placeholder.human-avatar {
+  background: linear-gradient(135deg, #14b8a6, #06b6d4);
+  color: #ffffff;
+}
+
+/* ===== Active Turn Dot ===== */
+
+.active-turn-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-success);
+  border: 2.5px solid var(--color-card);
+  z-index: 3;
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.urgent .active-turn-dot {
+  background: var(--color-error);
+  animation: dotPulse 0.6s ease-in-out infinite;
+}
+
+.low-time .active-turn-dot {
+  background: var(--color-warning);
+}
+
+/* ===== Player Info ===== */
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.player-label {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-label-full {
+  display: inline;
+}
+
+.player-label-short {
+  display: none;
+}
+
+.player-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-data);
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.symbol-X {
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  color: var(--color-primary);
+}
+
+.symbol-O {
+  background: color-mix(in srgb, var(--color-error) 15%, transparent);
+  color: var(--color-error);
+}
+
+.player-time {
+  font-family: var(--font-data);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.player-time.time-urgent {
+  color: var(--color-error);
+  animation: timeFlash 0.5s ease-in-out infinite;
+}
+
+.player-time.time-low {
+  color: var(--color-warning);
+}
+
+.player-time.no-timer {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-muted-foreground);
+  letter-spacing: 0;
+}
+
+@keyframes timeFlash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* ===== Mobile-only time (below avatar) ===== */
+
+.player-time-mobile {
+  display: none;
+}
+
+/* ===== Mobile-only compact label ===== */
+
+.player-mobile-label {
+  display: none;
+}
+
+/* ===== Timer Players Row (container in game-board) ===== */
+
+.timer-players-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0;
+}
+
+.timer-vs-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 767px) {
+  /* Remove card box on mobile — show only avatar column */
+  .player-timer-avatar {
+    padding: 0;
+    gap: 4px;
+    background: transparent;
+    border: none !important;
+    box-shadow: none !important;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .player-timer-avatar.active {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .player-timer-avatar.urgent {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .player-timer-avatar.low-time {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .avatar-ring-container {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .avatar-inner {
+    width: 48px;
+    height: 48px;
+  }
+
+  /* Show mobile time below avatar */
+  .player-time-mobile {
+    display: block;
+    position: absolute;
+    bottom: -18px;
+    font-family: var(--font-data);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-foreground);
+    letter-spacing: 0.02em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .player-time-mobile.time-urgent {
+    color: var(--color-error);
+    animation: timeFlash 0.5s ease-in-out infinite;
+  }
+
+  .player-time-mobile.time-low {
+    color: var(--color-warning);
+  }
+
+  .player-time-mobile.no-timer {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--color-muted-foreground);
+    letter-spacing: 0;
+  }
+
+  /* Hide desktop player-info panel, show compact labels */
+  .player-info {
+    display: none !important;
+  }
+
+  /* Show mobile compact label */
+  .player-mobile-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-muted-foreground);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  /* Short label handling */
+  .player-label-full {
+    display: none;
+  }
+
+  .player-label-short {
+    display: inline;
+  }
+
+  .player-symbol {
+    width: 16px;
+    height: 16px;
+    font-size: 0.6rem;
+  }
+
+  /* Mirrored layout for opponent — avatar on right */
+  .player-timer-avatar.mirrored {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .timer-players-row {
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .timer-vs-divider {
+    font-size: 0.7rem;
+    padding-top: 18px;
+  }
+}
+
+@media (max-width: 400px) {
+  .avatar-ring-container {
+    width: 56px;
+    height: 56px;
+  }
+
+  .avatar-inner {
+    width: 44px;
+    height: 44px;
+  }
+
+  .player-time-mobile {
+    font-size: 0.7rem;
+  }
+}

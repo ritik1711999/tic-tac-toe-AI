@@ -39,4 +39,19 @@ export interface GameInfo {
   agingEnabled?: boolean;
   maxAge?: number;
   createdAt?: string;
+  // Timer fields
+  timerEnabled?: boolean;
+  turnDuration?: number;
+  playerXTimeRemaining?: number;
+  playerOTimeRemaining?: number;
+  timerLastStartedAt?: string | null;
+  timeoutLoser?: "X" | "O";
+}
+
+export interface TimerState {
+  enabled: boolean;
+  turnDuration: number; // total budget in seconds
+  playerXTimeRemaining: number;
+  playerOTimeRemaining: number;
+  activePlayer: "X" | "O" | null;
 }

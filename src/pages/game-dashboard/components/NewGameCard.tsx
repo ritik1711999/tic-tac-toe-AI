@@ -11,8 +11,9 @@ const NewGameCard = () => {
   const navigate = useNavigate();
   const createGameMutation = useCreateGame();
   const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">(
-    "medium"
+    "medium",
   );
+  const [timerDuration, setTimerDuration] = useState<60 | 180 | 300>(180); // Default 3 minutes
   const [gameMode, setGameMode] = useState<"AI" | "Human">("AI");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,6 +26,12 @@ const NewGameCard = () => {
       label: "Hard",
       description: "Strategic thinking required",
     },
+  ];
+
+  const durationOptions = [
+    { value: "60", label: "1 Minute", description: "Fast-paced game" },
+    { value: "180", label: "3 Minutes", description: "Balanced pace" },
+    { value: "300", label: "5 Minutes", description: "Relaxed gameplay" },
   ];
 
   const gameModeOptions = [
@@ -47,6 +54,7 @@ const NewGameCard = () => {
       const gamePayload: CreateGamePayload = {
         vs,
         ...(vs === "AI" && { difficulty }),
+        ...(vs === "Human" && { timerDuration }),
       };
 
       const createdGame = await createGameMutation.mutateAsync(gamePayload);
@@ -56,6 +64,7 @@ const NewGameCard = () => {
         state: {
           difficulty: gameMode === "AI" ? difficulty : undefined,
           gameMode,
+          timerDuration: gameMode === "Human" ? timerDuration : undefined,
         },
       });
     } catch (err: any) {
@@ -109,16 +118,29 @@ const NewGameCard = () => {
           </div>
 
           <div className="page-dashboard-form-group">
-            <Select
-              label="AI Difficulty"
-              description="Select challenge level for AI opponent"
-              options={difficultyOptions}
-              value={difficulty}
-              onChange={(value) =>
-                setDifficulty(value as "easy" | "medium" | "hard")
-              }
-              disabled={gameMode === "Human" || isLoading}
-            />
+            {gameMode === "AI" ? (
+              <Select
+                label="AI Difficulty"
+                description="Select challenge level for AI opponent"
+                options={difficultyOptions}
+                value={difficulty}
+                onChange={(value) =>
+                  setDifficulty(value as "easy" | "medium" | "hard")
+                }
+                disabled={isLoading}
+              />
+            ) : (
+              <Select
+                label="Time Budget"
+                description="Choose time per player in local multiplayer"
+                options={durationOptions}
+                value={timerDuration.toString()}
+                onChange={(value) =>
+                  setTimerDuration(parseInt(value as string) as 60 | 180 | 300)
+                }
+                disabled={isLoading}
+              />
+            )}
           </div>
 
           <div className="page-dashboard-action-buttons">

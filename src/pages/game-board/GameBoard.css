@@ -25,17 +25,17 @@
 .game-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 16px 24px;
   display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 24px;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
   min-height: calc(100vh - 140px);
 }
 
 .game-main {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
 .game-sidebar {
@@ -83,8 +83,10 @@
   box-shadow: 0 12px 30px rgba(255, 82, 82, 0.35);
   cursor: pointer;
   z-index: 80;
-  transition: transform var(--transition-fast),
-    box-shadow var(--transition-fast), opacity var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    opacity var(--transition-fast);
 }
 
 .mobile-leave-fab:hover {

@@ -56,5 +56,19 @@ export interface ServerToClientEvents {
     }>;
   }) => void;
 
+  "timer-update": (data: {
+    gameId: string;
+    playerXTimeRemaining: number;
+    playerOTimeRemaining: number;
+    activePlayer: "X" | "O" | null;
+  }) => void;
+
+  "game-timeout": (data: {
+    gameId: string;
+    winner: "X" | "O";
+    loser: "X" | "O";
+    reason: "timeout";
+  }) => void;
+
   error: (data: string) => void;
 }
