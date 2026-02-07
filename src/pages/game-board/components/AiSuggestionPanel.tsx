@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Icon from "../../../components/AppIcon";
+import LoadingSpinner from "../../../components/ui/LoadingSpinner";
 import type { Suggestion } from "../types";
 import "./styles/AiSuggestionPanel.css";
 
@@ -72,16 +73,6 @@ const AiSuggestionPanel = ({
           <div className="ai-panel-header-content">
             <Icon name="Lightbulb" size={20} strokeWidth={2} />
             <h3 className="ai-panel-title">AI Suggestions</h3>
-            {isAiThinking && (
-              <div className="thinking-indicator">
-                <Icon
-                  name="Loader2"
-                  size={16}
-                  strokeWidth={2}
-                  className="animate-spin"
-                />
-              </div>
-            )}
           </div>
           <button
             className="toggle-button"
@@ -98,7 +89,11 @@ const AiSuggestionPanel = ({
 
         {isVisible && (
           <div className="panel-content">
-            {suggestions?.length === 0 ? (
+            {isAiThinking ? (
+              <div className="thinking-state">
+                <LoadingSpinner size="small" message="AI is thinking..." variant="inline" />
+              </div>
+            ) : suggestions?.length === 0 ? (
               <div className="suggestion-empty-state">
                 <Icon name="Info" size={32} strokeWidth={1.5} />
                 <p className="suggestion-empty-text">

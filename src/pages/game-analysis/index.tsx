@@ -4,6 +4,7 @@ import Header from "../../components/ui/Header";
 import GameStatusIndicator from "../../components/ui/GameStatusIndicator";
 import QuickActionsMenu from "../../components/ui/QuickActionsMenu";
 import BreadcrumbContext from "../../components/ui/BreadcrumbContext";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import GameBoard from "./components/GameBoard";
 import MoveTimeline from "./components/MoveTimeline";
 import AnalysisPanel from "./components/AnalysisPanel";
@@ -73,8 +74,7 @@ const GameAnalysis = () => {
         <main className="page-analysis-main">
           <div className="page-analysis-container">
             <div className="analysis-loading-state">
-              <Icon name="Loader" size={48} strokeWidth={2} />
-              <p className="loading-text">Generating analysis with AI...</p>
+              <LoadingSpinner size="large" message="Generating analysis with AI..." />
               <p className="loading-subtext">This may take a moment</p>
             </div>
           </div>

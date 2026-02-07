@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import Header from "../../components/ui/Header";
 import GameStatusIndicator from "../../components/ui/GameStatusIndicator";
 import QuickActionsMenu from "../../components/ui/QuickActionsMenu";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import GameGrid from "./components/GameGrid";
 import AiSuggestionPanel from "./components/AiSuggestionPanel";
 import MoveHistory from "./components/MoveHistory";
@@ -638,7 +639,7 @@ const GameBoard = () => {
       <div className="game-board-page">
         <Header />
         <div className="game-loading">
-          <p>Loading game...</p>
+          <LoadingSpinner size="medium" message="Loading game..." />
         </div>
       </div>
     );
