@@ -737,6 +737,9 @@ const GameBoard = () => {
     navigate(`/analysis/${gameId}`);
   };
 
+  const isAiTurn = gameVs === "AI" && currentPlayer !== userSymbol;
+  const disableHint = isAiThinking || isAiTurn || hintsRemaining === 0;
+
   const gameStats: GameStats = {
     totalMoves: moveCount,
     gameTime: formatGameTime(gameTime),
@@ -852,6 +855,7 @@ const GameBoard = () => {
               onViewAnalysis={handleViewAnalysis}
               isGameOver={!isGameActive}
               hintsRemaining={hintsRemaining}
+              disableHint={disableHint}
             />
           </div>
 
