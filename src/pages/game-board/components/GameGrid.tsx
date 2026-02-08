@@ -10,6 +10,7 @@ interface GameGridProps {
   isAiThinking: boolean;
   cellAging?: Map<number, { age: number; expiresIn: number }>;
   expiredCells?: Set<number>;
+  highlightedHintCell?: number | null;
 }
 
 const GameGrid = ({
@@ -20,6 +21,7 @@ const GameGrid = ({
   isAiThinking,
   cellAging,
   expiredCells,
+  highlightedHintCell,
 }: GameGridProps) => {
   const getCellContent = (value: Player | null, isWinningCell: boolean) => {
     if (!value) return null;
@@ -70,7 +72,7 @@ const GameGrid = ({
                   isAging ? "aging" : ""
                 } ${isExpiring ? "expiring" : ""} ${
                   isExpired ? "expired" : ""
-                }`}
+                } ${index === highlightedHintCell ? "hint-highlight" : ""}`}
                 onClick={() => isCellClickable(index) && onCellClick(index)}
                 disabled={!isCellClickable(index)}
                 aria-label={`Cell ${index + 1}, ${cell || "empty"}`}

@@ -46,6 +46,8 @@ export interface GameInfo {
   playerOTimeRemaining?: number;
   timerLastStartedAt?: string | null;
   timeoutLoser?: "X" | "O";
+  // Hints field
+  hintsUsed?: number;
 }
 
 export interface TimerState {

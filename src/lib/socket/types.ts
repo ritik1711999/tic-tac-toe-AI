@@ -7,6 +7,7 @@ export interface ClientToServerEvents {
     userId: string;
   }) => void;
   "leave-game": (data: { gameId: string }) => void;
+  "request-hint": (data: { gameId: string }) => void;
 }
 
 // Events received from server
@@ -70,5 +71,14 @@ export interface ServerToClientEvents {
     reason: "timeout";
   }) => void;
 
-  error: (data: string) => void;
+  "hint-suggestion": (data: {
+    gameId: string;
+    position: number;
+    confidence: number;
+    strategy: string;
+    moveType: string;
+    hintsRemaining: number;
+  }) => void;
+
+  error: (data: string | { message: string }) => void;
 }

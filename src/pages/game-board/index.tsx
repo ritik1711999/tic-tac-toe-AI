@@ -6,7 +6,6 @@ import GameStatusIndicator from "../../components/ui/GameStatusIndicator";
 import QuickActionsMenu from "../../components/ui/QuickActionsMenu";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import GameGrid from "./components/GameGrid";
-import AiSuggestionPanel from "./components/AiSuggestionPanel";
 import MoveHistory from "./components/MoveHistory";
 import GameControls from "./components/GameControls";
 import GameResultModal from "./components/GameResultModal";
@@ -16,7 +15,7 @@ import ConnectionStatus from "../../components/ConnectionStatus";
 import { useSocket } from "../../lib/socket/SocketContext";
 import { useGameById } from "../../hooks/useGames";
 import { useAuthStore } from "../../store/authStore";
-import type { Player, GameResult, Move, Suggestion, GameStats } from "./types";
+import type { Player, GameResult, Move, GameStats } from "./types";
 import "./GameBoard.css";
 
 const GameBoard = () => {
@@ -50,7 +49,6 @@ const GameBoard = () => {
   const [hintsRemaining, setHintsRemaining] = useState(3);
   const [showResultModal, setShowResultModal] = useState(false);
   const [currentMoveIndex, setCurrentMoveIndex] = useState(-1);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [agingEnabled, setAgingEnabled] = useState(true);
   const [maxAge, setMaxAge] = useState(5);
@@ -78,30 +76,10 @@ const GameBoard = () => {
     null,
   );
 
-  // === AI Suggestions (mock for now, will integrate later) ===
-  const [suggestions] = useState<Suggestion[]>([
-    {
-      position: 4,
-      confidence: 85,
-      strategy:
-        "Center control is crucial in tic-tac-toe. This move gives you the most strategic options for future plays.",
-      moveType: "Strategic Opening",
-    },
-    {
-      position: 0,
-      confidence: 72,
-      strategy:
-        "Corner positions provide strong control and multiple winning paths. This is a solid alternative opening.",
-      moveType: "Corner Control",
-    },
-    {
-      position: 2,
-      confidence: 68,
-      strategy:
-        "Another corner option that maintains flexibility while establishing board presence.",
-      moveType: "Corner Control",
-    },
-  ]);
+  // === AI Hint highlight ===
+  const [highlightedHintCell, setHighlightedHintCell] = useState<number | null>(
+    null,
+  );
 
   // Browser navigation blocking (back/forward buttons)
   useEffect(() => {
@@ -209,6 +187,11 @@ const GameBoard = () => {
       // Initialize timer state from game data
       setGameVs(gameData.game.vs || "AI");
       setGameDifficulty(gameData.game.difficulty || "");
+
+      // Initialize hints remaining from game data
+      const hintsUsed = gameData.game.hintsUsed || 0;
+      setHintsRemaining(Math.max(0, 3 - hintsUsed));
+
       if (gameData.game.timerEnabled) {
         setTimerEnabled(true);
         setTurnDuration(gameData.game.turnDuration || 0);
@@ -496,6 +479,20 @@ const GameBoard = () => {
       // The game-end event will also fire and handle the result modal
     };
 
+    // Listen for hint suggestions
+    const handleHintSuggestion = (data: {
+      gameId: string;
+      position: number;
+      confidence: number;
+      strategy: string;
+      moveType: string;
+      hintsRemaining: number;
+    }) => {
+      console.log("💡 Hint suggestion received:", data);
+      setHighlightedHintCell(data.position);
+      setHintsRemaining(data.hintsRemaining);
+    };
+
     socket.on("game-update", handleGameUpdate);
     socket.on("ai-move", handleAiMove);
     socket.on("game-end", handleGameOver);
@@ -503,6 +500,7 @@ const GameBoard = () => {
     socket.on("aging-state", handleAgingState);
     socket.on("timer-update", handleTimerUpdate);
     socket.on("game-timeout", handleGameTimeout);
+    socket.on("hint-suggestion", handleHintSuggestion);
     socket.on("error", handleError);
 
     // Cleanup listeners on unmount
@@ -514,6 +512,7 @@ const GameBoard = () => {
       socket.off("aging-state", handleAgingState);
       socket.off("timer-update", handleTimerUpdate);
       socket.off("game-timeout", handleGameTimeout);
+      socket.off("hint-suggestion", handleHintSuggestion);
       socket.off("error", handleError);
     };
   }, [
@@ -592,6 +591,17 @@ const GameBoard = () => {
     }
     return () => clearInterval(timer);
   }, [isGameActive]);
+
+  // Auto-fade hint highlight after 5 seconds
+  useEffect(() => {
+    if (highlightedHintCell !== null) {
+      const fadeTimer = setTimeout(() => {
+        setHighlightedHintCell(null);
+      }, 5000); // 5 second auto-fade
+
+      return () => clearTimeout(fadeTimer);
+    }
+  }, [highlightedHintCell]);
 
   // Calculate winning line when game ends (watch for board state + game result changes)
   useEffect(() => {
@@ -710,10 +720,13 @@ const GameBoard = () => {
   };
 
   const handleHint = () => {
-    if (hintsRemaining > 0 && suggestions.length > 0) {
-      setHintsRemaining((prev) => prev - 1);
-      setShowSuggestions(true);
+    if (!socket || !isConnected || !gameId) {
+      setError("Connection lost. Cannot request hint.");
+      return;
     }
+
+    // Emit hint request to backend
+    socket.emit("request-hint", { gameId });
   };
 
   const handleMoveClick = (index: number) => {
@@ -829,6 +842,7 @@ const GameBoard = () => {
               isAiThinking={isAiThinking}
               cellAging={cellAging}
               expiredCells={expiredCells}
+              highlightedHintCell={highlightedHintCell}
             />
 
             <GameControls
@@ -850,13 +864,6 @@ const GameBoard = () => {
             />
           </div>
         </main>
-
-        <AiSuggestionPanel
-          suggestions={suggestions}
-          isVisible={showSuggestions}
-          onToggle={() => setShowSuggestions(!showSuggestions)}
-          isAiThinking={isAiThinking}
-        />
 
         <LeaveGameConfirmationModal
           isOpen={showLeaveModal}
