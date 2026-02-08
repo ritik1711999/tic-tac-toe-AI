@@ -44,6 +44,13 @@
   transition: transform var(--transition-fast);
 }
 
+.logo-icon img {
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 .header-logo:hover .logo-icon {
   transform: scale(1.05);
 }

@@ -46,6 +46,13 @@
   margin-bottom: 24px;
 }
 
+.auth-logo img {
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 .auth-title {
   font-family: var(--font-heading);
   font-size: 1.875rem;
