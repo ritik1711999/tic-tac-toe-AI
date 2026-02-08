@@ -14,6 +14,7 @@ interface Game {
   difficulty?: "easy" | "medium" | "hard";
   agingEnabled?: boolean;
   maxAge?: number;
+  hintsUsed?: number;
   outcome?: "win" | "lose" | "draw";
   moves?: any[];
   duration: number;
