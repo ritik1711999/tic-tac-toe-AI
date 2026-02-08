@@ -8,6 +8,7 @@ interface GameControlsProps {
   onViewAnalysis?: () => void;
   isGameOver: boolean;
   hintsRemaining: number;
+  disableHint?: boolean;
 }
 
 const GameControls = ({
@@ -17,6 +18,7 @@ const GameControls = ({
   onViewAnalysis,
   isGameOver,
   hintsRemaining,
+  disableHint = false,
 }: GameControlsProps) => {
   return (
     <>
@@ -28,7 +30,7 @@ const GameControls = ({
               iconName="Lightbulb"
               iconPosition="left"
               onClick={onHint}
-              disabled={hintsRemaining === 0}
+              disabled={disableHint || hintsRemaining === 0}
             >
               Hint ({hintsRemaining})
             </Button>
