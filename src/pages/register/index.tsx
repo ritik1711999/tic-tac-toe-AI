@@ -4,6 +4,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Icon from "../../components/AppIcon";
+import Image from "../../components/AppImage";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import { useRegister, useGoogleAuth } from "../../hooks/useAuth";
 import "./register.css";
@@ -110,12 +111,7 @@ const Register = () => {
       <div className="auth-card">
         <div className="auth-header">
           <div className="auth-logo">
-            <Icon
-              name="Grid3x3"
-              size={40}
-              color="var(--color-primary)"
-              strokeWidth={2.5}
-            />
+            <Image src="/T.png" alt="TicTacToe Master Logo" />
           </div>
           <h1 className="auth-title">Create Account</h1>
           <p className="auth-subtitle">
@@ -243,7 +239,11 @@ const Register = () => {
           </div>
 
           {registerMutation.isPending && (
-            <LoadingSpinner size="small" message="Creating account..." variant="inline" />
+            <LoadingSpinner
+              size="small"
+              message="Creating account..."
+              variant="inline"
+            />
           )}
           {registerMutation.isError && (
             <p className="error-message">

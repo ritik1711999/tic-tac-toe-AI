@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Icon from "../AppIcon";
+import Image from "../AppImage";
 import { useAuthStore } from "../../store/authStore";
 import { useLogout } from "../../hooks/useAuth";
 import "../styles/ui/Header.css";
@@ -35,12 +36,7 @@ const Header = ({ onNavigationAttempt }: HeaderProps) => {
             className="header-logo"
           >
             <div className="logo-icon">
-              <Icon
-                name="Grid3x3"
-                size={28}
-                color="var(--color-popover-foreground)"
-                strokeWidth={2.5}
-              />
+              <Image src="/T.png" alt="TicTacToe Master Logo" />
             </div>
             <span className="logo-text">TicTacToe Master</span>
           </Link>

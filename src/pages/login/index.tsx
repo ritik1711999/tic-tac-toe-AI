@@ -4,6 +4,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import Icon from "../../components/AppIcon";
+import Image from "../../components/AppImage";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import { useLogin, useGoogleAuth } from "../../hooks/useAuth";
 import "./login.css";
@@ -62,12 +63,7 @@ const Login = () => {
       <div className="auth-card">
         <div className="auth-header">
           <div className="auth-logo">
-            <Icon
-              name="Grid3x3"
-              size={40}
-              color="var(--color-primary)"
-              strokeWidth={2.5}
-            />
+            <Image src="/T.png" alt="TicTacToe Master Logo" />
           </div>
           <h1 className="auth-title">Welcome Back</h1>
           <p className="auth-subtitle">
@@ -129,7 +125,11 @@ const Login = () => {
           </div>
 
           {loginMutation.isPending && (
-            <LoadingSpinner size="small" message="Signing in..." variant="inline" />
+            <LoadingSpinner
+              size="small"
+              message="Signing in..."
+              variant="inline"
+            />
           )}
           {loginMutation.isError && (
             <p className="error-message">
